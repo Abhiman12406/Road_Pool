@@ -4,10 +4,10 @@
 
 **Blocked by:** 01: Foundation Scaffold & End-to-End Shell Tracer Bullet
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Backend routing engine queries live OSRM with in-memory caching and falls back gracefully to a calibrated Pune urban road network model if offline or rate-limited.
-- [ ] Direct routing endpoint returns accurate distance (km), duration (seconds), and road geometry polylines.
-- [ ] Passenger Home screen (`/passenger/home`) provides searchable/clickable Pune landmark selection and party size selector.
-- [ ] Calculated solo route displays as a clean blue polyline on the Leaflet map.
-- [ ] Solo reference fare in ₹ is computed and displayed alongside estimated travel time before pooling.
+- [x] Backend routing engine queries live OSRM with in-memory caching and falls back gracefully to a calibrated Pune urban road network model if offline or rate-limited.
+- [x] Direct routing endpoint returns accurate distance (km), duration (seconds), and road geometry polylines.
+- [x] Passenger Home screen (`/passenger/home`) provides searchable/clickable Pune landmark selection and party size selector.
+- [x] Calculated solo route displays as a clean blue polyline on the Leaflet map.
+- [x] Solo reference fare in ₹ is computed and displayed alongside estimated travel time before pooling.

@@ -63,3 +63,30 @@ def test_websocket_endpoint():
             assert "engine" in data
             assert "vehicles" in data
             assert data["engine"]["status"] in ["running", "paused"]
+
+@pytest.mark.asyncio
+async def test_create_passenger_ride_request():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        payload = {
+            "pickup_name": "Shivajinagar Hub",
+            "pickup_lat": 18.5314,
+            "pickup_lng": 73.8446,
+            "dropoff_name": "Hinjewadi IT Park Phase 1",
+            "dropoff_lat": 18.5913,
+            "dropoff_lng": 73.7389,
+            "party_size": 2,
+            "solo_distance_km": 16.5,
+            "solo_eta_sec": 1400,
+            "solo_fare_inr": 345.0,
+            "passenger_name": "Elena Vance"
+        }
+        resp = await ac.post("/api/v1/simulation/request", json=payload)
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["status"] == "success"
+        req = data["request"]
+        assert req["pickup"]["name"] == "Shivajinagar Hub"
+        assert req["dropoff"]["name"] == "Hinjewadi IT Park Phase 1"
+        assert req["party_size"] == 2
+        assert req["status"] == "waiting_batch"

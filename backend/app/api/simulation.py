@@ -53,3 +53,35 @@ async def update_selection(cmd: SelectionCommand):
             sim_engine.state.selection.activeStopId = cmd.activeStopId
     await sim_engine.broadcast_state()
     return {"status": "success", "selection": sim_engine.state.selection}
+
+class CreateRideRequestCommand(BaseModel):
+    pickup_name: str
+    pickup_lat: float
+    pickup_lng: float
+    dropoff_name: str
+    dropoff_lat: float
+    dropoff_lng: float
+    party_size: int = 1
+    solo_distance_km: float
+    solo_eta_sec: int
+    solo_fare_inr: float
+    passenger_name: Optional[str] = "Elena Vance (Rider)"
+
+@router.post("/request")
+async def create_ride_request(cmd: CreateRideRequestCommand):
+    async with sim_engine.lock:
+        req = sim_engine.create_passenger_request(
+            pickup_name=cmd.pickup_name,
+            pickup_lat=cmd.pickup_lat,
+            pickup_lng=cmd.pickup_lng,
+            dropoff_name=cmd.dropoff_name,
+            dropoff_lat=cmd.dropoff_lat,
+            dropoff_lng=cmd.dropoff_lng,
+            party_size=cmd.party_size,
+            solo_distance_km=cmd.solo_distance_km,
+            solo_eta_sec=cmd.solo_eta_sec,
+            solo_fare_inr=cmd.solo_fare_inr,
+            passenger_name=cmd.passenger_name or "Elena Vance (Rider)"
+        )
+    await sim_engine.broadcast_state()
+    return {"status": "success", "request": req}

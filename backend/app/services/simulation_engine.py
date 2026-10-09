@@ -260,6 +260,54 @@ class SimulationEngine:
             self.state.kpis.servedPassengersCount += 1
             self.state.kpis.activePoolsCount = 3
 
+    def create_passenger_request(
+        self,
+        pickup_name: str,
+        pickup_lat: float,
+        pickup_lng: float,
+        dropoff_name: str,
+        dropoff_lat: float,
+        dropoff_lng: float,
+        party_size: int,
+        solo_distance_km: float,
+        solo_eta_sec: int,
+        solo_fare_inr: float,
+        passenger_name: str = "Elena Vance (Rider)"
+    ) -> RideRequest:
+        req_id = f"REQ-P{100 + len(self.state.requests) + 1}"
+        pax_id = f"PAX-{len(self.state.requests) + 1:02d}"
+        now_str = time.strftime("%H:%M:%S")
+
+        req = RideRequest(
+            request_id=req_id,
+            passenger_id=pax_id,
+            passenger_name=passenger_name,
+            pickup=Location(lat=pickup_lat, lng=pickup_lng, name=pickup_name),
+            dropoff=Location(lat=dropoff_lat, lng=dropoff_lng, name=dropoff_name),
+            party_size=party_size,
+            request_time=now_str,
+            solo_eta_sec=solo_eta_sec,
+            solo_distance_km=solo_distance_km,
+            solo_fare_inr=solo_fare_inr,
+            status="waiting_batch",
+            assigned_vehicle_id=None,
+            pooled_eta_sec=None,
+            detour_pct=None,
+            shapley_fare_inr=None,
+        )
+        self.state.requests[req_id] = req
+        self.state.kpis.totalTripsInFlight = len([
+            r for r in self.state.requests.values() 
+            if r.status in ['waiting_batch', 'matched', 'en_route_pickup', 'in_transit']
+        ])
+        
+        self.state.activePassengerSession.activeTripRequestId = req_id
+        self.state.activePassengerSession.lifecycleStatus = "waiting_batch"
+        self.state.activePassengerSession.fareSoloDirectInr = solo_fare_inr
+        self.state.activePassengerSession.fareShapleyPooledInr = round(solo_fare_inr * 0.75, 2)
+        
+        return req
+
     def _tick_step(self, elapsed: float):
         # Update timer
         remaining = self.state.engine.timeRemainingInWindowSec - elapsed
