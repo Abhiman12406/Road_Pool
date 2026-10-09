@@ -42,6 +42,13 @@ async def control_simulation(cmd: ControlCommand):
     await sim_engine.broadcast_state()
     return {"status": "success", "engine": sim_engine.state.engine}
 
+@router.post("/vehicle/{vehicle_id}/advance-stop")
+async def advance_vehicle_stop_endpoint(vehicle_id: str):
+    async with sim_engine.lock:
+        stop = sim_engine.advance_vehicle_stop(vehicle_id)
+    await sim_engine.broadcast_state()
+    return {"status": "success", "completed_stop": stop, "vehicle": sim_engine.state.vehicles.get(vehicle_id)}
+
 @router.post("/select")
 async def update_selection(cmd: SelectionCommand):
     async with sim_engine.lock:

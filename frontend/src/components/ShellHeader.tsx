@@ -8,7 +8,8 @@ export type ActiveViewKey =
   | 'ops-detour-guarantees'
   | 'ops-fair-fares'
   | 'passenger-home'
-  | 'passenger-waiting';
+  | 'passenger-waiting'
+  | 'passenger-active';
 
 interface ShellHeaderProps {
   currentView: ActiveViewKey;
@@ -159,6 +160,7 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
               </button>
               <button
                 type="button"
+                id="nav-passenger-waiting"
                 onClick={() => onSwitchView('passenger-waiting')}
                 className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
                   currentView === 'passenger-waiting'
@@ -168,6 +170,19 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
                 <span>Matching Queue (/passenger/waiting)</span>
+              </button>
+              <button
+                type="button"
+                id="nav-passenger-active"
+                onClick={() => onSwitchView('passenger-active')}
+                className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
+                  currentView === 'passenger-active'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[14px]">electric_car</span>
+                <span>Active Trip (/passenger/active)</span>
               </button>
             </>
           )}

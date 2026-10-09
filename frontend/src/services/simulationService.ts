@@ -152,6 +152,18 @@ export function useSimulationSocket() {
     }
   }, []);
 
+  const advanceVehicleStop = useCallback(async (vehicleId: string) => {
+    try {
+      const resp = await fetch(`${API_BASE}/simulation/vehicle/${vehicleId}/advance-stop`, {
+        method: 'POST',
+      });
+      return await resp.json();
+    } catch (e) {
+      console.error('Advance vehicle stop error:', e);
+      return null;
+    }
+  }, []);
+
   return {
     snapshot,
     isConnected,
@@ -164,6 +176,7 @@ export function useSimulationSocket() {
     solveOptimization,
     getFareExplanation,
     getShapleyPool,
+    advanceVehicleStop,
   };
 }
 

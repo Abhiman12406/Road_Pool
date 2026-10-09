@@ -8,11 +8,13 @@ import { DetourGuaranteesView } from './views/ops/DetourGuaranteesView';
 import { FairFaresView } from './views/ops/FairFaresView';
 import { PassengerHomeView } from './views/passenger/PassengerHomeView';
 import { PassengerWaitingView } from './views/passenger/PassengerWaitingView';
+import { PassengerActiveView } from './views/passenger/PassengerActiveView';
 
 export function App() {
   const [currentView, setCurrentView] = useState<ActiveViewKey>(() => {
     const path = window.location.pathname;
     if (path.includes('fair-fares') || path.includes('/ops/fair-fares')) return 'ops-fair-fares';
+    if (path.includes('active') || path.includes('/passenger/active')) return 'passenger-active';
     if (path.includes('optimization') || path.includes('/ops/optimization')) return 'ops-optimization';
     if (path.includes('detour') || path.includes('/ops/detour-guarantees')) return 'ops-detour-guarantees';
     if (path.includes('batches') || path.includes('/ops/batches')) return 'ops-batches';
@@ -31,6 +33,7 @@ export function App() {
     configureBatch,
     generateDemand,
     solveOptimization,
+    advanceVehicleStop,
   } = useSimulationSocket();
 
   // Sync browser history state if user clicks back/forward
@@ -38,6 +41,7 @@ export function App() {
     const handlePopState = () => {
       const path = window.location.pathname;
       if (path.includes('fair-fares')) setCurrentView('ops-fair-fares');
+      else if (path.includes('active')) setCurrentView('passenger-active');
       else if (path.includes('optimization')) setCurrentView('ops-optimization');
       else if (path.includes('detour')) setCurrentView('ops-detour-guarantees');
       else if (path.includes('batches')) setCurrentView('ops-batches');
@@ -59,6 +63,7 @@ export function App() {
       'ops-fair-fares': '/ops/fair-fares',
       'passenger-home': '/passenger/home',
       'passenger-waiting': '/passenger/waiting',
+      'passenger-active': '/passenger/active',
     };
     window.history.pushState(null, '', pathMap[view]);
   };
@@ -157,6 +162,17 @@ export function App() {
             onBackToBooking={() => handleSwitchView('passenger-home')}
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}
+            onNavigateToActive={() => handleSwitchView('passenger-active')}
+          />
+        )}
+
+        {currentView === 'passenger-active' && (
+          <PassengerActiveView
+            snapshot={snapshot}
+            onSelectVehicle={handleSelectVehicle}
+            onSelectRequest={handleSelectRequest}
+            onNavigateToBooking={() => handleSwitchView('passenger-home')}
+            onAdvanceStop={advanceVehicleStop}
           />
         )}
       </main>

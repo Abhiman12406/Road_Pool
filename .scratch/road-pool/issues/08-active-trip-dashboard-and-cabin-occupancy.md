@@ -4,13 +4,13 @@
 
 **Blocked by:** 07: Combinatorial Shapley Fair-Fare Engine & Explainable Slide-Over Sheet
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Dedicated active trip dashboard view renders when a ride is confirmed and vehicle departs.
-- [ ] Leaflet map shows moving vehicle marker, planned route polyline, and color-coded pickup/drop-off pins.
-- [ ] Interactive 4-Seat Cabin Layout Grid renders Driver + 4 passenger seats with clear visual distinction:
+- [x] Dedicated active trip dashboard view renders when a ride is confirmed and vehicle departs.
+- [x] Leaflet map shows moving vehicle marker, planned route polyline, and color-coded pickup/drop-off pins.
+- [x] Interactive 4-Seat Cabin Layout Grid renders Driver + 4 passenger seats with clear visual distinction:
   - Currently onboard passengers (solid indicator).
   - Confirmed upcoming reservations (reserved indicator).
   - Available seats for new bookings (open indicator).
-- [ ] Stops timeline checks off completed pickups and drop-offs, dynamically updating live occupancy and ETAs.
-- [ ] Distinguishes route visual states: Proposed, Confirmed, and Completed.
+- [x] Stops timeline checks off completed pickups and drop-offs, dynamically updating live occupancy and ETAs.
+- [x] Distinguishes route visual states: Proposed, Confirmed, and Completed.

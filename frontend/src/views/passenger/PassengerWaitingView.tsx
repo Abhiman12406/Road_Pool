@@ -15,6 +15,7 @@ interface PassengerWaitingViewProps {
   onBackToBooking: () => void;
   onSelectVehicle: (id: string) => void;
   onSelectRequest: (id: string) => void;
+  onNavigateToActive?: () => void;
 }
 
 export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
@@ -23,6 +24,7 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
   onBackToBooking,
   onSelectVehicle,
   onSelectRequest,
+  onNavigateToActive,
 }) => {
   const engine = snapshot?.engine;
   const session = snapshot?.activePassengerSession;
@@ -544,7 +546,17 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
 
           {/* Action Buttons */}
           <div className="flex flex-col gap-2 z-10">
-            {isSearching && (
+            {isMatched && onNavigateToActive ? (
+              <button
+                type="button"
+                id="view-active-trip-btn"
+                onClick={onNavigateToActive}
+                className="w-full h-12 rounded-xl bg-tertiary hover:bg-tertiary/95 text-on-tertiary text-xs font-extrabold flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 animate-bounce-short"
+              >
+                <span className="material-symbols-outlined text-[18px]">electric_car</span>
+                <span>Open Live Active Trip & Cabin Layout (/passenger/active)</span>
+              </button>
+            ) : !isMatched ? (
               <button
                 type="button"
                 id="btn-fast-forward-dispatch"
@@ -554,6 +566,17 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
               >
                 <span className="material-symbols-outlined text-[18px]">bolt</span>
                 <span>Fast-Forward: Dispatch Batch Now</span>
+              </button>
+            ) : null}
+
+            {onNavigateToActive && (
+              <button
+                type="button"
+                onClick={onNavigateToActive}
+                className="w-full h-10 rounded-xl bg-primary-fixed/30 hover:bg-primary-fixed/50 text-primary text-xs font-bold flex items-center justify-center gap-1.5 border border-primary/20 transition-all"
+              >
+                <span className="material-symbols-outlined text-[16px]">airline_seat_recline_normal</span>
+                <span>Inspect Fleet Cabin & Live Telematics</span>
               </button>
             )}
 

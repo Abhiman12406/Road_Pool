@@ -410,6 +410,35 @@ class SimulationEngine:
         # Step simulation window forward
         self._tick_step(seconds)
 
+    def advance_vehicle_stop(self, vehicle_id: str):
+        """Advances the vehicle to its next planned stop, marking it completed and updating occupancy."""
+        veh = self.state.vehicles.get(vehicle_id)
+        if not veh or not veh.planned_stops:
+            return None
+        next_stop = next((s for s in veh.planned_stops if not s.completed), None)
+        if next_stop:
+            next_stop.completed = True
+            veh.current_location = next_stop.location
+            req = self.state.requests.get(next_stop.request_id)
+            party_count = req.party_size if req else 1
+            if next_stop.stop_type == "pickup":
+                veh.occupied_seats = min(veh.capacity, veh.occupied_seats + party_count)
+                if req:
+                    req.status = "in_transit"
+                if self.state.activePassengerSession.activeTripRequestId == next_stop.request_id:
+                    self.state.activePassengerSession.lifecycleStatus = "in_transit"
+            else:
+                veh.occupied_seats = max(0, veh.occupied_seats - party_count)
+                if req:
+                    req.status = "dropped_off"
+                if self.state.activePassengerSession.activeTripRequestId == next_stop.request_id:
+                    self.state.activePassengerSession.lifecycleStatus = "dropped_off"
+            
+            if all(s.completed for s in veh.planned_stops):
+                veh.status = "idle"
+            return next_stop
+        return None
+
     def configure_batching(self, window_interval_sec: Optional[int] = None, batch_threshold: Optional[int] = None):
         """Configures rolling window duration and request count threshold."""
         if window_interval_sec is not None and window_interval_sec > 0:
