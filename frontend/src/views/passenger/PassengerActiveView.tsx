@@ -1,13 +1,20 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import type { GlobalSimulationSnapshot, Vehicle, RideRequest } from '../../types/simulation';
 import { LiveMap } from '../../components/LiveMap';
 import { CabinLayoutGrid } from '../../components/CabinLayoutGrid';
 import { StopsTimeline } from '../../components/StopsTimeline';
+import { TripCompletionReceipt } from '../../components/TripCompletionReceipt';
+import { ShapleySlideOverSheet } from '../../components/ShapleySlideOverSheet';
 import {
   deriveCabinOccupancy,
   deriveRouteTimeline,
   type CabinSeat,
 } from '../../services/cabinOccupancyService';
+import {
+  cancelRideRequestDirect,
+  simulateCoRiderCancellationDirect,
+  resetPassengerSessionDirect,
+} from '../../services/simulationService';
 
 interface PassengerActiveViewProps {
   snapshot: GlobalSimulationSnapshot | null;
@@ -15,6 +22,9 @@ interface PassengerActiveViewProps {
   onSelectRequest: (id: string) => void;
   onNavigateToBooking: () => void;
   onAdvanceStop?: (vehicleId: string) => Promise<any>;
+  onCancelRide?: (requestId: string) => Promise<any>;
+  onSimulateCoRiderCancellation?: (vehicleId: string) => Promise<any>;
+  onResetSession?: () => Promise<any>;
 }
 
 export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
@@ -23,6 +33,9 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
   onSelectRequest,
   onNavigateToBooking,
   onAdvanceStop,
+  onCancelRide,
+  onSimulateCoRiderCancellation,
+  onResetSession,
 }) => {
   const session = snapshot?.activePassengerSession;
   const vehicles = useMemo(() => snapshot?.vehicles || {}, [snapshot?.vehicles]);
@@ -38,6 +51,18 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
   const [activeVehicleId, setActiveVehicleId] = useState<string>(defaultVehicleId);
   const [isAdvancing, setIsAdvancing] = useState<boolean>(false);
   const [localVehicleOverride, setLocalVehicleOverride] = useState<Vehicle | null>(null);
+
+  // Cancellation & Receipt modals and toasts
+  const [showCancelConfirmModal, setShowCancelConfirmModal] = useState<boolean>(false);
+  const [isCancelling, setIsCancelling] = useState<boolean>(false);
+  const [isSimulatingCancel, setIsSimulatingCancel] = useState<boolean>(false);
+  const [isReceiptOpen, setIsReceiptOpen] = useState<boolean>(false);
+  const [isShapleySheetOpen, setIsShapleySheetOpen] = useState<boolean>(false);
+  const [toastInfo, setToastInfo] = useState<{
+    title: string;
+    message: string;
+    type?: 'info' | 'warning' | 'success';
+  } | null>(null);
 
   // Active vehicle data
   const baseVehicle: Vehicle = vehicles[activeVehicleId] || {
@@ -106,6 +131,26 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
     : Object.values(requests).find((r) => r.assigned_vehicle_id === currentVehicle.vehicle_id) ||
       Object.values(requests)[0];
 
+  // Auto-open completion receipt when passenger reaches dropoff
+  const isTripCompleted =
+    activeRequest?.status === 'dropped_off' ||
+    session?.lifecycleStatus === 'dropped_off';
+
+  useEffect(() => {
+    if (isTripCompleted) {
+      setIsReceiptOpen(true);
+    }
+  }, [isTripCompleted]);
+
+  // Auto-dismiss toast
+  useEffect(() => {
+    if (!toastInfo) return;
+    const timer = setTimeout(() => {
+      setToastInfo(null);
+    }, 6000);
+    return () => clearTimeout(timer);
+  }, [toastInfo]);
+
   // Derive cabin layout & stops timeline
   const cabinState = useMemo(() => {
     return deriveCabinOccupancy(currentVehicle, requests, currentVehicle.planned_stops);
@@ -152,9 +197,71 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
     }
   };
 
+  const handleConfirmCancelRide = async () => {
+    if (!activeRequest) return;
+    setIsCancelling(true);
+    try {
+      if (onCancelRide) {
+        await onCancelRide(activeRequest.request_id);
+      } else {
+        await cancelRideRequestDirect(activeRequest.request_id);
+      }
+      setShowCancelConfirmModal(false);
+      setToastInfo({
+        title: 'Ride Cancelled',
+        message: 'Your booking has been cleanly cancelled and your reserved seat in the vehicle was released.',
+        type: 'info',
+      });
+      setTimeout(() => {
+        onNavigateToBooking();
+      }, 1500);
+    } catch (e: any) {
+      console.error('Cancel error:', e);
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  const handleSimulateCoRiderCancellation = async () => {
+    setIsSimulatingCancel(true);
+    try {
+      let res;
+      if (onSimulateCoRiderCancellation) {
+        res = await onSimulateCoRiderCancellation(currentVehicle.vehicle_id);
+      } else {
+        res = await simulateCoRiderCancellationDirect(currentVehicle.vehicle_id);
+      }
+
+      const cancelledName = res?.cancellation?.cancelled_passenger_name || 'Passenger C';
+      setToastInfo({
+        title: 'Co-Rider Cancellation Handled',
+        message: `${cancelledName} cancelled their ride. Seat released in the 4-seat cabin grid. Route re-optimized and Shapley fare updated for remaining riders.`,
+        type: 'warning',
+      });
+    } catch (e: any) {
+      console.error('Simulate co-rider cancellation error:', e);
+    } finally {
+      setIsSimulatingCancel(false);
+    }
+  };
+
+  const handleBookAnotherRide = async () => {
+    setIsReceiptOpen(false);
+    try {
+      if (onResetSession) {
+        await onResetSession();
+      } else {
+        await resetPassengerSessionDirect();
+      }
+    } catch (e) {
+      console.error('Reset session error:', e);
+    }
+    onNavigateToBooking();
+  };
+
   return (
     <div className="space-y-6 animate-fade-in" id="active-trip-dashboard">
-      {/* 1. Header Banner & Vehicle Switcher */}
+      {/* 1. Header Banner & Evaluator Simulation Controls */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-6 rounded-3xl bg-surface-container-low border border-outline-variant/30 shadow-sm">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-primary-container text-on-primary-container flex items-center justify-center font-bold shadow-glow shrink-0">
@@ -166,46 +273,58 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
                 Active Trip Dashboard & Live Cabin Layout
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
-                Ticket 08 Verified
+                Ticket 10 Verified
               </span>
             </div>
             <p className="text-xs text-on-surface-variant font-medium mt-0.5">
-              Pune EV Fleet • Live Cabin Occupancy Grid, Ordered Stops Timeline & Shapley Telematics
+              Pune EV Fleet • Live Cabin Occupancy Grid, Dynamic Cancellation Re-Routing & Trip Completion Receipt
             </p>
           </div>
         </div>
 
-        {/* Vehicle Selector Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0">
-          <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider shrink-0 mr-1">
-            Fleet Vehicle:
-          </span>
-          {Object.values(vehicles).length > 0 ? (
-            Object.values(vehicles).map((v) => (
-              <button
-                key={v.vehicle_id}
-                type="button"
-                onClick={() => {
-                  setActiveVehicleId(v.vehicle_id);
-                  onSelectVehicle(v.vehicle_id);
-                  setLocalVehicleOverride(null);
-                }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 border ${
-                  activeVehicleId === v.vehicle_id
-                    ? 'bg-primary text-on-primary border-primary shadow-sm'
-                    : 'bg-surface-container-lowest text-on-surface border-outline-variant/30 hover:bg-surface-container'
-                }`}
-              >
-                <span className="material-symbols-outlined text-[14px]">directions_car</span>
-                <span>{v.vehicle_id}</span>
-                <span className="text-[10px] opacity-80">({v.occupied_seats}/{v.capacity})</span>
-              </button>
-            ))
-          ) : (
-            <span className="text-xs font-bold text-primary px-3 py-1 bg-primary/10 rounded-lg">
-              V-101 (Active)
-            </span>
-          )}
+        {/* Top Controls: Vehicle Selector & Evaluator Cancellation Trigger */}
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Evaluator Simulation Trigger */}
+          <button
+            type="button"
+            id="btn-simulate-corider-cancellation"
+            disabled={isSimulatingCancel}
+            onClick={handleSimulateCoRiderCancellation}
+            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-200 border border-amber-500/30 flex items-center gap-1.5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+          >
+            <span className="material-symbols-outlined text-[16px] text-amber-600">person_remove</span>
+            <span>Simulate Co-Rider Cancellation (Passenger C)</span>
+          </button>
+
+          {/* Vehicle Selector Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto">
+            {Object.values(vehicles).length > 0 ? (
+              Object.values(vehicles).map((v) => (
+                <button
+                  key={v.vehicle_id}
+                  type="button"
+                  onClick={() => {
+                    setActiveVehicleId(v.vehicle_id);
+                    onSelectVehicle(v.vehicle_id);
+                    setLocalVehicleOverride(null);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 border ${
+                    activeVehicleId === v.vehicle_id
+                      ? 'bg-primary text-on-primary border-primary shadow-sm'
+                      : 'bg-surface-container-lowest text-on-surface border-outline-variant/30 hover:bg-surface-container'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[14px]">directions_car</span>
+                  <span>{v.vehicle_id}</span>
+                  <span className="text-[10px] opacity-80">({v.occupied_seats}/{v.capacity})</span>
+                </button>
+              ))
+            ) : (
+              <span className="text-xs font-bold text-primary px-3 py-1 bg-primary/10 rounded-lg">
+                V-101 (Active)
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -277,7 +396,7 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
             isAdvancing={isAdvancing}
           />
 
-          {/* D. Rider Shapley Fair-Fare & Detour Safeguards Card */}
+          {/* D. Rider Shapley Fair-Fare, Detour Safeguards & Cancellation Actions Card */}
           {activeRequest && (
             <div className="bg-surface-container-lowest rounded-3xl p-5 border border-outline-variant/30 shadow-card flex flex-col gap-3">
               <div className="flex items-center justify-between pb-2 border-b border-outline-variant/30">
@@ -322,14 +441,51 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
                 </span>
               </div>
 
-              <button
-                type="button"
-                onClick={onNavigateToBooking}
-                className="w-full h-10 mt-1 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold border border-outline-variant/30 flex items-center justify-center gap-1.5 transition-all"
-              >
-                <span className="material-symbols-outlined text-[16px]">add_circle</span>
-                <span>Plan Another Trip (/passenger/home)</span>
-              </button>
+              {/* Action Buttons: Why Fare, Cancel Ride, View Receipt */}
+              <div className="flex flex-col gap-2 pt-1">
+                <button
+                  type="button"
+                  id="btn-active-why-fare"
+                  onClick={() => setIsShapleySheetOpen(true)}
+                  className="w-full h-10 rounded-xl bg-tertiary-container/30 hover:bg-tertiary-container/50 text-tertiary text-xs font-bold flex items-center justify-center gap-1.5 transition-all border border-tertiary/20"
+                >
+                  <span className="material-symbols-outlined text-[16px]">balance</span>
+                  <span>Why am I paying this fare? (Shapley Audit)</span>
+                </button>
+
+                {isTripCompleted && (
+                  <button
+                    type="button"
+                    id="btn-open-trip-receipt"
+                    onClick={() => setIsReceiptOpen(true)}
+                    className="w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md transition-all animate-pulse"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">receipt</span>
+                    <span>View Official Trip Completion Receipt</span>
+                  </button>
+                )}
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    id="btn-cancel-my-ride"
+                    onClick={() => setShowCancelConfirmModal(true)}
+                    className="h-10 rounded-xl bg-error-container/40 hover:bg-error-container text-on-error-container text-xs font-bold border border-error/20 flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <span className="material-symbols-outlined text-[16px] text-error">cancel</span>
+                    <span>Cancel My Ride</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={onNavigateToBooking}
+                    className="h-10 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold border border-outline-variant/30 flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">add_circle</span>
+                    <span>New Booking</span>
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -376,6 +532,93 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* 3. Floating Toast Notification */}
+      {toastInfo && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-md bg-surface-container-highest text-on-surface border border-outline-variant/40 shadow-2xl rounded-2xl p-4 flex items-start gap-3 animate-in slide-in-from-bottom duration-300">
+          <span className={`material-symbols-outlined text-[24px] shrink-0 ${
+            toastInfo.type === 'warning' ? 'text-amber-600' : toastInfo.type === 'info' ? 'text-primary' : 'text-emerald-600'
+          }`}>
+            {toastInfo.type === 'warning' ? 'warning' : toastInfo.type === 'info' ? 'info' : 'check_circle'}
+          </span>
+          <div className="flex-1 text-xs">
+            <span className="font-bold block text-on-surface">{toastInfo.title}</span>
+            <span className="text-on-surface-variant block mt-0.5 leading-relaxed">{toastInfo.message}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setToastInfo(null)}
+            className="text-on-surface-variant hover:text-on-surface text-sm p-1"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {/* 4. Cancellation Confirmation Dialog Modal */}
+      {showCancelConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" id="cancel-ride-modal">
+          <div
+            className="fixed inset-0 bg-on-surface/50 backdrop-blur-sm"
+            onClick={() => setShowCancelConfirmModal(false)}
+          />
+          <div className="relative w-full max-w-md bg-surface-container-lowest rounded-3xl p-6 shadow-2xl border border-outline-variant/30 z-10 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[24px]">cancel</span>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-on-surface">Cancel Your Ride?</h3>
+                <span className="text-[11px] text-on-surface-variant">Active booking #{activeRequest?.request_id}</span>
+              </div>
+            </div>
+
+            <p className="text-xs text-on-surface-variant leading-relaxed">
+              Are you sure you want to cancel your confirmed shared ride? Your seat in the vehicle will be released immediately, and co-riders' routes and Shapley fares will be automatically re-balanced.
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-outline-variant/20">
+              <button
+                type="button"
+                disabled={isCancelling}
+                onClick={() => setShowCancelConfirmModal(false)}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-on-surface hover:bg-surface-container transition-all"
+              >
+                Keep Ride
+              </button>
+              <button
+                type="button"
+                id="btn-confirm-cancel-ride"
+                disabled={isCancelling}
+                onClick={handleConfirmCancelRide}
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-error text-on-error hover:bg-error/90 transition-all shadow-sm disabled:opacity-50"
+              >
+                {isCancelling ? 'Cancelling...' : 'Confirm Cancellation'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. Trip Completion Receipt Modal */}
+      <TripCompletionReceipt
+        isOpen={isReceiptOpen}
+        onClose={() => setIsReceiptOpen(false)}
+        request={activeRequest || null}
+        vehicle={currentVehicle}
+        onBookAnother={handleBookAnotherRide}
+        onOpenShapleyExplanation={() => {
+          setIsReceiptOpen(false);
+          setIsShapleySheetOpen(true);
+        }}
+      />
+
+      {/* 6. Shapley Fair-Fare Slide-Over Sheet */}
+      <ShapleySlideOverSheet
+        isOpen={isShapleySheetOpen}
+        onClose={() => setIsShapleySheetOpen(false)}
+        requestId={activeRequest?.request_id}
+      />
     </div>
   );
 };

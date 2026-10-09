@@ -42,12 +42,49 @@ async def control_simulation(cmd: ControlCommand):
     await sim_engine.broadcast_state()
     return {"status": "success", "engine": sim_engine.state.engine}
 
+class CancelRideCommand(BaseModel):
+    request_id: str
+    reason: Optional[str] = "passenger_cancelled"
+
+class SimulateCancellationCommand(BaseModel):
+    target_request_id: Optional[str] = None
+
 @router.post("/vehicle/{vehicle_id}/advance-stop")
 async def advance_vehicle_stop_endpoint(vehicle_id: str):
     async with sim_engine.lock:
         stop = sim_engine.advance_vehicle_stop(vehicle_id)
     await sim_engine.broadcast_state()
     return {"status": "success", "completed_stop": stop, "vehicle": sim_engine.state.vehicles.get(vehicle_id)}
+
+@router.post("/ride/cancel")
+async def cancel_ride_endpoint(cmd: CancelRideCommand):
+    async with sim_engine.lock:
+        res = sim_engine.cancel_ride_request(cmd.request_id, reason=cmd.reason or "passenger_cancelled")
+        if not res:
+            raise HTTPException(status_code=404, detail=f"Request {cmd.request_id} not found")
+    await sim_engine.broadcast_state()
+    return {"status": "success", "cancellation": res, "state": sim_engine.state}
+
+@router.post("/vehicle/{vehicle_id}/simulate-cancellation")
+async def simulate_cancellation_endpoint(vehicle_id: str, cmd: Optional[SimulateCancellationCommand] = None):
+    target_req_id = cmd.target_request_id if cmd else None
+    async with sim_engine.lock:
+        res = sim_engine.simulate_corider_cancellation(vehicle_id, target_request_id=target_req_id)
+        if not res:
+            raise HTTPException(status_code=400, detail=f"No eligible co-riders to cancel on vehicle {vehicle_id}")
+    await sim_engine.broadcast_state()
+    return {"status": "success", "cancellation": res, "vehicle": sim_engine.state.vehicles.get(vehicle_id)}
+
+@router.post("/session/reset")
+async def reset_session_endpoint():
+    async with sim_engine.lock:
+        sim_engine.state.activePassengerSession.activeTripRequestId = None
+        sim_engine.state.activePassengerSession.assignedVehicleId = None
+        sim_engine.state.activePassengerSession.lifecycleStatus = "idle"
+        sim_engine.state.activePassengerSession.actualDetourPct = None
+    await sim_engine.broadcast_state()
+    return {"status": "success", "session": sim_engine.state.activePassengerSession}
+
 
 @router.post("/select")
 async def update_selection(cmd: SelectionCommand):

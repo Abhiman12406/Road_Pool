@@ -164,6 +164,46 @@ export function useSimulationSocket() {
     }
   }, []);
 
+  const cancelRideRequest = useCallback(async (requestId: string, reason?: string) => {
+    try {
+      const resp = await fetch(`${API_BASE}/simulation/ride/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ request_id: requestId, reason: reason || 'passenger_cancelled' }),
+      });
+      return await resp.json();
+    } catch (e) {
+      console.error('Cancel ride request error:', e);
+      return null;
+    }
+  }, []);
+
+  const simulateCoRiderCancellation = useCallback(async (vehicleId: string, targetRequestId?: string) => {
+    try {
+      const resp = await fetch(`${API_BASE}/simulation/vehicle/${vehicleId}/simulate-cancellation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_request_id: targetRequestId || null }),
+      });
+      return await resp.json();
+    } catch (e) {
+      console.error('Simulate co-rider cancellation error:', e);
+      return null;
+    }
+  }, []);
+
+  const resetPassengerSession = useCallback(async () => {
+    try {
+      const resp = await fetch(`${API_BASE}/simulation/session/reset`, {
+        method: 'POST',
+      });
+      return await resp.json();
+    } catch (e) {
+      console.error('Reset passenger session error:', e);
+      return null;
+    }
+  }, []);
+
   return {
     snapshot,
     isConnected,
@@ -177,7 +217,50 @@ export function useSimulationSocket() {
     getFareExplanation,
     getShapleyPool,
     advanceVehicleStop,
+    cancelRideRequest,
+    simulateCoRiderCancellation,
+    resetPassengerSession,
   };
+}
+
+export async function cancelRideRequestDirect(requestId: string, reason?: string) {
+  try {
+    const resp = await fetch(`${API_BASE}/simulation/ride/cancel`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ request_id: requestId, reason: reason || 'passenger_cancelled' }),
+    });
+    return await resp.json();
+  } catch (e) {
+    console.error('Cancel ride request direct error:', e);
+    return null;
+  }
+}
+
+export async function simulateCoRiderCancellationDirect(vehicleId: string, targetRequestId?: string) {
+  try {
+    const resp = await fetch(`${API_BASE}/simulation/vehicle/${vehicleId}/simulate-cancellation`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ target_request_id: targetRequestId || null }),
+    });
+    return await resp.json();
+  } catch (e) {
+    console.error('Simulate co-rider cancellation direct error:', e);
+    return null;
+  }
+}
+
+export async function resetPassengerSessionDirect() {
+  try {
+    const resp = await fetch(`${API_BASE}/simulation/session/reset`, {
+      method: 'POST',
+    });
+    return await resp.json();
+  } catch (e) {
+    console.error('Reset passenger session direct error:', e);
+    return null;
+  }
 }
 
 export async function fetchFareExplanationDirect(requestId: string) {
@@ -201,4 +284,5 @@ export async function fetchShapleyPoolDirect(vehicleId: string) {
     return null;
   }
 }
+
 

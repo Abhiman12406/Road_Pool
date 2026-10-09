@@ -34,6 +34,9 @@ export function App() {
     generateDemand,
     solveOptimization,
     advanceVehicleStop,
+    cancelRideRequest,
+    simulateCoRiderCancellation,
+    resetPassengerSession,
   } = useSimulationSocket();
 
   // Sync browser history state if user clicks back/forward
@@ -163,6 +166,7 @@ export function App() {
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}
             onNavigateToActive={() => handleSwitchView('passenger-active')}
+            onCancelRide={cancelRideRequest}
           />
         )}
 
@@ -173,6 +177,9 @@ export function App() {
             onSelectRequest={handleSelectRequest}
             onNavigateToBooking={() => handleSwitchView('passenger-home')}
             onAdvanceStop={advanceVehicleStop}
+            onCancelRide={cancelRideRequest}
+            onSimulateCoRiderCancellation={simulateCoRiderCancellation}
+            onResetSession={resetPassengerSession}
           />
         )}
       </main>

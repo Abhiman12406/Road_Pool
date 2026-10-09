@@ -14,6 +14,9 @@ from app.models.simulation import (
 from app.services.route_optimizer import route_optimizer
 from app.services.shapley_service import shapley_engine
 from app.config import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 PUNE_LANDMARKS = {
     "Shivajinagar": Location(lat=18.5314, lng=73.8446, name="Shivajinagar Hub"),
@@ -438,6 +441,137 @@ class SimulationEngine:
                 veh.status = "idle"
             return next_stop
         return None
+
+    def cancel_ride_request(self, request_id: str, reason: str = "passenger_cancelled") -> Optional[Dict[str, Any]]:
+        """Cleanly cancels a passenger's ride request, releases reserved seats, re-optimizes vehicle route,
+        and recalculates Shapley fair-fare shares for remaining passengers."""
+        req = self.state.requests.get(request_id)
+        if not req:
+            return None
+
+        # Mark request rejected / cancelled
+        req.status = "rejected"
+        req.rejection_reason = f"Cancelled ({reason})"
+
+        # If user is the active passenger session rider, update lifecycle status
+        if self.state.activePassengerSession.activeTripRequestId == request_id:
+            self.state.activePassengerSession.lifecycleStatus = "cancelled"
+
+        veh_id = req.assigned_vehicle_id
+        veh = self.state.vehicles.get(veh_id) if veh_id else None
+        remaining_pool_result = None
+        remaining_requests: List[RideRequest] = []
+
+        if veh:
+            # Check if passenger had already been picked up (in transit)
+            was_onboard = any(
+                s.request_id == request_id and s.stop_type == "pickup" and s.completed
+                for s in veh.planned_stops
+            ) and not any(
+                s.request_id == request_id and s.stop_type == "dropoff" and s.completed
+                for s in veh.planned_stops
+            )
+
+            if was_onboard:
+                party_count = req.party_size or 1
+                veh.occupied_seats = max(0, veh.occupied_seats - party_count)
+
+            # Filter out uncompleted stops for the cancelled passenger
+            veh.planned_stops = [
+                s for s in veh.planned_stops
+                if not (s.request_id == request_id and not s.completed)
+            ]
+
+            # Re-update polyline for remaining uncompleted stops
+            uncompleted_stops = [s for s in veh.planned_stops if not s.completed]
+            if uncompleted_stops:
+                coords = [[veh.current_location.lat, veh.current_location.lng]]
+                for s in uncompleted_stops:
+                    coords.append([s.location.lat, s.location.lng])
+                veh.route_polyline = coords
+            else:
+                veh.status = "idle"
+                veh.route_polyline = []
+
+            # Find remaining active requests assigned to this vehicle
+            remaining_requests = [
+                r for r in self.state.requests.values()
+                if r.assigned_vehicle_id == veh.vehicle_id
+                and r.request_id != request_id
+                and r.status in ["matched", "en_route_pickup", "in_transit"]
+            ]
+
+            if remaining_requests:
+                try:
+                    remaining_pool_result = shapley_engine.calculate_shapley_pool(
+                        [r.request_id for r in remaining_requests],
+                        vehicle_id=veh.vehicle_id,
+                        batch_id=self.state.engine.currentWindowId
+                    )
+                    self.state.shapleyPools[veh.vehicle_id] = remaining_pool_result
+
+                    # Update remaining requests' Shapley fares and detour percentages
+                    for r in remaining_requests:
+                        if r.request_id in remaining_pool_result.rider_explanations:
+                            expl = remaining_pool_result.rider_explanations[r.request_id]
+                            r.shapley_fare_inr = expl.reconciled_fare_inr
+
+                    # Update active session fare if active rider is among remaining
+                    active_sess_id = self.state.activePassengerSession.activeTripRequestId
+                    if active_sess_id and active_sess_id in remaining_pool_result.rider_explanations:
+                        active_expl = remaining_pool_result.rider_explanations[active_sess_id]
+                        self.state.activePassengerSession.fareShapleyPooledInr = active_expl.reconciled_fare_inr
+
+                except Exception as e:
+                    logger.error(f"Error recalculating Shapley pool after cancellation: {e}")
+            else:
+                # No remaining passengers on this vehicle
+                if veh.vehicle_id in self.state.shapleyPools:
+                    del self.state.shapleyPools[veh.vehicle_id]
+
+        return {
+            "status": "cancelled",
+            "request_id": request_id,
+            "cancelled_passenger_name": req.passenger_name,
+            "vehicle_id": veh.vehicle_id if veh else None,
+            "remaining_request_ids": [r.request_id for r in remaining_requests],
+            "recalculated_shapley_pool": remaining_pool_result,
+            "message": f"{req.passenger_name} cancelled their booking. Vehicle route re-optimized and Shapley fares updated."
+        }
+
+    def simulate_corider_cancellation(self, vehicle_id: str, target_request_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """Simulates an unexpected co-rider cancellation for evaluator / demo workflows."""
+        veh = self.state.vehicles.get(vehicle_id)
+        if not veh:
+            return None
+
+        active_user_req_id = self.state.activePassengerSession.activeTripRequestId
+
+        # Identify candidate co-riders assigned to this vehicle
+        assigned_reqs = [
+            r for r in self.state.requests.values()
+            if r.assigned_vehicle_id == vehicle_id and r.status in ["matched", "en_route_pickup", "in_transit"]
+        ]
+
+        if not assigned_reqs:
+            # Check uncompleted planned stops to see if there is any candidate
+            req_ids = list(dict.fromkeys(s.request_id for s in veh.planned_stops if not s.completed))
+            assigned_reqs = [self.state.requests[rid] for rid in req_ids if rid in self.state.requests]
+
+        if not assigned_reqs:
+            return None
+
+        chosen_req_id = target_request_id
+        if not chosen_req_id:
+            # Pick a co-rider that is NOT the active user if possible
+            co_riders = [r for r in assigned_reqs if r.request_id != active_user_req_id]
+            if co_riders:
+                chosen_req_id = co_riders[-1].request_id
+            else:
+                chosen_req_id = assigned_reqs[-1].request_id
+
+        return self.cancel_ride_request(chosen_req_id, reason="simulated_co_rider_cancellation")
+
 
     def configure_batching(self, window_interval_sec: Optional[int] = None, batch_threshold: Optional[int] = None):
         """Configures rolling window duration and request count threshold."""

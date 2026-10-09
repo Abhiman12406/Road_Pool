@@ -166,4 +166,61 @@ describe('cabinOccupancyService - TDD Seam Tests', () => {
     expect(timeline.routeVisualState).toBe('completed');
     expect(timeline.allCompleted).toBe(true);
   });
+
+  it('releases seat when co-rider cancels (status becomes rejected)', () => {
+    // Passenger C (REQ-P102) cancels -> status rejected and stops removed
+    const cancelledRequests: Record<string, RideRequest> = {
+      ...sampleRequests,
+      'REQ-P102': {
+        ...sampleRequests['REQ-P102'],
+        status: 'rejected',
+      },
+    };
+    const vehicleAfterCancel: Vehicle = {
+      ...sampleVehicle,
+      planned_stops: sampleVehicle.planned_stops.filter((s) => s.request_id !== 'REQ-P102'),
+    };
+
+    const layout = deriveCabinOccupancy(vehicleAfterCancel, cancelledRequests);
+
+    // REQ-P102 should no longer hold a reserved seat
+    const reservedSeat = layout.passengerSeats.find((s) => s.requestId === 'REQ-P102');
+    expect(reservedSeat).toBeUndefined();
+
+    // Available seats increase from 2 to 3
+    expect(layout.occupiedCount).toBe(1);
+    expect(layout.reservedCount).toBe(0);
+    expect(layout.availableCount).toBe(3);
+  });
+
+  it('updates cabin occupancy on passenger drop-off without affecting completed fares', () => {
+    // Both passengers dropped off
+    const completedRequests: Record<string, RideRequest> = {
+      ...sampleRequests,
+      'REQ-P101': {
+        ...sampleRequests['REQ-P101'],
+        status: 'dropped_off',
+      },
+      'REQ-P102': {
+        ...sampleRequests['REQ-P102'],
+        status: 'dropped_off',
+      },
+    };
+    const emptyVehicle: Vehicle = {
+      ...sampleVehicle,
+      occupied_seats: 0,
+      planned_stops: sampleVehicle.planned_stops.map((s) => ({ ...s, completed: true })),
+    };
+
+    const layout = deriveCabinOccupancy(emptyVehicle, completedRequests);
+
+    // All 4 passenger seats are now available
+    expect(layout.occupiedCount).toBe(0);
+    expect(layout.reservedCount).toBe(0);
+    expect(layout.availableCount).toBe(4);
+
+    // Completed fares remain intact
+    expect(completedRequests['REQ-P101'].shapley_fare_inr).toBe(132.5);
+    expect(completedRequests['REQ-P102'].shapley_fare_inr).toBe(165.0);
+  });
 });

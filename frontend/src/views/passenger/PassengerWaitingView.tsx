@@ -8,6 +8,7 @@ import {
   generateCandidateDemand,
   getPrivacySafeRiderId,
 } from '../../services/routingService';
+import { cancelRideRequestDirect } from '../../services/simulationService';
 
 interface PassengerWaitingViewProps {
   snapshot: GlobalSimulationSnapshot | null;
@@ -16,6 +17,7 @@ interface PassengerWaitingViewProps {
   onSelectVehicle: (id: string) => void;
   onSelectRequest: (id: string) => void;
   onNavigateToActive?: () => void;
+  onCancelRide?: (requestId: string) => Promise<any>;
 }
 
 export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
@@ -25,6 +27,7 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
   onSelectVehicle,
   onSelectRequest,
   onNavigateToActive,
+  onCancelRide,
 }) => {
   const engine = snapshot?.engine;
   const session = snapshot?.activePassengerSession;
@@ -56,6 +59,8 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
   const [isActionPending, setIsActionPending] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isShapleySheetOpen, setIsShapleySheetOpen] = useState<boolean>(false);
+  const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
+  const [isCancelling, setIsCancelling] = useState<boolean>(false);
 
   // Candidate requests in current batch window (excluding user's own request)
   const candidateRequests = Object.values(requests).filter(
@@ -95,6 +100,27 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
       const msg = err instanceof Error ? err.message : 'Dispatch failed';
       setStatusMessage(`Error: ${msg}`);
       setIsActionPending(false);
+    }
+  };
+
+  // Handler: Confirm Cancel Ride Request
+  const handleConfirmCancel = async () => {
+    if (!activeReq?.request_id) return;
+    setIsCancelling(true);
+    setStatusMessage('Cancelling ride request and releasing hold...');
+    try {
+      if (onCancelRide) {
+        await onCancelRide(activeReq.request_id);
+      } else {
+        await cancelRideRequestDirect(activeReq.request_id);
+      }
+      setShowCancelModal(false);
+      onBackToBooking();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to cancel';
+      setStatusMessage(`Error: ${msg}`);
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -580,6 +606,19 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
               </button>
             )}
 
+            {activeReq && (
+              <button
+                type="button"
+                id="btn-cancel-waiting-ride"
+                disabled={isCancelling}
+                onClick={() => setShowCancelModal(true)}
+                className="w-full h-10 rounded-xl bg-error/10 hover:bg-error/20 text-error text-xs font-bold flex items-center justify-center gap-1.5 border border-error/20 transition-all active:scale-95"
+              >
+                <span className="material-symbols-outlined text-[16px]">cancel</span>
+                <span>Cancel Ride Request</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={onBackToBooking}
@@ -619,6 +658,40 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
         onClose={() => setIsShapleySheetOpen(false)}
         requestId={activeReq?.request_id}
       />
+
+      {/* Cancellation Confirmation Dialog */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-surface-container-high rounded-3xl p-6 max-w-md w-full border border-outline-variant/30 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3 text-error">
+              <span className="material-symbols-outlined text-3xl">warning</span>
+              <h3 className="text-lg font-bold text-on-surface">Cancel Ride Request?</h3>
+            </div>
+            <p className="text-xs text-on-surface-variant leading-relaxed">
+              Are you sure you want to cancel your pooled ride request? You will be removed from the batch window and your seat reservation will be released.
+            </p>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                disabled={isCancelling}
+                onClick={() => setShowCancelModal(false)}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-on-surface-variant hover:bg-surface-container"
+              >
+                Keep Waiting
+              </button>
+              <button
+                type="button"
+                id="btn-confirm-cancel-ride-waiting"
+                disabled={isCancelling}
+                onClick={handleConfirmCancel}
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-error text-on-error hover:bg-error/90 flex items-center gap-1.5 shadow-md active:scale-95 disabled:opacity-50"
+              >
+                {isCancelling ? 'Cancelling...' : 'Yes, Cancel Request'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
