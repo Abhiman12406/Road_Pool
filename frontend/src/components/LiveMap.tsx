@@ -12,6 +12,8 @@ interface LiveMapProps {
   soloRoutePolyline?: [number, number][] | null;
   soloPickupLocation?: { lat: number; lng: number; name: string } | null;
   soloDropoffLocation?: { lat: number; lng: number; name: string } | null;
+  focusedVehiclePolyline?: [number, number][] | null;
+  routeVisualState?: 'proposed' | 'confirmed' | 'completed';
 }
 
 // Custom vehicle icon creator
@@ -109,8 +111,25 @@ export const LiveMap: React.FC<LiveMapProps> = ({
   soloRoutePolyline,
   soloPickupLocation,
   soloDropoffLocation,
+  focusedVehiclePolyline,
+  routeVisualState,
 }) => {
   const puneCenter: [number, number] = [18.5204, 73.8567];
+  const activeBoundsPolyline = focusedVehiclePolyline || soloRoutePolyline;
+
+  const getRouteStateColors = () => {
+    switch (routeVisualState) {
+      case 'completed':
+        return { casing: '#10b981', core: '#059669', dash: undefined };
+      case 'proposed':
+        return { casing: '#fed01b', core: '#735c00', dash: '8, 8' };
+      case 'confirmed':
+      default:
+        return { casing: '#38bdf8', core: '#00668a', dash: undefined };
+    }
+  };
+
+  const stateColors = getRouteStateColors();
 
   return (
     <div className="relative w-full h-full min-h-[500px] rounded-2xl overflow-hidden shadow-card border border-outline-variant/30 bg-surface-container-low">
@@ -120,11 +139,40 @@ export const LiveMap: React.FC<LiveMapProps> = ({
         scrollWheelZoom={true}
         className="w-full h-full"
       >
-        <RouteBoundsController polyline={soloRoutePolyline} />
+        <RouteBoundsController polyline={activeBoundsPolyline} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+
+        {/* Focused Active Trip Route Polylines if provided */}
+        {focusedVehiclePolyline && focusedVehiclePolyline.length >= 2 && (
+          <>
+            <Polyline
+              key="focused-casing"
+              positions={focusedVehiclePolyline}
+              pathOptions={{
+                color: stateColors.casing,
+                weight: 9,
+                opacity: 0.4,
+                lineCap: 'round',
+                lineJoin: 'round',
+              }}
+            />
+            <Polyline
+              key="focused-core"
+              positions={focusedVehiclePolyline}
+              pathOptions={{
+                color: stateColors.core,
+                weight: 5,
+                opacity: 0.95,
+                lineCap: 'round',
+                lineJoin: 'round',
+                dashArray: stateColors.dash,
+              }}
+            />
+          </>
+        )}
 
         {/* Solo Reference Direct Route (Clean Blue Polyline) */}
         {soloRoutePolyline && soloRoutePolyline.length >= 2 && (
