@@ -5,6 +5,7 @@ import { OpsOverviewView } from './views/ops/OpsOverviewView';
 import { BatchManagerView } from './views/ops/BatchManagerView';
 import { RouteOptimizationView } from './views/ops/RouteOptimizationView';
 import { DetourGuaranteesView } from './views/ops/DetourGuaranteesView';
+import { FairFaresView } from './views/ops/FairFaresView';
 import { PassengerHomeView } from './views/passenger/PassengerHomeView';
 import { PassengerWaitingView } from './views/passenger/PassengerWaitingView';
 import { PassengerActiveView } from './views/passenger/PassengerActiveView';
@@ -12,6 +13,7 @@ import { PassengerActiveView } from './views/passenger/PassengerActiveView';
 export function App() {
   const [currentView, setCurrentView] = useState<ActiveViewKey>(() => {
     const path = window.location.pathname;
+    if (path.includes('fair-fares') || path.includes('/ops/fair-fares')) return 'ops-fair-fares';
     if (path.includes('active') || path.includes('/passenger/active')) return 'passenger-active';
     if (path.includes('optimization') || path.includes('/ops/optimization')) return 'ops-optimization';
     if (path.includes('detour') || path.includes('/ops/detour-guarantees')) return 'ops-detour-guarantees';
@@ -38,7 +40,8 @@ export function App() {
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
-      if (path.includes('active')) setCurrentView('passenger-active');
+      if (path.includes('fair-fares')) setCurrentView('ops-fair-fares');
+      else if (path.includes('active')) setCurrentView('passenger-active');
       else if (path.includes('optimization')) setCurrentView('ops-optimization');
       else if (path.includes('detour')) setCurrentView('ops-detour-guarantees');
       else if (path.includes('batches')) setCurrentView('ops-batches');
@@ -57,6 +60,7 @@ export function App() {
       'ops-batches': '/ops/batches',
       'ops-optimization': '/ops/optimization',
       'ops-detour-guarantees': '/ops/detour-guarantees',
+      'ops-fair-fares': '/ops/fair-fares',
       'passenger-home': '/passenger/home',
       'passenger-waiting': '/passenger/waiting',
       'passenger-active': '/passenger/active',
@@ -128,6 +132,14 @@ export function App() {
 
         {currentView === 'ops-detour-guarantees' && (
           <DetourGuaranteesView
+            snapshot={snapshot}
+            onSelectVehicle={handleSelectVehicle}
+            onSelectRequest={handleSelectRequest}
+          />
+        )}
+
+        {currentView === 'ops-fair-fares' && (
+          <FairFaresView
             snapshot={snapshot}
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}

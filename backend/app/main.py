@@ -10,6 +10,7 @@ from app.services.simulation_engine import sim_engine
 from app.api.health import router as health_router
 from app.api.simulation import router as simulation_router
 from app.api.routing import router as routing_router
+from app.api.fares import router as fares_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -43,6 +44,7 @@ app.add_middleware(
 app.include_router(health_router, prefix=settings.API_V1_PREFIX)
 app.include_router(simulation_router, prefix=settings.API_V1_PREFIX)
 app.include_router(routing_router, prefix=settings.API_V1_PREFIX)
+app.include_router(fares_router, prefix=settings.API_V1_PREFIX)
 
 @app.websocket("/ws/live")
 async def websocket_live_endpoint(websocket: WebSocket):

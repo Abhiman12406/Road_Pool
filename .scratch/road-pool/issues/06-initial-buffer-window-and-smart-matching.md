@@ -4,11 +4,11 @@
 
 **Blocked by:** 05: Booking Form Capacity Enforcement & Multi-Passenger Stepper
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Visible circular countdown timer (default 45s) displaying remaining window duration and rolling batch ID.
-- [ ] Candidate commuters list dynamically populating with privacy-safe identifiers (e.g. `Rider P-204`, `Rider P-318`).
-- [ ] Matching status clearly distinguishes between `Searching`, `Match Found`, and `No Valid Match`.
-- [ ] "Fast-Forward: Dispatch Batch Now" button instantly locks the batch and triggers the OR-Tools solver.
-- [ ] Displays route summary, pickup/drop-off sequence, candidate detour percentages, and seat availability.
-- [ ] In case of no match, offers user options to wait longer, search another vehicle, or switch to solo ride.
+- [x] Visible circular countdown timer (default 45s) displaying remaining window duration and rolling batch ID.
+- [x] Candidate commuters list dynamically populating with privacy-safe identifiers (e.g. `Rider P-204`, `Rider P-318`).
+- [x] Matching status clearly distinguishes between `Searching`, `Match Found`, and `No Valid Match`.
+- [x] "Fast-Forward: Dispatch Batch Now" button instantly locks the batch and triggers the OR-Tools solver.
+- [x] Displays route summary, pickup/drop-off sequence, candidate detour percentages, and seat availability.
+- [x] In case of no match, offers user options to wait longer, search another vehicle, or switch to solo ride.

@@ -4,10 +4,10 @@
 
 **Blocked by:** 06: Initial Buffer Window with Live Commuter Influx & Fast-Forward Solver
 
-**Status:** ready-for-agent
+**Status:** closed
 
-- [ ] Backend computes minimum routing cost $c(S)$ for all non-empty subsets $S \subseteq \{A, B, C\}$ using consistent OSRM/Pune road distance and duration functions.
-- [ ] Computes exact Shapley values $\phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{|S|!(|N|-|S|-1)!}{|N|!} [c(S \cup \{i\}) - c(S)]$.
-- [ ] Reconciles individual fares to ensure the sum of displayed fares equals the total allocated trip cost within ₹0.01.
-- [ ] Individual Shapley fare is strictly less than or equal to solo fare (individual rationality guaranteed).
-- [ ] Expandable "Why am I paying this fare?" slide-over sheet displays simple explanation, 7-row coalition matrix, marginal contributions, and savings in ₹ and %.
+- [x] Backend computes minimum routing cost $c(S)$ for all non-empty subsets $S \subseteq \{A, B, C\}$ using consistent OSRM/Pune road distance and duration functions.
+- [x] Computes exact Shapley values $\phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{|S|!(|N|-|S|-1)!}{|N|!} [c(S \cup \{i\}) - c(S)]$.
+- [x] Reconciles individual fares to ensure the sum of displayed fares equals the total allocated trip cost within ₹0.01.
+- [x] Individual Shapley fare is strictly less than or equal to solo fare (individual rationality guaranteed).
+- [x] Expandable "Why am I paying this fare?" slide-over sheet displays simple explanation, 7-row coalition matrix, marginal contributions, and savings in ₹ and %.

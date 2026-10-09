@@ -1,3 +1,5 @@
+import type { ShapleyPoolResult } from './shapley';
+
 export interface Location {
   lat: number;
   lng: number;
@@ -45,6 +47,9 @@ export interface RideRequest {
   detour_pct: number | null;
   shapley_fare_inr: number | null;
   rejection_reason?: string;
+  preferred_pickup_time?: string | null;
+  arrival_deadline?: string | null;
+  special_requirements?: string | null;
 }
 
 export interface SimulationKPIs {
@@ -66,6 +71,7 @@ export interface SimulationEngineState {
   batchThreshold: number;
   batchStatus: 'intake_open' | 'locked_optimizing' | 'dispatched';
   queuedRequestCount: number;
+  queuedSeatsCount?: number;
   lastDispatchReason?: string | null;
   lastDispatchedWindowId?: number | null;
   tickSpeed: '0.5x' | '1x' | '2x' | '5x';
@@ -83,7 +89,7 @@ export interface ActivePassengerSession {
   riderId: string;
   activeTripRequestId: string | null;
   assignedVehicleId: string | null;
-  lifecycleStatus: 'idle' | 'waiting_batch' | 'matched' | 'en_route_pickup' | 'in_transit' | 'dropped_off';
+  lifecycleStatus: 'idle' | 'waiting_batch' | 'matched' | 'en_route_pickup' | 'in_transit' | 'dropped_off' | 'no_match' | 'rejected' | 'solo_dispatched';
   guaranteedMaxDetourPct: number;
   actualDetourPct: number | null;
   fareSoloDirectInr: number;
@@ -144,4 +150,5 @@ export interface GlobalSimulationSnapshot {
   activePassengerSession: ActivePassengerSession;
   optimizationResult?: OptimizationResult | null;
   detourAudits?: DetourAuditEntry[];
+  shapleyPools?: Record<string, ShapleyPoolResult>;
 }

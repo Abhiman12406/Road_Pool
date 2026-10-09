@@ -6,6 +6,7 @@ export type ActiveViewKey =
   | 'ops-batches'
   | 'ops-optimization'
   | 'ops-detour-guarantees'
+  | 'ops-fair-fares'
   | 'passenger-home'
   | 'passenger-waiting'
   | 'passenger-active';
@@ -129,6 +130,19 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
               >
                 <span className="material-symbols-outlined text-[14px]">verified_user</span>
                 <span>Detour Guarantees (≤15%)</span>
+              </button>
+              <button
+                type="button"
+                id="nav-ops-fair-fares"
+                onClick={() => onSwitchView('ops-fair-fares')}
+                className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
+                  currentView === 'ops-fair-fares'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[14px]">balance</span>
+                <span>Fair Fares (Shapley)</span>
               </button>
             </>
           ) : (

@@ -12,6 +12,7 @@ from app.models.simulation import (
     DetourAuditEntry, VehicleRoutePlan, OptimizationResult
 )
 from app.services.route_optimizer import route_optimizer
+from app.services.shapley_service import shapley_engine
 from app.config import settings
 
 PUNE_LANDMARKS = {
@@ -284,6 +285,48 @@ class SimulationEngine:
             timestamp="17:42:15"
         )
 
+        # Precompute initial Shapley Fair-Fare pool for V-101 demo
+        initial_shapley_pools: Dict[str, Any] = {}
+        try:
+            pool_v1_reqs = [
+                initial_requests["REQ-P101"],
+                RideRequest(
+                    request_id="REQ-P104",
+                    passenger_id="PAX-04",
+                    passenger_name="Marcus Chen",
+                    pickup=PUNE_LANDMARKS["Aundh"],
+                    dropoff=PUNE_LANDMARKS["Baner"],
+                    party_size=1,
+                    request_time="17:41:00",
+                    solo_eta_sec=510,
+                    solo_distance_km=4.2,
+                    solo_fare_inr=115.0,
+                    status="in_transit",
+                    assigned_vehicle_id="V-101",
+                ),
+                RideRequest(
+                    request_id="REQ-P105",
+                    passenger_id="PAX-05",
+                    passenger_name="Sarah Kim",
+                    pickup=PUNE_LANDMARKS["Shivajinagar"],
+                    dropoff=PUNE_LANDMARKS["Hinjewadi"],
+                    party_size=1,
+                    request_time="17:42:00",
+                    solo_eta_sec=1150,
+                    solo_distance_km=14.5,
+                    solo_fare_inr=345.0,
+                    status="in_transit",
+                    assigned_vehicle_id="V-101",
+                ),
+            ]
+            initial_shapley_pools["V-101"] = shapley_engine.compute_shapley_for_pool(
+                requests=pool_v1_reqs,
+                vehicle=v1,
+                batch_id=100,
+            )
+        except Exception as e:
+            logger.error(f"Error computing initial Shapley pool for V-101: {e}")
+
         return GlobalSimulationSnapshot(
             engine=SimulationEngineState(
                 status='running',
@@ -293,6 +336,7 @@ class SimulationEngine:
                 batchThreshold=settings.DEFAULT_BATCH_SIZE_THRESHOLD,
                 batchStatus='intake_open',
                 queuedRequestCount=1,
+                queuedSeatsCount=1,
                 tickSpeed='1x',
                 isDemoMode=True,
                 activeScenario="Pune Metro Corridor"
@@ -325,7 +369,8 @@ class SimulationEngine:
                 fareShapleyPooledInr=132.50
             ),
             optimizationResult=initial_opt_result,
-            detourAudits=initial_audits
+            detourAudits=initial_audits,
+            shapleyPools=initial_shapley_pools
         )
 
     async def register_connection(self, websocket: WebSocket):
@@ -472,9 +517,46 @@ class SimulationEngine:
                         veh.route_polyline = plan.route_polyline
                     veh.status = "en_route" if len(plan.stops) > 0 else "idle"
 
+            # Compute Combinatorial Shapley Fair-Fare allocations for all matched pools
+            for v_id, plan in opt_result.vehicle_plans.items():
+                assigned_req_objs = [
+                    self.state.requests[rid] for rid in plan.assigned_request_ids
+                    if rid in self.state.requests
+                ]
+                if assigned_req_objs:
+                    veh = self.state.vehicles.get(v_id)
+                    try:
+                        shapley_res = shapley_engine.compute_shapley_for_pool(
+                            requests=assigned_req_objs,
+                            vehicle=veh,
+                            batch_id=window_id,
+                        )
+                        self.state.shapleyPools[v_id] = shapley_res
+                        for req_obj in assigned_req_objs:
+                            exp = shapley_res.rider_explanations.get(req_obj.request_id)
+                            if exp:
+                                req_obj.shapley_fare_inr = exp.reconciled_fare_inr
+                    except Exception as e:
+                        logger.error(f"Error computing Shapley pool for {v_id}: {e}")
+
             # Update fleet average detour KPI
             if opt_result.average_detour_pct > 0:
                 self.state.kpis.fleetDetourAveragePct = opt_result.average_detour_pct
+
+            # Update KPI savings dynamically from active Shapley pools
+            total_solo_sum = 0.0
+            total_grand_sum = 0.0
+            for pool in self.state.shapleyPools.values():
+                if hasattr(pool, 'sum_solo_fares_inr'):
+                    total_solo_sum += pool.sum_solo_fares_inr
+                    total_grand_sum += pool.grand_coalition_cost_inr
+                elif isinstance(pool, dict):
+                    total_solo_sum += pool.get('sum_solo_fares_inr', 0.0)
+                    total_grand_sum += pool.get('grand_coalition_cost_inr', 0.0)
+            if total_solo_sum > 0:
+                tot_sav = max(0.0, total_solo_sum - total_grand_sum)
+                self.state.kpis.totalCoalitionSavingsInr = round(tot_sav, 2)
+                self.state.kpis.shapleySavingsPct = round((tot_sav / total_solo_sum) * 100.0, 1)
 
         # Update KPIs
         self.state.kpis.activePoolsCount = len([v for v in self.state.vehicles.values() if len(v.planned_stops) > 0])
@@ -492,16 +574,19 @@ class SimulationEngine:
                 active_session.actualDetourPct = matched_req.detour_pct or 8.0
                 active_session.assignedVehicleId = matched_req.assigned_vehicle_id
             else:
-                active_session.lifecycleStatus = "idle"
+                active_session.lifecycleStatus = "no_match"
+                active_session.assignedVehicleId = None
 
         # Advance rolling window cycle
         self.state.engine.currentWindowId += 1
         self.state.engine.timeRemainingInWindowSec = self.state.engine.windowIntervalSec
         self.state.engine.batchStatus = "intake_open"
-        self.state.engine.queuedRequestCount = len([
+        waiting_in_new_window = [
             r for r in self.state.requests.values()
             if r.status == 'waiting_batch' and r.batch_id == self.state.engine.currentWindowId
-        ])
+        ]
+        self.state.engine.queuedRequestCount = len(waiting_in_new_window)
+        self.state.engine.queuedSeatsCount = sum(r.party_size for r in waiting_in_new_window)
 
     def run_next_batch(self):
         self.lock_and_dispatch_batch(trigger_reason="manual_dispatch")
@@ -518,8 +603,15 @@ class SimulationEngine:
         solo_distance_km: float,
         solo_eta_sec: int,
         solo_fare_inr: float,
-        passenger_name: str = "Elena Vance (Rider)"
+        passenger_name: str = "Elena Vance (Rider)",
+        preferred_pickup_time: Optional[str] = None,
+        arrival_deadline: Optional[str] = None,
+        special_requirements: Optional[str] = None,
+        is_user_request: bool = True,
     ) -> RideRequest:
+        if party_size < 1 or party_size > 4:
+            raise ValueError(f"Party size must be between 1 and 4 seats. Maximum vehicle capacity is 4. (Requested: {party_size})")
+
         req_id = f"REQ-P{100 + len(self.state.requests) + 1}"
         pax_id = f"PAX-{len(self.state.requests) + 1:02d}"
         now_str = time.strftime("%H:%M:%S")
@@ -541,24 +633,30 @@ class SimulationEngine:
             pooled_eta_sec=None,
             detour_pct=None,
             shapley_fare_inr=None,
+            preferred_pickup_time=preferred_pickup_time,
+            arrival_deadline=arrival_deadline,
+            special_requirements=special_requirements,
         )
         self.state.requests[req_id] = req
         
-        # Update queued request count for current active batch
-        self.state.engine.queuedRequestCount = len([
+        # Update queued request and seat counts for current active batch
+        waiting_reqs = [
             r for r in self.state.requests.values() 
             if r.status == 'waiting_batch' and r.batch_id == self.state.engine.currentWindowId
-        ])
+        ]
+        self.state.engine.queuedRequestCount = len(waiting_reqs)
+        self.state.engine.queuedSeatsCount = sum(r.party_size for r in waiting_reqs)
         
         self.state.kpis.totalTripsInFlight = len([
             r for r in self.state.requests.values() 
             if r.status in ['waiting_batch', 'matched', 'en_route_pickup', 'in_transit']
         ])
         
-        self.state.activePassengerSession.activeTripRequestId = req_id
-        self.state.activePassengerSession.lifecycleStatus = "waiting_batch"
-        self.state.activePassengerSession.fareSoloDirectInr = solo_fare_inr
-        self.state.activePassengerSession.fareShapleyPooledInr = round(solo_fare_inr * 0.75, 2)
+        if is_user_request:
+            self.state.activePassengerSession.activeTripRequestId = req_id
+            self.state.activePassengerSession.lifecycleStatus = "waiting_batch"
+            self.state.activePassengerSession.fareSoloDirectInr = solo_fare_inr
+            self.state.activePassengerSession.fareShapleyPooledInr = round(solo_fare_inr * 0.75, 2)
         
         # Check if batch size threshold has been reached
         if self.state.engine.queuedRequestCount >= self.state.engine.batchThreshold:
@@ -591,10 +689,157 @@ class SimulationEngine:
                 solo_distance_km=sample[6],
                 solo_eta_sec=sample[7],
                 solo_fare_inr=sample[8],
-                passenger_name=sample[9]
+                passenger_name=sample[9],
+                is_user_request=False
             )
             created.append(req)
         return created
+
+    def requeue_request(self, request_id: str) -> RideRequest:
+        """
+        Re-queues a request into the currently active batch window (e.g. after a no-match
+        or when the rider chooses to wait longer for the next batch).
+        """
+        req = self.state.requests.get(request_id)
+        if not req:
+            raise KeyError(f"Request {request_id} not found")
+        
+        req.status = "waiting_batch"
+        req.batch_id = self.state.engine.currentWindowId
+        req.assigned_vehicle_id = None
+        req.rejection_reason = None
+        req.detour_pct = None
+        req.pooled_eta_sec = None
+        
+        # Ensure the batch window has adequate time (at least 35-45s) for the user
+        if self.state.engine.timeRemainingInWindowSec < 20:
+            self.state.engine.timeRemainingInWindowSec = self.state.engine.windowIntervalSec
+            
+        waiting_reqs = [
+            r for r in self.state.requests.values() 
+            if r.status == 'waiting_batch' and r.batch_id == self.state.engine.currentWindowId
+        ]
+        self.state.engine.queuedRequestCount = len(waiting_reqs)
+        self.state.engine.queuedSeatsCount = sum(r.party_size for r in waiting_reqs)
+        
+        if self.state.activePassengerSession.activeTripRequestId == request_id:
+            self.state.activePassengerSession.lifecycleStatus = "waiting_batch"
+            self.state.activePassengerSession.assignedVehicleId = None
+            self.state.activePassengerSession.actualDetourPct = None
+            
+        return req
+
+    def dispatch_solo_ride(self, request_id: str) -> RideRequest:
+        """
+        Directly dispatches a solo ride for the passenger when no shared match is found
+        or when the rider opts for an immediate direct cab.
+        """
+        req = self.state.requests.get(request_id)
+        if not req:
+            raise KeyError(f"Request {request_id} not found")
+            
+        # Find an available or idle vehicle
+        assigned_veh = None
+        for v in self.state.vehicles.values():
+            if v.status == "idle" or v.occupied_seats == 0:
+                assigned_veh = v
+                break
+        if not assigned_veh:
+            assigned_veh = list(self.state.vehicles.values())[0]
+            
+        req.status = "matched"
+        req.assigned_vehicle_id = assigned_veh.vehicle_id
+        req.detour_pct = 0.0
+        req.pooled_eta_sec = req.solo_eta_sec
+        req.shapley_fare_inr = req.solo_fare_inr
+        req.rejection_reason = None
+        
+        # Assign stop sequence directly
+        assigned_veh.status = "en_route"
+        assigned_veh.occupied_seats = req.party_size
+        assigned_veh.planned_stops = [
+            RouteStop(
+                stop_id=f"SOLO-P-{req.request_id}",
+                request_id=req.request_id,
+                stop_type="pickup",
+                location=req.pickup,
+                passenger_name=req.passenger_name,
+                eta_seconds_from_now=120,
+                completed=False
+            ),
+            RouteStop(
+                stop_id=f"SOLO-D-{req.request_id}",
+                request_id=req.request_id,
+                stop_type="dropoff",
+                location=req.dropoff,
+                passenger_name=req.passenger_name,
+                eta_seconds_from_now=120 + req.solo_eta_sec,
+                completed=False
+            )
+        ]
+        assigned_veh.route_polyline = [
+            [req.pickup.lat, req.pickup.lng],
+            [req.dropoff.lat, req.dropoff.lng]
+        ]
+        
+        if self.state.activePassengerSession.activeTripRequestId == request_id:
+            self.state.activePassengerSession.lifecycleStatus = "matched"
+            self.state.activePassengerSession.assignedVehicleId = assigned_veh.vehicle_id
+            self.state.activePassengerSession.actualDetourPct = 0.0
+            self.state.activePassengerSession.fareShapleyPooledInr = req.solo_fare_inr
+            
+        self.state.kpis.servedPassengersCount += 1
+        return req
+
+    def get_shapley_explanation_for_request(self, request_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Retrieves or dynamically computes the exact Shapley fair-fare breakdown
+        and 7-coalition matrix for a specific ride request.
+        """
+        req = self.state.requests.get(request_id)
+        if not req:
+            return None
+
+        # 1. Check if request is part of an active calculated vehicle pool
+        for v_id, pool in self.state.shapleyPools.items():
+            if hasattr(pool, 'rider_explanations') and request_id in pool.rider_explanations:
+                return {
+                    "pool": pool,
+                    "explanation": pool.rider_explanations[request_id],
+                }
+            elif isinstance(pool, dict) and request_id in pool.get('rider_explanations', {}):
+                return {
+                    "pool": pool,
+                    "explanation": pool['rider_explanations'][request_id],
+                }
+
+        # 2. Dynamic evaluation for waiting / unpooled request:
+        # Form a 3-rider coalition evaluation with other available commuters
+        other_candidates = [
+            r for r in self.state.requests.values()
+            if r.request_id != request_id and r.status in ['waiting_batch', 'matched', 'en_route_pickup', 'in_transit']
+        ][:2]
+
+        eval_cohort = [req] + other_candidates
+        assigned_v = None
+        if req.assigned_vehicle_id and req.assigned_vehicle_id in self.state.vehicles:
+            assigned_v = self.state.vehicles[req.assigned_vehicle_id]
+        else:
+            assigned_v = list(self.state.vehicles.values())[0]
+
+        try:
+            pool_res = shapley_engine.compute_shapley_for_pool(
+                requests=eval_cohort,
+                vehicle=assigned_v,
+                batch_id=req.batch_id or self.state.engine.currentWindowId,
+            )
+            return {
+                "pool": pool_res,
+                "explanation": pool_res.rider_explanations.get(request_id),
+            }
+        except Exception as e:
+            logger.error(f"Error computing dynamic Shapley breakdown for {request_id}: {e}")
+            return None
 
     def _tick_step(self, elapsed: float):
         # Update timer
@@ -603,6 +848,16 @@ class SimulationEngine:
             self.lock_and_dispatch_batch(trigger_reason="timer_expired")
         else:
             self.state.engine.timeRemainingInWindowSec = max(0, int(remaining))
+
+        # In demo mode, if there is a passenger waiting and candidate count is low,
+        # simulate natural commuter influx around mid-window (~25s remaining)
+        if self.state.engine.isDemoMode and self.state.activePassengerSession.lifecycleStatus == "waiting_batch":
+            waiting_reqs = [
+                r for r in self.state.requests.values() 
+                if r.status == 'waiting_batch' and r.batch_id == self.state.engine.currentWindowId
+            ]
+            if len(waiting_reqs) == 1 and 20 <= self.state.engine.timeRemainingInWindowSec <= 26:
+                self.generate_synthetic_demand(count=1)
 
         # Vehicle micro-telemetry movement (subtle drift around Pune roads)
         drift_speed = 0.00015 * (elapsed / 1.0)

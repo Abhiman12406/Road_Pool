@@ -176,11 +176,16 @@ export const BatchManagerView: React.FC<BatchManagerViewProps> = ({
                   style={{ width: `${Math.min(100, (currentBatchRequests.length / threshold) * 100)}%` }}
                 ></div>
               </div>
-              <span className="text-[10px] text-on-surface-variant mt-1">
-                {threshold - currentBatchRequests.length > 0
-                  ? `${threshold - currentBatchRequests.length} more triggers instant dispatch`
-                  : 'Threshold reached!'}
-              </span>
+              <div className="flex items-center justify-between w-full text-[10px] text-on-surface-variant mt-1.5 px-0.5">
+                <span className="font-semibold text-primary">
+                  {currentBatchRequests.reduce((sum, r) => sum + (r.party_size || 1), 0)} seats reserved
+                </span>
+                <span>
+                  {threshold - currentBatchRequests.length > 0
+                    ? `${threshold - currentBatchRequests.length} more to dispatch`
+                    : 'Threshold reached!'}
+                </span>
+              </div>
             </div>
 
             {/* Total System Requests */}

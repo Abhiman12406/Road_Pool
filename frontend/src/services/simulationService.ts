@@ -130,6 +130,28 @@ export function useSimulationSocket() {
     }
   }, []);
 
+  const getFareExplanation = useCallback(async (requestId: string) => {
+    try {
+      const resp = await fetch(`${API_BASE}/fares/${requestId}`);
+      if (!resp.ok) return null;
+      return await resp.json();
+    } catch (e) {
+      console.error('Fetch fare explanation error:', e);
+      return null;
+    }
+  }, []);
+
+  const getShapleyPool = useCallback(async (vehicleId: string) => {
+    try {
+      const resp = await fetch(`${API_BASE}/simulation/shapley/pool/${vehicleId}`);
+      if (!resp.ok) return null;
+      return await resp.json();
+    } catch (e) {
+      console.error('Fetch shapley pool error:', e);
+      return null;
+    }
+  }, []);
+
   const advanceVehicleStop = useCallback(async (vehicleId: string) => {
     try {
       const resp = await fetch(`${API_BASE}/simulation/vehicle/${vehicleId}/advance-stop`, {
@@ -152,6 +174,31 @@ export function useSimulationSocket() {
     configureBatch,
     generateDemand,
     solveOptimization,
+    getFareExplanation,
+    getShapleyPool,
     advanceVehicleStop,
   };
 }
+
+export async function fetchFareExplanationDirect(requestId: string) {
+  try {
+    const resp = await fetch(`${API_BASE}/fares/${requestId}`);
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch (e) {
+    console.error('Fetch fare explanation error:', e);
+    return null;
+  }
+}
+
+export async function fetchShapleyPoolDirect(vehicleId: string) {
+  try {
+    const resp = await fetch(`${API_BASE}/simulation/shapley/pool/${vehicleId}`);
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch (e) {
+    console.error('Fetch shapley pool error:', e);
+    return null;
+  }
+}
+

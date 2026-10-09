@@ -1,8 +1,8 @@
 """
 Simulation Control and State API
 """
-from typing import Optional, Literal
-from fastapi import APIRouter
+from typing import Optional, Literal, List
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.simulation_engine import sim_engine
 
@@ -73,9 +73,18 @@ class CreateRideRequestCommand(BaseModel):
     solo_eta_sec: int
     solo_fare_inr: float
     passenger_name: Optional[str] = "Elena Vance (Rider)"
+    preferred_pickup_time: Optional[str] = None
+    arrival_deadline: Optional[str] = None
+    special_requirements: Optional[str] = None
 
 @router.post("/request")
 async def create_ride_request(cmd: CreateRideRequestCommand):
+    if cmd.party_size < 1 or cmd.party_size > 4:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Party size must be between 1 and 4 seats. Maximum vehicle capacity is 4. (Requested: {cmd.party_size})"
+        )
+
     async with sim_engine.lock:
         req = sim_engine.create_passenger_request(
             pickup_name=cmd.pickup_name,
@@ -88,8 +97,31 @@ async def create_ride_request(cmd: CreateRideRequestCommand):
             solo_distance_km=cmd.solo_distance_km,
             solo_eta_sec=cmd.solo_eta_sec,
             solo_fare_inr=cmd.solo_fare_inr,
-            passenger_name=cmd.passenger_name or "Elena Vance (Rider)"
+            passenger_name=cmd.passenger_name or "Elena Vance (Rider)",
+            preferred_pickup_time=cmd.preferred_pickup_time,
+            arrival_deadline=cmd.arrival_deadline,
+            special_requirements=cmd.special_requirements,
         )
+    await sim_engine.broadcast_state()
+    return {"status": "success", "request": req}
+
+@router.post("/request/{request_id}/requeue")
+async def requeue_request(request_id: str):
+    async with sim_engine.lock:
+        try:
+            req = sim_engine.requeue_request(request_id)
+        except KeyError:
+            raise HTTPException(status_code=404, detail=f"Request {request_id} not found")
+    await sim_engine.broadcast_state()
+    return {"status": "success", "request": req}
+
+@router.post("/request/{request_id}/solo-dispatch")
+async def solo_dispatch_request(request_id: str):
+    async with sim_engine.lock:
+        try:
+            req = sim_engine.dispatch_solo_ride(request_id)
+        except KeyError:
+            raise HTTPException(status_code=404, detail=f"Request {request_id} not found")
     await sim_engine.broadcast_state()
     return {"status": "success", "request": req}
 
@@ -197,3 +229,88 @@ async def solve_optimization(cmd: Optional[SolveOptimizationCommand] = None):
         sim_engine.state.detourAudits = opt_result.detour_audits + sim_engine.state.detourAudits
     await sim_engine.broadcast_state()
     return opt_result
+
+@router.get("/shapley/matrix")
+async def get_shapley_matrices():
+    """
+    Returns all active 7-coalition matrices, marginal contribution decompositions,
+    and fleet-wide game-theoretic cost allocations.
+    """
+    return {
+        "status": "success",
+        "active_pools": sim_engine.state.shapleyPools,
+        "kpis": {
+            "shapleySavingsPct": sim_engine.state.kpis.shapleySavingsPct,
+            "totalCoalitionSavingsInr": sim_engine.state.kpis.totalCoalitionSavingsInr,
+            "activePoolsCount": sim_engine.state.kpis.activePoolsCount,
+        }
+    }
+
+@router.get("/shapley/request/{request_id}")
+async def get_shapley_for_request(request_id: str):
+    """
+    Returns the explainable Shapley breakdown, 7-coalition cost matrix,
+    marginal contribution tree, and penny reconciliation for a specific request.
+    """
+    bundle = sim_engine.get_shapley_explanation_for_request(request_id)
+    if not bundle or not bundle.get("explanation"):
+        raise HTTPException(
+            status_code=404,
+            detail=f"Shapley allocation for request '{request_id}' not found."
+        )
+    return {
+        "status": "success",
+        "request_id": request_id,
+        "explanation": bundle["explanation"],
+        "pool": bundle["pool"],
+    }
+
+@router.get("/shapley/pool/{vehicle_id}")
+async def get_shapley_for_vehicle_pool(vehicle_id: str):
+    """
+    Returns the Shapley pool result for an assigned vehicle.
+    """
+    pool = sim_engine.state.shapleyPools.get(vehicle_id)
+    if not pool:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Active Shapley pool for vehicle '{vehicle_id}' not found."
+        )
+    return {
+        "status": "success",
+        "vehicle_id": vehicle_id,
+        "pool": pool,
+    }
+
+class EvaluateShapleyCommand(BaseModel):
+    request_ids: Optional[List[str]] = None
+    vehicle_id: Optional[str] = None
+
+@router.post("/shapley/evaluate")
+async def evaluate_custom_shapley(cmd: EvaluateShapleyCommand):
+    """
+    Evaluates combinatorial Shapley values for an arbitrary set of request IDs or current batch.
+    """
+    from app.services.shapley_service import shapley_engine
+    target_reqs = []
+    if cmd.request_ids:
+        for rid in cmd.request_ids:
+            if rid in sim_engine.state.requests:
+                target_reqs.append(sim_engine.state.requests[rid])
+    else:
+        # Default to first 3 requests
+        target_reqs = list(sim_engine.state.requests.values())[:3]
+
+    if not target_reqs:
+        raise HTTPException(status_code=400, detail="No valid ride requests provided to evaluate.")
+
+    veh = sim_engine.state.vehicles.get(cmd.vehicle_id) if cmd.vehicle_id else list(sim_engine.state.vehicles.values())[0]
+    pool_res = shapley_engine.compute_shapley_for_pool(
+        requests=target_reqs,
+        vehicle=veh,
+        batch_id=sim_engine.state.engine.currentWindowId,
+    )
+    return {
+        "status": "success",
+        "pool": pool_res,
+    }
