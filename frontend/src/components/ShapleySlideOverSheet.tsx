@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import { gsap } from '../lib/gsap';
 import type {
   RiderFareExplanation,
   ShapleyPoolResult,
@@ -28,6 +30,28 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'explanation' | 'matrix' | 'axioms'>('explanation');
+  const sheetRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (isOpen && sheetRef.current) {
+        gsap.from(sheetRef.current, {
+          x: 400,
+          duration: 0.35,
+          ease: 'power3.out',
+        });
+        gsap.from('.shapley-card', {
+          opacity: 0,
+          y: 16,
+          duration: 0.4,
+          stagger: 0.06,
+          delay: 0.08,
+          ease: 'power2.out',
+        });
+      }
+    },
+    { dependencies: [isOpen, activeTab, explanation], scope: sheetRef }
+  );
 
   // Handle ESC key press
   useEffect(() => {
@@ -86,7 +110,7 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
       />
 
       {/* Slide-over Container */}
-      <div className="relative w-full max-w-2xl bg-surface-container-lowest text-on-surface shadow-2xl border-l border-outline-variant/30 flex flex-col h-full z-10 animate-in slide-in-from-right duration-300">
+      <div ref={sheetRef} className="relative w-full max-w-2xl bg-surface-container-lowest text-on-surface shadow-2xl border-l border-outline-variant/30 flex flex-col h-full z-10">
         {/* Header */}
         <div className="p-6 border-b border-outline-variant/30 bg-surface-container-low/50 flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -176,7 +200,7 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
               {activeTab === 'explanation' && (
                 <div className="space-y-6 animate-fade-in">
                   {/* Savings Comparison Card */}
-                  <div className="p-5 rounded-3xl bg-surface-container-low border border-outline-variant/30 shadow-soft">
+                  <div className="shapley-card p-5 rounded-3xl bg-surface-container-low border border-outline-variant/30 shadow-soft">
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
@@ -249,7 +273,7 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
                   </div>
 
                   {/* Plain-English Explanation Banner */}
-                  <div className="p-4 rounded-2xl bg-primary-fixed/30 border border-primary/20 text-xs text-on-surface space-y-2">
+                  <div className="shapley-card p-4 rounded-2xl bg-primary-fixed/30 border border-primary/20 text-xs text-on-surface space-y-2">
                     <div className="flex items-center gap-2 font-bold text-primary">
                       <span className="material-symbols-outlined text-[18px]">lightbulb</span>
                       <span>How your fair fare is calculated:</span>

@@ -1,13 +1,45 @@
 """
 RidePool AI Backend Configuration
 """
-from pydantic import BaseModel
+import os
+from typing import List, Optional
+from pydantic import BaseModel, Field
 
 class Settings(BaseModel):
     PROJECT_NAME: str = "RidePool AI"
     VERSION: str = "1.0.0"
     API_V1_PREFIX: str = "/api/v1"
     
+    # Server / Render Deployment Configuration
+    PORT: int = Field(default_factory=lambda: int(os.getenv("PORT", "8000")))
+    HOST: str = Field(default_factory=lambda: os.getenv("HOST", "0.0.0.0"))
+    ENVIRONMENT: str = Field(default_factory=lambda: os.getenv("ENVIRONMENT", "production"))
+    CORS_ORIGINS: List[str] = Field(
+        default_factory=lambda: [
+            origin.strip()
+            for origin in os.getenv("CORS_ORIGINS", "*").split(",")
+            if origin.strip()
+        ]
+    )
+    
+    # Supabase Database Configuration
+    SUPABASE_URL: str = Field(default_factory=lambda: os.getenv("SUPABASE_URL", ""))
+    SUPABASE_KEY: str = Field(
+        default_factory=lambda: os.getenv(
+            "SUPABASE_SERVICE_ROLE_KEY",
+            os.getenv("SUPABASE_KEY", os.getenv("SUPABASE_ANON_KEY", ""))
+        )
+    )
+    
+    @property
+    def is_supabase_configured(self) -> bool:
+        return bool(
+            self.SUPABASE_URL
+            and self.SUPABASE_KEY
+            and not self.SUPABASE_URL.startswith("YOUR_")
+            and not self.SUPABASE_KEY.startswith("YOUR_")
+        )
+
     # Geographic Profile - Pune, India
     CITY_NAME: str = "Pune, Maharashtra, India"
     CURRENCY_SYMBOL: str = "₹"
@@ -26,6 +58,6 @@ class Settings(BaseModel):
     RATE_PER_MIN_INR: float = 2.5
     
     # OSRM Service URL (public demo or local container)
-    OSRM_BASE_URL: str = "https://router.project-osrm.org"
+    OSRM_BASE_URL: str = Field(default_factory=lambda: os.getenv("OSRM_BASE_URL", "https://router.project-osrm.org"))
 
 settings = Settings()

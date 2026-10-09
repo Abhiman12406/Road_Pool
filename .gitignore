@@ -28,3 +28,9 @@ yarn-error.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+# Environment variables & secrets (Never commit secrets)
+.env
+.env.*
+*.env
+!.env.example

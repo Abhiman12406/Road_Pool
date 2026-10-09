@@ -1,6 +1,6 @@
 import type { PuneLandmark, DirectRouteResponse, LocationInput } from '../types/routing';
 
-const API_BASE = 'http://localhost:8000/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export const FALLBACK_PUNE_LANDMARKS: PuneLandmark[] = [
   {

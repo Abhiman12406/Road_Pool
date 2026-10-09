@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import { gsap } from '../lib/gsap';
 import type { CabinLayoutState, CabinSeat } from '../services/cabinOccupancyService';
 
 interface CabinLayoutGridProps {
@@ -15,8 +17,22 @@ export const CabinLayoutGrid: React.FC<CabinLayoutGridProps> = ({
   onSelectSeat,
 }) => {
   const [selectedSeat, setSelectedSeat] = useState<CabinSeat | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const { driverSeat, passengerSeats, occupiedCount, reservedCount, availableCount, totalCapacity } = cabinState;
+
+  useGSAP(
+    () => {
+      gsap.from('.cabin-seat-card', {
+        opacity: 0,
+        scale: 0.94,
+        duration: 0.35,
+        stagger: 0.04,
+        ease: 'back.out(1.2)',
+      });
+    },
+    { dependencies: [occupiedCount, reservedCount], scope: gridRef }
+  );
 
   // Layout arrangement:
   // Row 1 (Front): [Driver Seat] [Front Passenger]
@@ -112,7 +128,7 @@ export const CabinLayoutGrid: React.FC<CabinLayoutGridProps> = ({
         key={seat.seatId}
         type="button"
         onClick={() => handleSeatClick(seat)}
-        className={`p-2.5 sm:p-3 rounded-2xl border transition-all text-left flex flex-col justify-between min-h-[104px] overflow-hidden w-full min-w-0 relative ${getSeatCardClasses(
+        className={`cabin-seat-card p-2.5 sm:p-3 rounded-2xl border transition-all text-left flex flex-col justify-between min-h-[104px] overflow-hidden w-full min-w-0 relative ${getSeatCardClasses(
           seat
         )}`}
       >
@@ -175,7 +191,7 @@ export const CabinLayoutGrid: React.FC<CabinLayoutGridProps> = ({
   };
 
   return (
-    <div className="bg-surface-container-lowest rounded-3xl p-5 border border-outline-variant/30 shadow-card flex flex-col gap-4 overflow-hidden">
+    <div ref={gridRef} className="bg-surface-container-lowest rounded-3xl p-5 border border-outline-variant/30 shadow-card flex flex-col gap-4 overflow-hidden">
       {/* Top Occupancy Header & Metrics */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/30">
         <div className="flex items-center gap-2.5 min-w-0">

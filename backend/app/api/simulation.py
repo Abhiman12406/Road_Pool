@@ -1,10 +1,12 @@
 """
 Simulation Control and State API
 """
+import asyncio
 from typing import Optional, Literal, List, Dict, Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.simulation_engine import sim_engine
+from app.db.repository import db_repository
 
 router = APIRouter(prefix="/simulation", tags=["Simulation"])
 
@@ -63,6 +65,13 @@ async def cancel_ride_endpoint(cmd: CancelRideCommand):
         if not res:
             raise HTTPException(status_code=404, detail=f"Request {cmd.request_id} not found")
     await sim_engine.broadcast_state()
+    asyncio.create_task(
+        db_repository.update_request_status(
+            request_id=cmd.request_id,
+            status="cancelled",
+            rejection_reason=cmd.reason or "passenger_cancelled"
+        )
+    )
     return {"status": "success", "cancellation": res, "state": sim_engine.state}
 
 @router.post("/vehicle/{vehicle_id}/simulate-cancellation")
@@ -185,6 +194,7 @@ async def create_ride_request(cmd: CreateRideRequestCommand):
             special_requirements=cmd.special_requirements,
         )
     await sim_engine.broadcast_state()
+    asyncio.create_task(db_repository.upsert_ride_request(req.model_dump()))
     return {"status": "success", "request": req}
 
 @router.post("/request/{request_id}/requeue")

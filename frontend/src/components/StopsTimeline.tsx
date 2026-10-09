@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import { gsap } from '../lib/gsap';
 import type { RouteTimelineState, TimelineStop } from '../services/cabinOccupancyService';
 
 interface StopsTimelineProps {
@@ -13,6 +15,20 @@ export const StopsTimeline: React.FC<StopsTimelineProps> = ({
   isAdvancing = false,
 }) => {
   const { stops, nextStop, completedCount, remainingCount, allCompleted, routeVisualState } = timelineState;
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      gsap.from('.timeline-stop-item', {
+        opacity: 0,
+        x: -12,
+        duration: 0.4,
+        stagger: 0.05,
+        ease: 'power2.out',
+      });
+    },
+    { dependencies: [stops.length, completedCount], scope: listRef }
+  );
 
   const getVisualStateBadge = () => {
     switch (routeVisualState) {
@@ -96,7 +112,7 @@ export const StopsTimeline: React.FC<StopsTimelineProps> = ({
       )}
 
       {/* Stops Sequential Flow List */}
-      <div className="flex flex-col gap-3 relative before:absolute before:top-4 before:bottom-4 before:left-4 before:w-0.5 before:bg-outline-variant/50">
+      <div ref={listRef} className="flex flex-col gap-3 relative before:absolute before:top-4 before:bottom-4 before:left-4 before:w-0.5 before:bg-outline-variant/50">
         {stops.map((stop: TimelineStop, index: number) => {
           const isPickup = stop.stop_type === 'pickup';
           const isNext = stop.isNextUp;
@@ -105,7 +121,7 @@ export const StopsTimeline: React.FC<StopsTimelineProps> = ({
           return (
             <div
               key={stop.stop_id}
-              className={`relative flex items-start gap-3.5 p-3 rounded-2xl transition-all border ${
+              className={`timeline-stop-item relative flex items-start gap-3.5 p-3 rounded-2xl transition-all border ${
                 isDone
                   ? 'bg-surface-container-low/40 border-outline-variant/20 opacity-75'
                   : isNext

@@ -78,6 +78,144 @@
       "sourceType": "github",
       "skillPath": "skills/web-design-guidelines/SKILL.md",
       "computedHash": "d8e7d3afe37dcc8a97b99ffb5afdb4d0919ae0092ea8b68f44eb201f035e33ac"
+    },
+    "aframe-webxr": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/aframe-webxr/SKILL.md",
+      "computedHash": "645d2bc08bad2d7a15e73f4ab1c88d8a9c04e134d2584e475975f2059b1e1266"
+    },
+    "animated-component-libraries": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/animated-component-libraries/SKILL.md",
+      "computedHash": "4420b25e9eddd1adf62e4e0b91cda214c80d32d967958379f94df6f55e36914d"
+    },
+    "animejs": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/animejs/SKILL.md",
+      "computedHash": "44d8b0c114a5f8a4e79dea64605bb7d24bad1b160dd730f6696d5379dc1104ee"
+    },
+    "babylonjs-engine": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/babylonjs-engine/SKILL.md",
+      "computedHash": "361a6103756097b895ebace6aad4d16dd6a8ea5fd49b4636e69f6a4f10538503"
+    },
+    "barba-js": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/barba-js/SKILL.md",
+      "computedHash": "1f20a091dda9d1fdba00fb3842d0e327cc8232ca51fcbd6ab8e49d0a7c49f6b9"
+    },
+    "blender-web-pipeline": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/blender-web-pipeline/SKILL.md",
+      "computedHash": "1bd2c3cd6462f2999e8df8aeb4400bf835f2a9909716c4b2d76c3c0230d57b09"
+    },
+    "gsap-scrolltrigger": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/gsap-scrolltrigger/SKILL.md",
+      "computedHash": "742c2f429db02e6f160455a15b58e698aae0d71fa507d7200f3baff80ff21431"
+    },
+    "lightweight-3d-effects": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/lightweight-3d-effects/SKILL.md",
+      "computedHash": "ae21ab600f58dbf644c96fb4ce8ec9af1da8b671c1de84ba2aeba16de435bb7e"
+    },
+    "locomotive-scroll": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/locomotive-scroll/SKILL.md",
+      "computedHash": "279e9c21f3156ba416775b3128675cfa3068c0efa457c3e1bd82b021fc119224"
+    },
+    "lottie-animations": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/lottie-animations/SKILL.md",
+      "computedHash": "fb69654c6a87e592ee8baafc8be8bf96d49864a10dd4f89a117551ae3ad09e0b"
+    },
+    "modern-web-design": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/modern-web-design/SKILL.md",
+      "computedHash": "af409c05ba140b8a16da6154eb98f2ccd4f6c28807ac79b25dd830dc6d14bb76"
+    },
+    "motion-framer": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/motion-framer/SKILL.md",
+      "computedHash": "a328e15f4321a6489b7eaf148ee67c66710437a646e97047161afea11b06a010"
+    },
+    "pixijs-2d": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/pixijs-2d/SKILL.md",
+      "computedHash": "611c887c858772489e00efda2da15827c05d2ce2294921a8265d798a6aa500c0"
+    },
+    "playcanvas-engine": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/playcanvas-engine/SKILL.md",
+      "computedHash": "8ccf28fa0faeed3ec2f92e8cabbe62f1fa105dc9475bcb57f7a1ec0cf38388a1"
+    },
+    "react-spring-physics": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/react-spring-physics/SKILL.md",
+      "computedHash": "b91172c2975472dbd2586a5141ec39023306028504b455ad3be3e19b501710ca"
+    },
+    "react-three-fiber": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/react-three-fiber/SKILL.md",
+      "computedHash": "e8e2a0629c9793be95c04d7c45ce7ce064b3ba67c47c78dc5ec75cb1dbafa8ed"
+    },
+    "rive-interactive": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/rive-interactive/SKILL.md",
+      "computedHash": "1f942da6f597543337940970edee193c4e3ed9858798860af114a23dafd11a1e"
+    },
+    "scroll-reveal-libraries": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/scroll-reveal-libraries/SKILL.md",
+      "computedHash": "77531b15c9887e3fa5cc19493f7eab30047ee7e4f8a073c06c332b89aadd9945"
+    },
+    "skill-creator": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/skill-creator/SKILL.md",
+      "computedHash": "ebd88ee948461270b859f5d371c0b84e414371d3370c89352c671dcb9e362ac9"
+    },
+    "spline-interactive": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/spline-interactive/SKILL.md",
+      "computedHash": "5610b154fe842881fcaaae8d4b214757c04dfacdf1e19c7fb736e17de4557754"
+    },
+    "substance-3d-texturing": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/substance-3d-texturing/SKILL.md",
+      "computedHash": "2fa79d51dfa24af64f47dc05a7b16e2ff879c5be9868ecc40668174c62cdbeab"
+    },
+    "threejs-webgl": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/threejs-webgl/SKILL.md",
+      "computedHash": "4b55c92cbc96df5a469fafd08552f2310e7073d3decff860f8fc868322e43d2f"
+    },
+    "web3d-integration-patterns": {
+      "source": "freshtechbro/claudedesignskills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/web3d-integration-patterns/SKILL.md",
+      "computedHash": "cd293b14954138c9f2d02ff5a0efe9b7670d48c9d9b76bf7d81bbaf2c63b5ac6"
     }
   }
 }

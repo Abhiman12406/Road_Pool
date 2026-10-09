@@ -1,0 +1,67 @@
+# ==============================================================================
+# Render Blueprint (Infrastructure-as-Code)
+# Project: Road_Pool (RidePool AI / ORoute)
+# Algorithmic Transit Ride-Pooling & Fair-Fare Engine with Supabase Database
+# ==============================================================================
+services:
+  # ----------------------------------------------------------------------------
+  # 1. FastAPI Python Backend Web Service
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: roadpool-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    region: oregon # or frankfurt, singapore
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: ENVIRONMENT
+        value: production
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: OSRM_BASE_URL
+        value: https://router.project-osrm.org
+      # Connect your Supabase project (from Supabase Dashboard -> Project Settings -> API)
+      - key: SUPABASE_URL
+        sync: false
+        placeholder: "https://your-project-ref.supabase.co"
+      - key: SUPABASE_KEY
+        sync: false
+        placeholder: "your-supabase-service-role-or-anon-key"
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+        placeholder: "your-supabase-service-role-key"
+
+  # ----------------------------------------------------------------------------
+  # 2. React + Vite + TypeScript Frontend Static Site
+  # ----------------------------------------------------------------------------
+  - type: static
+    name: roadpool-frontend
+    rootDir: frontend
+    plan: free
+    region: oregon
+    buildCommand: "npm install && npm run build"
+    publishDir: dist
+    autoDeploy: true
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      # Set to your deployed backend Render service URL
+      - key: VITE_API_URL
+        value: https://roadpool-backend.onrender.com/api/v1
+      - key: VITE_WS_URL
+        value: wss://roadpool-backend.onrender.com/ws/live
+      # Set to your Supabase Project URL & Anon Key
+      - key: VITE_SUPABASE_URL
+        sync: false
+        placeholder: "https://your-project-ref.supabase.co"
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+        placeholder: "your-supabase-anon-key"
