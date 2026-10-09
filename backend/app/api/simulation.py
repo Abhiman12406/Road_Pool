@@ -2,7 +2,7 @@
 Simulation Control and State API
 """
 from typing import Optional, Literal
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.simulation_engine import sim_engine
 
@@ -66,9 +66,18 @@ class CreateRideRequestCommand(BaseModel):
     solo_eta_sec: int
     solo_fare_inr: float
     passenger_name: Optional[str] = "Elena Vance (Rider)"
+    preferred_pickup_time: Optional[str] = None
+    arrival_deadline: Optional[str] = None
+    special_requirements: Optional[str] = None
 
 @router.post("/request")
 async def create_ride_request(cmd: CreateRideRequestCommand):
+    if cmd.party_size < 1 or cmd.party_size > 4:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Party size must be between 1 and 4 seats. Maximum vehicle capacity is 4. (Requested: {cmd.party_size})"
+        )
+
     async with sim_engine.lock:
         req = sim_engine.create_passenger_request(
             pickup_name=cmd.pickup_name,
@@ -81,7 +90,10 @@ async def create_ride_request(cmd: CreateRideRequestCommand):
             solo_distance_km=cmd.solo_distance_km,
             solo_eta_sec=cmd.solo_eta_sec,
             solo_fare_inr=cmd.solo_fare_inr,
-            passenger_name=cmd.passenger_name or "Elena Vance (Rider)"
+            passenger_name=cmd.passenger_name or "Elena Vance (Rider)",
+            preferred_pickup_time=cmd.preferred_pickup_time,
+            arrival_deadline=cmd.arrival_deadline,
+            special_requirements=cmd.special_requirements,
         )
     await sim_engine.broadcast_state()
     return {"status": "success", "request": req}

@@ -293,6 +293,7 @@ class SimulationEngine:
                 batchThreshold=settings.DEFAULT_BATCH_SIZE_THRESHOLD,
                 batchStatus='intake_open',
                 queuedRequestCount=1,
+                queuedSeatsCount=1,
                 tickSpeed='1x',
                 isDemoMode=True,
                 activeScenario="Pune Metro Corridor"
@@ -469,10 +470,12 @@ class SimulationEngine:
         self.state.engine.currentWindowId += 1
         self.state.engine.timeRemainingInWindowSec = self.state.engine.windowIntervalSec
         self.state.engine.batchStatus = "intake_open"
-        self.state.engine.queuedRequestCount = len([
+        waiting_in_new_window = [
             r for r in self.state.requests.values()
             if r.status == 'waiting_batch' and r.batch_id == self.state.engine.currentWindowId
-        ])
+        ]
+        self.state.engine.queuedRequestCount = len(waiting_in_new_window)
+        self.state.engine.queuedSeatsCount = sum(r.party_size for r in waiting_in_new_window)
 
     def run_next_batch(self):
         self.lock_and_dispatch_batch(trigger_reason="manual_dispatch")
@@ -489,8 +492,14 @@ class SimulationEngine:
         solo_distance_km: float,
         solo_eta_sec: int,
         solo_fare_inr: float,
-        passenger_name: str = "Elena Vance (Rider)"
+        passenger_name: str = "Elena Vance (Rider)",
+        preferred_pickup_time: Optional[str] = None,
+        arrival_deadline: Optional[str] = None,
+        special_requirements: Optional[str] = None,
     ) -> RideRequest:
+        if party_size < 1 or party_size > 4:
+            raise ValueError(f"Party size must be between 1 and 4 seats. Maximum vehicle capacity is 4. (Requested: {party_size})")
+
         req_id = f"REQ-P{100 + len(self.state.requests) + 1}"
         pax_id = f"PAX-{len(self.state.requests) + 1:02d}"
         now_str = time.strftime("%H:%M:%S")
@@ -512,14 +521,19 @@ class SimulationEngine:
             pooled_eta_sec=None,
             detour_pct=None,
             shapley_fare_inr=None,
+            preferred_pickup_time=preferred_pickup_time,
+            arrival_deadline=arrival_deadline,
+            special_requirements=special_requirements,
         )
         self.state.requests[req_id] = req
         
-        # Update queued request count for current active batch
-        self.state.engine.queuedRequestCount = len([
+        # Update queued request and seat counts for current active batch
+        waiting_reqs = [
             r for r in self.state.requests.values() 
             if r.status == 'waiting_batch' and r.batch_id == self.state.engine.currentWindowId
-        ])
+        ]
+        self.state.engine.queuedRequestCount = len(waiting_reqs)
+        self.state.engine.queuedSeatsCount = sum(r.party_size for r in waiting_reqs)
         
         self.state.kpis.totalTripsInFlight = len([
             r for r in self.state.requests.values() 

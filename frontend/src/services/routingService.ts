@@ -153,6 +153,9 @@ export async function submitPassengerRideRequest(payload: {
   solo_eta_sec: number;
   solo_fare_inr: number;
   passenger_name?: string;
+  preferred_pickup_time?: string;
+  arrival_deadline?: string;
+  special_requirements?: string;
 }) {
   const res = await fetch(`${API_BASE}/simulation/request`, {
     method: 'POST',

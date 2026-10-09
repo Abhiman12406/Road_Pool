@@ -202,7 +202,12 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
                 <span className="text-on-surface-variant font-bold uppercase tracking-wider text-[11px]">
                   Your Planned Route
                 </span>
-                <span className="text-primary font-bold">{activeReq.party_size} Rider</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[15px] text-primary">groups</span>
+                  <span className="text-primary font-bold">
+                    {activeReq.party_size} {activeReq.party_size === 1 ? 'Rider (1 Seat)' : `Riders (${activeReq.party_size} Seats)`}
+                  </span>
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5 text-xs">
@@ -214,6 +219,15 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
                   <span className="w-2.5 h-2.5 rounded-full bg-secondary shrink-0"></span>
                   <span className="font-semibold text-on-surface truncate">Dest: {activeReq.dropoff.name}</span>
                 </div>
+                {activeReq.preferred_pickup_time && (
+                  <div className="flex items-center gap-2 text-[11px] text-on-surface-variant pt-0.5">
+                    <span className="material-symbols-outlined text-[14px] text-secondary">schedule</span>
+                    <span>Pickup: {activeReq.preferred_pickup_time}</span>
+                    {activeReq.arrival_deadline && (
+                      <span className="text-tertiary font-bold">• Must arrive by {activeReq.arrival_deadline}</span>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-2 pt-2 border-t border-outline-variant/30 text-center">

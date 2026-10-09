@@ -27,6 +27,9 @@ class RideRequest(BaseModel):
     detour_pct: Optional[float] = None
     shapley_fare_inr: Optional[float] = None
     rejection_reason: Optional[str] = None
+    preferred_pickup_time: Optional[str] = None
+    arrival_deadline: Optional[str] = None
+    special_requirements: Optional[str] = None
 
 class RouteStop(BaseModel):
     stop_id: str
@@ -109,6 +112,7 @@ class SimulationEngineState(BaseModel):
     batchThreshold: int = 6
     batchStatus: Literal['intake_open', 'locked_optimizing', 'dispatched'] = 'intake_open'
     queuedRequestCount: int = 0
+    queuedSeatsCount: int = 0
     lastDispatchReason: Optional[str] = None
     lastDispatchedWindowId: Optional[int] = None
     tickSpeed: Literal['0.5x', '1x', '2x', '5x'] = '1x'
