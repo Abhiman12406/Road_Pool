@@ -4,10 +4,10 @@
 
 **Blocked by:** 03: Sliding-Window Dynamic Batching & Intake Queue
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] Solver implements greedy insertion followed by Google OR-Tools routing with vehicle capacity limits and strict pickup-before-dropoff precedence.
-- [ ] Detour for each passenger i is computed using consistent travel time: Detour = ((T_pooled - T_solo) / T_solo) * 100%.
-- [ ] Route is accepted only if Detour <= 15% for all riders in the vehicle; candidate insertions violating 15% are rejected.
-- [ ] Route Optimization screen (`/ops/optimization`) displays the ordered sequence of stops (1 -> 2 -> 3) with vehicle capacity utilization.
-- [ ] Detour Guarantees screen (`/ops/detour-guarantees`) shows green badges for compliant detours and red badges with audited violation reasons for rejected candidates.
+- [x] Solver implements greedy insertion followed by Google OR-Tools routing with vehicle capacity limits and strict pickup-before-dropoff precedence.
+- [x] Detour for each passenger i is computed using consistent travel time: Detour = ((T_pooled - T_solo) / T_solo) * 100%.
+- [x] Route is accepted only if Detour <= 15% for all riders in the vehicle; candidate insertions violating 15% are rejected.
+- [x] Route Optimization screen (`/ops/optimization`) displays the ordered sequence of stops (1 -> 2 -> 3) with vehicle capacity utilization.
+- [x] Detour Guarantees screen (`/ops/detour-guarantees`) shows green badges for compliant detours and red badges with audited violation reasons for rejected candidates.

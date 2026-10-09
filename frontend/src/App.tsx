@@ -3,16 +3,20 @@ import { useSimulationSocket } from './services/simulationService';
 import { ShellHeader, type ActiveViewKey } from './components/ShellHeader';
 import { OpsOverviewView } from './views/ops/OpsOverviewView';
 import { BatchManagerView } from './views/ops/BatchManagerView';
+import { RouteOptimizationView } from './views/ops/RouteOptimizationView';
+import { DetourGuaranteesView } from './views/ops/DetourGuaranteesView';
 import { PassengerHomeView } from './views/passenger/PassengerHomeView';
 import { PassengerWaitingView } from './views/passenger/PassengerWaitingView';
 
 export function App() {
   const [currentView, setCurrentView] = useState<ActiveViewKey>(() => {
     const path = window.location.pathname;
+    if (path.includes('optimization') || path.includes('/ops/optimization')) return 'ops-optimization';
+    if (path.includes('detour') || path.includes('/ops/detour-guarantees')) return 'ops-detour-guarantees';
     if (path.includes('batches') || path.includes('/ops/batches')) return 'ops-batches';
     if (path.includes('waiting') || path.includes('/passenger/waiting')) return 'passenger-waiting';
     if (path.includes('passenger')) return 'passenger-home';
-    return 'ops-batches'; // Default to operations batch manager per Ticket 03
+    return 'ops-optimization'; // Default to operations optimization per Ticket 04
   });
 
   const {
@@ -24,13 +28,16 @@ export function App() {
     dispatchBatchNow,
     configureBatch,
     generateDemand,
+    solveOptimization,
   } = useSimulationSocket();
 
   // Sync browser history state if user clicks back/forward
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
-      if (path.includes('batches')) setCurrentView('ops-batches');
+      if (path.includes('optimization')) setCurrentView('ops-optimization');
+      else if (path.includes('detour')) setCurrentView('ops-detour-guarantees');
+      else if (path.includes('batches')) setCurrentView('ops-batches');
       else if (path.includes('waiting')) setCurrentView('passenger-waiting');
       else if (path.includes('passenger')) setCurrentView('passenger-home');
       else setCurrentView('ops-overview');
@@ -44,6 +51,8 @@ export function App() {
     const pathMap: Record<ActiveViewKey, string> = {
       'ops-overview': '/ops',
       'ops-batches': '/ops/batches',
+      'ops-optimization': '/ops/optimization',
+      'ops-detour-guarantees': '/ops/detour-guarantees',
       'passenger-home': '/passenger/home',
       'passenger-waiting': '/passenger/waiting',
     };
@@ -100,6 +109,23 @@ export function App() {
             onGenerateDemand={generateDemand}
             onSelectRequest={handleSelectRequest}
             onSelectVehicle={handleSelectVehicle}
+          />
+        )}
+
+        {currentView === 'ops-optimization' && (
+          <RouteOptimizationView
+            snapshot={snapshot}
+            onSelectVehicle={handleSelectVehicle}
+            onSelectRequest={handleSelectRequest}
+            onSolveOptimization={solveOptimization}
+          />
+        )}
+
+        {currentView === 'ops-detour-guarantees' && (
+          <DetourGuaranteesView
+            snapshot={snapshot}
+            onSelectVehicle={handleSelectVehicle}
+            onSelectRequest={handleSelectRequest}
           />
         )}
 

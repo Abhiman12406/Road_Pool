@@ -49,6 +49,48 @@ class Vehicle(BaseModel):
     route_polyline: List[List[float]] = Field(default_factory=list) # [[lat, lng], ...]
     planned_stops: List[RouteStop] = Field(default_factory=list)
 
+class DetourAuditEntry(BaseModel):
+    request_id: str
+    passenger_id: str
+    passenger_name: str
+    vehicle_id: Optional[str] = None
+    pickup_name: str
+    dropoff_name: str
+    solo_eta_sec: int
+    solo_distance_km: float
+    pooled_eta_sec: Optional[int] = None
+    pooled_distance_km: Optional[float] = None
+    actual_detour_pct: Optional[float] = None
+    max_allowable_detour_pct: float = 15.0
+    is_compliant: bool
+    status: Literal['compliant_accepted', 'violation_rejected', 'capacity_rejected']
+    violation_reason: Optional[str] = None
+    mathematical_proof: str
+    delay_margin_sec: Optional[int] = None
+    timestamp: str
+
+class VehicleRoutePlan(BaseModel):
+    vehicle_id: str
+    vehicle_name: str
+    capacity: int
+    current_occupancy: int
+    peak_occupancy: int
+    stops: List[RouteStop]
+    route_polyline: List[List[float]] = Field(default_factory=list)
+    total_distance_km: float
+    total_duration_sec: int
+    assigned_request_ids: List[str]
+
+class OptimizationResult(BaseModel):
+    vehicle_plans: Dict[str, VehicleRoutePlan] = Field(default_factory=dict)
+    accepted_request_ids: List[str] = Field(default_factory=list)
+    rejected_request_ids: List[str] = Field(default_factory=list)
+    detour_audits: List[DetourAuditEntry] = Field(default_factory=list)
+    average_detour_pct: float = 0.0
+    max_detour_observed_pct: float = 0.0
+    solver_used: str = "Greedy-Insertion + Google OR-Tools Routing (Capacitated PDP)"
+    timestamp: str = ""
+
 class SimulationKPIs(BaseModel):
     activePoolsCount: int = 0
     totalTripsInFlight: int = 0
@@ -95,3 +137,5 @@ class GlobalSimulationSnapshot(BaseModel):
     vehicles: Dict[str, Vehicle]
     requests: Dict[str, RideRequest]
     activePassengerSession: ActivePassengerSession
+    optimizationResult: Optional[OptimizationResult] = None
+    detourAudits: List[DetourAuditEntry] = Field(default_factory=list)

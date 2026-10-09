@@ -1,7 +1,13 @@
 import React from 'react';
 import type { GlobalSimulationSnapshot } from '../types/simulation';
 
-export type ActiveViewKey = 'ops-overview' | 'ops-batches' | 'passenger-home' | 'passenger-waiting';
+export type ActiveViewKey =
+  | 'ops-overview'
+  | 'ops-batches'
+  | 'ops-optimization'
+  | 'ops-detour-guarantees'
+  | 'passenger-home'
+  | 'passenger-waiting';
 
 interface ShellHeaderProps {
   currentView: ActiveViewKey;
@@ -44,6 +50,7 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
         <div className="bg-surface-container-high p-1 rounded-full flex items-center shadow-inner">
           <button
             type="button"
+            id="nav-ops-console-btn"
             onClick={() => onSwitchView('ops-overview')}
             className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all ${
               isOps
@@ -55,6 +62,7 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
           </button>
           <button
             type="button"
+            id="nav-passenger-app-btn"
             onClick={() => onSwitchView('passenger-home')}
             className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all ${
               isPassenger
@@ -72,6 +80,7 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
             <>
               <button
                 type="button"
+                id="nav-ops-overview"
                 onClick={() => onSwitchView('ops-overview')}
                 className={`px-3 py-1 rounded-full transition-all ${
                   currentView === 'ops-overview'
@@ -79,10 +88,11 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
                     : 'text-on-surface-variant hover:text-on-surface'
                 }`}
               >
-                Overview Console
+                Overview
               </button>
               <button
                 type="button"
+                id="nav-ops-batches"
                 onClick={() => onSwitchView('ops-batches')}
                 className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
                   currentView === 'ops-batches'
@@ -91,7 +101,33 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
                 }`}
               >
                 <span className="material-symbols-outlined text-[14px]">view_timeline</span>
-                <span>Batch Manager (/ops/batches)</span>
+                <span>Batches</span>
+              </button>
+              <button
+                type="button"
+                id="nav-ops-optimization"
+                onClick={() => onSwitchView('ops-optimization')}
+                className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
+                  currentView === 'ops-optimization'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[14px]">alt_route</span>
+                <span>Route Optimization (/ops/optimization)</span>
+              </button>
+              <button
+                type="button"
+                id="nav-ops-detour-guarantees"
+                onClick={() => onSwitchView('ops-detour-guarantees')}
+                className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
+                  currentView === 'ops-detour-guarantees'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[14px]">verified_user</span>
+                <span>Detour Guarantees (≤15%)</span>
               </button>
             </>
           ) : (

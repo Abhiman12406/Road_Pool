@@ -116,6 +116,20 @@ export function useSimulationSocket() {
     }
   }, []);
 
+  const solveOptimization = useCallback(async (maxDetourPct: number = 15.0) => {
+    try {
+      const resp = await fetch(`${API_BASE}/simulation/optimization/solve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ max_detour_pct: maxDetourPct }),
+      });
+      return await resp.json();
+    } catch (e) {
+      console.error('Solve optimization error:', e);
+      return null;
+    }
+  }, []);
+
   return {
     snapshot,
     isConnected,
@@ -125,5 +139,6 @@ export function useSimulationSocket() {
     dispatchBatchNow,
     configureBatch,
     generateDemand,
+    solveOptimization,
   };
 }

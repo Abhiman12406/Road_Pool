@@ -146,3 +146,47 @@ async def get_batches():
         "pendingRequests": pending,
         "admittedCount": len(admitted)
     }
+
+@router.get("/optimization")
+async def get_optimization():
+    if not sim_engine.state.optimizationResult:
+        from app.services.route_optimizer import route_optimizer
+        opt_res = route_optimizer.optimize_and_validate_routes(
+            vehicles=list(sim_engine.state.vehicles.values()),
+            requests=list(sim_engine.state.requests.values()),
+            max_detour_pct=sim_engine.state.kpis.hardDetourCapPct
+        )
+        sim_engine.state.optimizationResult = opt_res
+    return sim_engine.state.optimizationResult
+
+@router.get("/detour-guarantees")
+async def get_detour_guarantees():
+    return {
+        "hardDetourCapPct": sim_engine.state.kpis.hardDetourCapPct,
+        "fleetDetourAveragePct": sim_engine.state.kpis.fleetDetourAveragePct,
+        "audits": sim_engine.state.detourAudits,
+        "compliantCount": len([a for a in sim_engine.state.detourAudits if a.is_compliant]),
+        "rejectedCount": len([a for a in sim_engine.state.detourAudits if not a.is_compliant]),
+    }
+
+class SolveOptimizationCommand(BaseModel):
+    max_detour_pct: Optional[float] = 15.0
+
+@router.post("/optimization/solve")
+async def solve_optimization(cmd: Optional[SolveOptimizationCommand] = None):
+    from app.services.route_optimizer import route_optimizer
+    cap = cmd.max_detour_pct if cmd and cmd.max_detour_pct else sim_engine.state.kpis.hardDetourCapPct
+    async with sim_engine.lock:
+        pending_requests = [
+            r for r in sim_engine.state.requests.values()
+            if r.status in ['waiting_batch', 'matched']
+        ]
+        opt_result = route_optimizer.optimize_and_validate_routes(
+            vehicles=list(sim_engine.state.vehicles.values()),
+            requests=pending_requests,
+            max_detour_pct=cap
+        )
+        sim_engine.state.optimizationResult = opt_result
+        sim_engine.state.detourAudits = opt_result.detour_audits + sim_engine.state.detourAudits
+    await sim_engine.broadcast_state()
+    return opt_result

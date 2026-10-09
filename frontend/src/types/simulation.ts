@@ -90,6 +90,51 @@ export interface ActivePassengerSession {
   fareShapleyPooledInr: number;
 }
 
+export interface DetourAuditEntry {
+  request_id: string;
+  passenger_id: string;
+  passenger_name: string;
+  vehicle_id: string | null;
+  pickup_name: string;
+  dropoff_name: string;
+  solo_eta_sec: number;
+  solo_distance_km: number;
+  pooled_eta_sec: number | null;
+  pooled_distance_km: number | null;
+  actual_detour_pct: number | null;
+  max_allowable_detour_pct: number;
+  is_compliant: boolean;
+  status: 'compliant_accepted' | 'violation_rejected' | 'capacity_rejected';
+  violation_reason?: string | null;
+  mathematical_proof: string;
+  delay_margin_sec?: number | null;
+  timestamp: string;
+}
+
+export interface VehicleRoutePlan {
+  vehicle_id: string;
+  vehicle_name: string;
+  capacity: number;
+  current_occupancy: number;
+  peak_occupancy: number;
+  stops: RouteStop[];
+  route_polyline: [number, number][];
+  total_distance_km: number;
+  total_duration_sec: number;
+  assigned_request_ids: string[];
+}
+
+export interface OptimizationResult {
+  vehicle_plans: Record<string, VehicleRoutePlan>;
+  accepted_request_ids: string[];
+  rejected_request_ids: string[];
+  detour_audits: DetourAuditEntry[];
+  average_detour_pct: number;
+  max_detour_observed_pct: number;
+  solver_used: string;
+  timestamp: string;
+}
+
 export interface GlobalSimulationSnapshot {
   engine: SimulationEngineState;
   kpis: SimulationKPIs;
@@ -97,4 +142,6 @@ export interface GlobalSimulationSnapshot {
   vehicles: Record<string, Vehicle>;
   requests: Record<string, RideRequest>;
   activePassengerSession: ActivePassengerSession;
+  optimizationResult?: OptimizationResult | null;
+  detourAudits?: DetourAuditEntry[];
 }

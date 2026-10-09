@@ -8,8 +8,10 @@ from typing import Dict, List, Set, Any, Optional
 from fastapi import WebSocket
 from app.models.simulation import (
     GlobalSimulationSnapshot, SimulationEngineState, SimulationKPIs,
-    SelectionState, ActivePassengerSession, Vehicle, Location, RideRequest, RouteStop
+    SelectionState, ActivePassengerSession, Vehicle, Location, RideRequest, RouteStop,
+    DetourAuditEntry, VehicleRoutePlan, OptimizationResult
 )
+from app.services.route_optimizer import route_optimizer
 from app.config import settings
 
 PUNE_LANDMARKS = {
@@ -170,6 +172,118 @@ class SimulationEngine:
             )
         }
 
+        # Initial Detour Guarantee Audits
+        initial_audits = [
+            DetourAuditEntry(
+                request_id="REQ-P101",
+                passenger_id="PAX-01",
+                passenger_name="Aarav Sharma",
+                vehicle_id="V-101",
+                pickup_name="Shivajinagar Hub",
+                dropoff_name="Baner Road",
+                solo_eta_sec=720,
+                solo_distance_km=7.8,
+                pooled_eta_sec=780,
+                pooled_distance_km=8.45,
+                actual_detour_pct=8.33,
+                max_allowable_detour_pct=15.0,
+                is_compliant=True,
+                status="compliant_accepted",
+                violation_reason=None,
+                mathematical_proof="T_solo = 720s (12.0m) | T_pooled = 780s (13.0m) | Detour = ((780 - 720) / 720) * 100% = +8.33% <= 15.00% [COMPLIANT: 48s margin remaining]",
+                delay_margin_sec=48,
+                timestamp="17:40:00"
+            ),
+            DetourAuditEntry(
+                request_id="REQ-P102",
+                passenger_id="PAX-02",
+                passenger_name="Pooja Patil",
+                vehicle_id="V-102",
+                pickup_name="Swargate Junction",
+                dropoff_name="Pune Railway Station",
+                solo_eta_sec=540,
+                solo_distance_km=4.6,
+                pooled_eta_sec=600,
+                pooled_distance_km=5.11,
+                actual_detour_pct=11.11,
+                max_allowable_detour_pct=15.0,
+                is_compliant=True,
+                status="compliant_accepted",
+                violation_reason=None,
+                mathematical_proof="T_solo = 540s (9.0m) | T_pooled = 600s (10.0m) | Detour = ((600 - 540) / 540) * 100% = +11.11% <= 15.00% [COMPLIANT: 21s margin remaining]",
+                delay_margin_sec=21,
+                timestamp="17:42:15"
+            ),
+            DetourAuditEntry(
+                request_id="REQ-REJ-01",
+                passenger_id="PAX-99",
+                passenger_name="Vikram Sen",
+                vehicle_id=None,
+                pickup_name="Hadapsar Gadital",
+                dropoff_name="Hinjewadi IT Park Phase 1",
+                solo_eta_sec=1100,
+                solo_distance_km=21.4,
+                pooled_eta_sec=1350,
+                pooled_distance_km=26.2,
+                actual_detour_pct=22.73,
+                max_allowable_detour_pct=15.0,
+                is_compliant=False,
+                status="violation_rejected",
+                violation_reason="Detour 22.73% exceeds strict 15.0% cap (+7.73% excess)",
+                mathematical_proof="T_solo = 1100s (18.3m) | T_pooled = 1350s (22.5m) | Detour = ((1350 - 1100) / 1100) * 100% = +22.73% > 15.00% [REJECTED: +7.73% (85s) excess over 15.0% cap]",
+                delay_margin_sec=-85,
+                timestamp="17:35:00"
+            )
+        ]
+
+        initial_opt_result = OptimizationResult(
+            vehicle_plans={
+                "V-101": VehicleRoutePlan(
+                    vehicle_id="V-101",
+                    vehicle_name=v1.name,
+                    capacity=v1.capacity,
+                    current_occupancy=v1.occupied_seats,
+                    peak_occupancy=2,
+                    stops=v1.planned_stops,
+                    route_polyline=v1.route_polyline,
+                    total_distance_km=8.45,
+                    total_duration_sec=780,
+                    assigned_request_ids=["REQ-P101"]
+                ),
+                "V-102": VehicleRoutePlan(
+                    vehicle_id="V-102",
+                    vehicle_name=v2.name,
+                    capacity=v2.capacity,
+                    current_occupancy=v2.occupied_seats,
+                    peak_occupancy=2,
+                    stops=v2.planned_stops,
+                    route_polyline=v2.route_polyline,
+                    total_distance_km=5.11,
+                    total_duration_sec=600,
+                    assigned_request_ids=["REQ-P102"]
+                ),
+                "V-103": VehicleRoutePlan(
+                    vehicle_id="V-103",
+                    vehicle_name=v3.name,
+                    capacity=v3.capacity,
+                    current_occupancy=0,
+                    peak_occupancy=0,
+                    stops=[],
+                    route_polyline=v3.route_polyline,
+                    total_distance_km=0.0,
+                    total_duration_sec=0,
+                    assigned_request_ids=[]
+                )
+            },
+            accepted_request_ids=["REQ-P101", "REQ-P102"],
+            rejected_request_ids=["REQ-REJ-01"],
+            detour_audits=initial_audits,
+            average_detour_pct=9.72,
+            max_detour_observed_pct=11.11,
+            solver_used="Greedy-Insertion + Google OR-Tools Routing (Capacitated PDP)",
+            timestamp="17:42:15"
+        )
+
         return GlobalSimulationSnapshot(
             engine=SimulationEngineState(
                 status='running',
@@ -191,7 +305,7 @@ class SimulationEngine:
                 shapleySavingsPct=27.4,
                 totalCoalitionSavingsInr=81.50,
                 servedPassengersCount=2,
-                rejectedPassengersCount=0
+                rejectedPassengersCount=1
             ),
             selection=SelectionState(
                 selectedVehicleId="V-101",
@@ -209,7 +323,9 @@ class SimulationEngine:
                 actualDetourPct=8.33,
                 fareSoloDirectInr=180.0,
                 fareShapleyPooledInr=132.50
-            )
+            ),
+            optimizationResult=initial_opt_result,
+            detourAudits=initial_audits
         )
 
     async def register_connection(self, websocket: WebSocket):
@@ -274,58 +390,65 @@ class SimulationEngine:
             if r.status == "waiting_batch" and (r.batch_id is None or r.batch_id <= window_id)
         ]
 
-        # Dispatch and admit each request
-        for req in admitted_requests:
-            req.status = "matched"
-            # Assign candidate vehicle with available seats
-            assigned_vehicle = None
-            for v in self.state.vehicles.values():
-                if v.occupied_seats + req.party_size <= v.capacity:
-                    assigned_vehicle = v
-                    break
+        # Run constrained route optimization and detour guarantee validation
+        if admitted_requests:
+            opt_result = route_optimizer.optimize_and_validate_routes(
+                vehicles=list(self.state.vehicles.values()),
+                requests=admitted_requests,
+                max_detour_pct=self.state.kpis.hardDetourCapPct
+            )
+            self.state.optimizationResult = opt_result
+            # Prepend new audits to preserve history
+            self.state.detourAudits = opt_result.detour_audits + self.state.detourAudits
 
-            if assigned_vehicle:
-                req.assigned_vehicle_id = assigned_vehicle.vehicle_id
-                req.pooled_eta_sec = int(round(req.solo_eta_sec * 1.09)) # 9% added time within 15% cap
-                req.detour_pct = 9.0
-                req.shapley_fare_inr = round(req.solo_fare_inr * 0.74, 2) # ~26% savings
-                assigned_vehicle.occupied_seats += req.party_size
-                assigned_vehicle.status = "en_route"
-                
-                # Append planned stops
-                assigned_vehicle.planned_stops.append(RouteStop(
-                    stop_id=f"S-PK-{req.request_id}",
-                    request_id=req.request_id,
-                    stop_type="pickup",
-                    location=req.pickup,
-                    passenger_name=req.passenger_name,
-                    eta_seconds_from_now=200,
-                    completed=False
-                ))
-                assigned_vehicle.planned_stops.append(RouteStop(
-                    stop_id=f"S-DP-{req.request_id}",
-                    request_id=req.request_id,
-                    stop_type="dropoff",
-                    location=req.dropoff,
-                    passenger_name=req.passenger_name,
-                    eta_seconds_from_now=req.pooled_eta_sec or 720,
-                    completed=False
-                ))
+            for req in admitted_requests:
+                if req.request_id in opt_result.accepted_request_ids:
+                    req.status = "matched"
+                    # Find assigned vehicle
+                    assigned_v = None
+                    for v_id, plan in opt_result.vehicle_plans.items():
+                        if req.request_id in plan.assigned_request_ids:
+                            assigned_v = self.state.vehicles.get(v_id)
+                            break
+                    if assigned_v:
+                        req.assigned_vehicle_id = assigned_v.vehicle_id
 
-                if not assigned_vehicle.route_polyline or len(assigned_vehicle.route_polyline) < 2:
-                    assigned_vehicle.route_polyline = [
-                        [assigned_vehicle.current_location.lat, assigned_vehicle.current_location.lng],
-                        [req.pickup.lat, req.pickup.lng],
-                        [req.dropoff.lat, req.dropoff.lng]
-                    ]
-                self.state.kpis.servedPassengersCount += 1
-            else:
-                # Vehicle fleet at capacity; queued for overflow
-                req.pooled_eta_sec = req.solo_eta_sec
-                req.shapley_fare_inr = round(req.solo_fare_inr * 0.75, 2)
+                    audit = next((a for a in opt_result.detour_audits if a.request_id == req.request_id), None)
+                    if audit and audit.pooled_eta_sec is not None:
+                        req.pooled_eta_sec = audit.pooled_eta_sec
+                        req.detour_pct = audit.actual_detour_pct
+                    else:
+                        req.pooled_eta_sec = int(round(req.solo_eta_sec * 1.08))
+                        req.detour_pct = 8.0
+
+                    req.shapley_fare_inr = round(req.solo_fare_inr * 0.74, 2)
+                    self.state.kpis.servedPassengersCount += 1
+                else:
+                    req.status = "rejected"
+                    req.assigned_vehicle_id = None
+                    audit = next((a for a in opt_result.detour_audits if a.request_id == req.request_id), None)
+                    if audit:
+                        req.rejection_reason = audit.violation_reason
+                    else:
+                        req.rejection_reason = "Detour > 15% guarantee cap or capacity limit"
+                    self.state.kpis.rejectedPassengersCount += 1
+
+            # Update vehicle states from optimization plans
+            for v_id, plan in opt_result.vehicle_plans.items():
+                if v_id in self.state.vehicles:
+                    veh = self.state.vehicles[v_id]
+                    veh.planned_stops = plan.stops
+                    veh.occupied_seats = plan.current_occupancy
+                    if plan.route_polyline and len(plan.route_polyline) >= 2:
+                        veh.route_polyline = plan.route_polyline
+                    veh.status = "en_route" if len(plan.stops) > 0 else "idle"
+
+            # Update fleet average detour KPI
+            if opt_result.average_detour_pct > 0:
+                self.state.kpis.fleetDetourAveragePct = opt_result.average_detour_pct
 
         # Update KPIs
-        self.state.kpis.activePoolsCount = len([v for v in self.state.vehicles.values() if v.status == 'en_route'])
+        self.state.kpis.activePoolsCount = len([v for v in self.state.vehicles.values() if len(v.planned_stops) > 0])
         self.state.kpis.totalTripsInFlight = len([
             r for r in self.state.requests.values()
             if r.status in ['waiting_batch', 'matched', 'en_route_pickup', 'in_transit']
@@ -334,10 +457,13 @@ class SimulationEngine:
         # If active session was in this batch, transition its lifecycle
         active_session = self.state.activePassengerSession
         if active_session.activeTripRequestId in [r.request_id for r in admitted_requests]:
-            active_session.lifecycleStatus = "matched"
-            active_session.actualDetourPct = 9.0
             matched_req = self.state.requests[active_session.activeTripRequestId]
-            active_session.assignedVehicleId = matched_req.assigned_vehicle_id
+            if matched_req.status == "matched":
+                active_session.lifecycleStatus = "matched"
+                active_session.actualDetourPct = matched_req.detour_pct or 8.0
+                active_session.assignedVehicleId = matched_req.assigned_vehicle_id
+            else:
+                active_session.lifecycleStatus = "idle"
 
         # Advance rolling window cycle
         self.state.engine.currentWindowId += 1
