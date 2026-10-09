@@ -2,17 +2,24 @@ import { useState, useEffect } from 'react';
 import { useSimulationSocket } from './services/simulationService';
 import { ShellHeader, type ActiveViewKey } from './components/ShellHeader';
 import { GuidedStoryView } from './views/story/GuidedStoryView';
+import { AcceptanceScenariosBar } from './components/AcceptanceScenariosBar';
+import { GuidedStoryOverlay } from './components/GuidedStoryOverlay';
+import type { GlobalSimulationSnapshot, MidTripJoinCandidate } from './types/simulation';
 import { OpsOverviewView } from './views/ops/OpsOverviewView';
 import { BatchManagerView } from './views/ops/BatchManagerView';
 import { RouteOptimizationView } from './views/ops/RouteOptimizationView';
 import { DetourGuaranteesView } from './views/ops/DetourGuaranteesView';
+import { FairFaresView } from './views/ops/FairFaresView';
 import { PassengerHomeView } from './views/passenger/PassengerHomeView';
 import { PassengerWaitingView } from './views/passenger/PassengerWaitingView';
+import { PassengerActiveView } from './views/passenger/PassengerActiveView';
 
 export function App() {
   const [currentView, setCurrentView] = useState<ActiveViewKey>(() => {
     const path = window.location.pathname;
     if (path.includes('story') || path === '/story') return 'guided-story';
+    if (path.includes('fair-fares') || path.includes('/ops/fair-fares')) return 'ops-fair-fares';
+    if (path.includes('active') || path.includes('/passenger/active')) return 'passenger-active';
     if (path.includes('optimization') || path.includes('/ops/optimization')) return 'ops-optimization';
     if (path.includes('detour') || path.includes('/ops/detour-guarantees')) return 'ops-detour-guarantees';
     if (path.includes('batches') || path.includes('/ops/batches')) return 'ops-batches';
@@ -26,20 +33,33 @@ export function App() {
   const {
     snapshot,
     isConnected,
-    _error,
+    error,
     sendControl,
     sendSelection,
     dispatchBatchNow,
     configureBatch,
     generateDemand,
     solveOptimization,
+    advanceVehicleStop,
+    cancelRideRequest,
+    simulateCoRiderCancellation,
+    resetPassengerSession,
   } = useSimulationSocket();
+
+  // Acceptance Scenarios & Guided Story Mode states
+  const [isStoryModeOpen, setIsStoryModeOpen] = useState<boolean>(false);
+  const [isScenariosBarOpen, setIsScenariosBarOpen] = useState<boolean>(true);
+  const [scenarioSnapshotOverride, setScenarioSnapshotOverride] = useState<GlobalSimulationSnapshot | null>(null);
+  const [activeCandidateOverride, setActiveCandidateOverride] = useState<MidTripJoinCandidate | null>(null);
+  const [autoOpenShapleySheet, setAutoOpenShapleySheet] = useState<boolean>(false);
 
   // Sync browser history state if user clicks back/forward
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
       if (path.includes('story')) setCurrentView('guided-story');
+      else if (path.includes('fair-fares')) setCurrentView('ops-fair-fares');
+      else if (path.includes('active')) setCurrentView('passenger-active');
       else if (path.includes('optimization')) setCurrentView('ops-optimization');
       else if (path.includes('detour')) setCurrentView('ops-detour-guarantees');
       else if (path.includes('batches')) setCurrentView('ops-batches');
@@ -60,8 +80,10 @@ export function App() {
       'ops-batches': '/ops/batches',
       'ops-optimization': '/ops/optimization',
       'ops-detour-guarantees': '/ops/detour-guarantees',
+      'ops-fair-fares': '/ops/fair-fares',
       'passenger-home': '/passenger/home',
       'passenger-waiting': '/passenger/waiting',
+      'passenger-active': '/passenger/active',
     };
     window.history.pushState(null, '', pathMap[view] || '/');
   };
@@ -74,22 +96,61 @@ export function App() {
     sendSelection(null, requestId);
   };
 
+  // Scenario Snapshot & Story Step Handlers
+  const handleApplyScenarioSnapshot = (
+    newSnapshot: GlobalSimulationSnapshot,
+    targetView: ActiveViewKey,
+    candidate?: MidTripJoinCandidate | null
+  ) => {
+    setScenarioSnapshotOverride(newSnapshot);
+    setActiveCandidateOverride(candidate || null);
+    handleSwitchView(targetView);
+  };
+
+  const handleResetToLive = () => {
+    setScenarioSnapshotOverride(null);
+    setActiveCandidateOverride(null);
+  };
+
+  const handleOpenShapleySheet = () => {
+    setAutoOpenShapleySheet(true);
+    setTimeout(() => setAutoOpenShapleySheet(false), 500);
+  };
+
+  // When a scenario is explicitly selected, use that snapshot; otherwise use live socket snapshot
+  const effectiveSnapshot = scenarioSnapshotOverride || snapshot;
+
   return (
     <div className="min-h-screen bg-background text-on-surface flex flex-col font-sans">
       {/* 1. Global Shell Navigation Bar */}
       <ShellHeader
         currentView={currentView}
         onSwitchView={handleSwitchView}
-        snapshot={snapshot}
+        snapshot={effectiveSnapshot}
         isConnected={isConnected}
+        isStoryModeOpen={isStoryModeOpen}
+        onToggleStoryMode={() => setIsStoryModeOpen((prev) => !prev)}
+        isScenariosBarOpen={isScenariosBarOpen}
+        onToggleScenariosBar={() => setIsScenariosBarOpen((prev) => !prev)}
       />
 
-      {/* Non-intrusive Simulation Status Banner if offline */}
+      {/* 2. Quick Runner Bar for 12 Acceptance Scenarios */}
+      <div className="mt-16">
+        <AcceptanceScenariosBar
+          isOpen={isScenariosBarOpen}
+          onToggle={() => setIsScenariosBarOpen((prev) => !prev)}
+          onApplyScenarioSnapshot={handleApplyScenarioSnapshot}
+          onOpenShapleySheet={handleOpenShapleySheet}
+          onResetToLive={handleResetToLive}
+        />
+      </div>
+
+      {/* Connection Notice banner if offline and not in scenario demo override */}
       {!isConnected && (
-        <div className="mt-16 bg-surface-container-high/80 backdrop-blur border-b border-outline-variant/30 text-on-surface-variant px-6 py-2 text-xs flex items-center justify-between">
+        <div className="bg-error-container text-on-error-container px-6 py-2 text-xs font-semibold flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-            <span>Simulation running with built-in Pune benchmark scenarios & fallback estimates.</span>
+            <span className="material-symbols-outlined text-[16px]">signal_disconnected</span>
+            <span>{error ? `Live stream notice: ${error}` : 'Simulation running with built-in Pune benchmark scenarios & fallback estimates.'}</span>
           </div>
           <button
             type="button"
@@ -101,18 +162,17 @@ export function App() {
         </div>
       )}
 
-      {/* 2. Main Content View Area */}
-      <main className={`flex-1 p-4 sm:p-6 max-w-[1600px] w-full mx-auto ${isConnected ? 'mt-16' : 'mt-1'}`}>
+      {/* 3. Main Content View Area */}
+      <main className="flex-1 p-4 sm:p-6 max-w-[1600px] w-full mx-auto">
         {currentView === 'guided-story' && (
           <GuidedStoryView
-            snapshot={snapshot}
+            snapshot={effectiveSnapshot}
             onNavigateToView={(target) => handleSwitchView(target)}
           />
         )}
-
         {currentView === 'ops-overview' && (
           <OpsOverviewView
-            snapshot={snapshot}
+            snapshot={effectiveSnapshot}
             onControl={sendControl}
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}
@@ -121,7 +181,7 @@ export function App() {
 
         {currentView === 'ops-batches' && (
           <BatchManagerView
-            snapshot={snapshot}
+            snapshot={effectiveSnapshot}
             onDispatchNow={dispatchBatchNow}
             onConfigureBatch={configureBatch}
             onGenerateDemand={generateDemand}
@@ -132,7 +192,7 @@ export function App() {
 
         {currentView === 'ops-optimization' && (
           <RouteOptimizationView
-            snapshot={snapshot}
+            snapshot={effectiveSnapshot}
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}
             onSolveOptimization={solveOptimization}
@@ -141,7 +201,15 @@ export function App() {
 
         {currentView === 'ops-detour-guarantees' && (
           <DetourGuaranteesView
-            snapshot={snapshot}
+            snapshot={effectiveSnapshot}
+            onSelectVehicle={handleSelectVehicle}
+            onSelectRequest={handleSelectRequest}
+          />
+        )}
+
+        {currentView === 'ops-fair-fares' && (
+          <FairFaresView
+            snapshot={effectiveSnapshot}
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}
           />
@@ -149,7 +217,7 @@ export function App() {
 
         {currentView === 'passenger-home' && (
           <PassengerHomeView
-            snapshot={snapshot}
+            snapshot={effectiveSnapshot}
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}
             onNavigateToWaiting={() => handleSwitchView('passenger-waiting')}
@@ -158,14 +226,39 @@ export function App() {
 
         {currentView === 'passenger-waiting' && (
           <PassengerWaitingView
-            snapshot={snapshot}
+            snapshot={effectiveSnapshot}
             onDispatchNow={dispatchBatchNow}
             onBackToBooking={() => handleSwitchView('passenger-home')}
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}
+            onNavigateToActive={() => handleSwitchView('passenger-active')}
+            onCancelRide={cancelRideRequest}
+          />
+        )}
+
+        {currentView === 'passenger-active' && (
+          <PassengerActiveView
+            snapshot={effectiveSnapshot}
+            onSelectVehicle={handleSelectVehicle}
+            onSelectRequest={handleSelectRequest}
+            onNavigateToBooking={() => handleSwitchView('passenger-home')}
+            onAdvanceStop={advanceVehicleStop}
+            onCancelRide={cancelRideRequest}
+            onSimulateCoRiderCancellation={simulateCoRiderCancellation}
+            onResetSession={resetPassengerSession}
+            initialCandidate={activeCandidateOverride}
+            autoOpenShapleySheet={autoOpenShapleySheet}
           />
         )}
       </main>
+
+      {/* 4. Global Interactive Guided Story Mode Wizard Overlay */}
+      <GuidedStoryOverlay
+        isOpen={isStoryModeOpen}
+        onToggle={() => setIsStoryModeOpen((prev) => !prev)}
+        onApplyScenarioSnapshot={handleApplyScenarioSnapshot}
+        onOpenShapleySheet={handleOpenShapleySheet}
+      />
     </div>
   );
 }

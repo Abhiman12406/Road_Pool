@@ -4,10 +4,10 @@
 
 **Blocked by:** 10: Cancellation Re-Routing, Seat Release & Trip Completion Receipt
 
-**Status:** ready-for-agent
+**Status:** closed
 
-- [ ] Collapsible Guided Story Mode wizard overlay walks evaluators sequentially through the complete journey (Book -> Batch -> Match -> Shapley -> Active Trip -> Mid-Trip Join -> Two-Way Consent -> Cancellation -> Receipt).
-- [ ] Quick-runner controls for all 12 test scenarios:
+- [x] Collapsible Guided Story Mode wizard overlay walks evaluators sequentially through the complete journey (Book -> Batch -> Match -> Shapley -> Active Trip -> Mid-Trip Join -> Two-Way Consent -> Cancellation -> Receipt).
+- [x] Quick-runner controls for all 12 test scenarios:
   1. Booking for 3 people reserves 3 seats.
   2. 3 compatible requests matched after buffer window.
   3. Candidate group rejected because passenger experiences 18% detour.
@@ -20,4 +20,4 @@
   10. Passenger decline prevents route insertion.
   11. Detour >15% or deadline violation rejected with explanation.
   12. Displayed Shapley fares sum exactly to allocated total cost after rounding.
-- [ ] Each test scenario sets the application state deterministically and displays a visual verification badge.
+- [x] Each test scenario sets the application state deterministically and displays a visual verification badge.

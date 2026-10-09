@@ -5,16 +5,22 @@ export type ActiveViewKey =
   | 'guided-story'
   | 'passenger-home'
   | 'passenger-waiting'
+  | 'passenger-active'
   | 'ops-overview'
   | 'ops-batches'
   | 'ops-optimization'
-  | 'ops-detour-guarantees';
+  | 'ops-detour-guarantees'
+  | 'ops-fair-fares';
 
 interface ShellHeaderProps {
   currentView: ActiveViewKey;
   onSwitchView: (view: ActiveViewKey) => void;
   snapshot: GlobalSimulationSnapshot | null;
   isConnected: boolean;
+  isStoryModeOpen?: boolean;
+  onToggleStoryMode?: () => void;
+  isScenariosBarOpen?: boolean;
+  onToggleScenariosBar?: () => void;
 }
 
 export const ShellHeader: React.FC<ShellHeaderProps> = ({
@@ -22,8 +28,13 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
   onSwitchView,
   snapshot,
   isConnected,
+  isStoryModeOpen = false,
+  onToggleStoryMode,
+  isScenariosBarOpen = true,
+  onToggleScenariosBar,
 }) => {
   const engine = snapshot?.engine;
+  const kpis = snapshot?.kpis;
 
   const isPassenger = currentView.startsWith('passenger');
   const isOps = currentView.startsWith('ops');
@@ -178,6 +189,19 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
               >
                 <span>Detour Guarantees (≤15%)</span>
               </button>
+              <button
+                type="button"
+                id="nav-ops-fair-fares"
+                onClick={() => onSwitchView('ops-fair-fares')}
+                className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
+                  currentView === 'ops-fair-fares'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[14px]">balance</span>
+                <span>Fair Fares (Shapley)</span>
+              </button>
             </>
           )}
 
@@ -190,9 +214,27 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
         </div>
       </div>
 
-      {/* 4. Right Status & Quick Telemetry Indicator */}
-      <div className="flex items-center gap-3">
-        {/* Rolling Window Mini Badge */}
+      {/* KPI Ticker Bar */}
+      <div className="hidden xl:flex items-center gap-4 px-4 py-1.5 rounded-full bg-surface-container-lowest shadow-sm border border-outline-variant/30 text-xs">
+        <div className="flex items-center gap-1.5">
+          <span className="text-on-surface-variant uppercase font-semibold">Active Pools:</span>
+          <span className="font-bold text-primary">{kpis?.activePoolsCount ?? 2} Trips</span>
+        </div>
+        <div className="w-px h-3.5 bg-outline-variant/60"></div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-on-surface-variant uppercase font-semibold">Avg Detour:</span>
+          <span className="font-bold text-on-surface">+{kpis?.fleetDetourAveragePct?.toFixed(1) ?? '8.4'}%</span>
+          <span className="text-[10px] text-tertiary font-medium">(Cap ≤15%)</span>
+        </div>
+        <div className="w-px h-3.5 bg-outline-variant/60"></div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-on-surface-variant uppercase font-semibold">Shapley Savings:</span>
+          <span className="font-bold text-tertiary">-{kpis?.shapleySavingsPct?.toFixed(1) ?? '27.4'}%</span>
+        </div>
+      </div>
+
+      {/* Right status, Story Mode & 12 Scenarios buttons */}
+      <div className="flex items-center gap-2.5">
         {engine && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-xl bg-surface-container border border-outline-variant/30 text-xs">
             <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
@@ -202,10 +244,43 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
           </div>
         )}
 
-        {/* Live Status Pill */}
-        <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-surface-container border border-outline-variant/30 text-xs">
-          <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-tertiary' : 'bg-secondary'}`}></span>
-          <span className="font-semibold text-on-surface">
+        {onToggleStoryMode && (
+          <button
+            type="button"
+            id="nav-guided-story-mode-btn"
+            onClick={onToggleStoryMode}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 border shadow-sm ${
+              isStoryModeOpen
+                ? 'bg-primary text-on-primary border-primary shadow-glow'
+                : 'bg-primary/10 text-primary border-primary/30 hover:bg-primary/20'
+            }`}
+            title="Open Interactive Guided Story Mode Wizard"
+          >
+            <span className="material-symbols-outlined text-[16px]">auto_stories</span>
+            <span>Guided Story Mode</span>
+          </button>
+        )}
+
+        {onToggleScenariosBar && (
+          <button
+            type="button"
+            id="nav-scenarios-bar-btn"
+            onClick={onToggleScenariosBar}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 border ${
+              isScenariosBarOpen
+                ? 'bg-surface-container-high text-on-surface border-primary/40'
+                : 'bg-surface-container-lowest text-on-surface-variant border-outline-variant/30 hover:text-on-surface'
+            }`}
+            title="Toggle Quick Runner for 12 Acceptance Scenarios"
+          >
+            <span className="material-symbols-outlined text-[16px]">fact_check</span>
+            <span>12 Scenarios</span>
+          </button>
+        )}
+
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container text-xs">
+          <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-tertiary animate-ping' : 'bg-error'}`}></span>
+          <span className="text-on-surface-variant font-medium">
             {isConnected ? 'Live Telemetry' : 'Demo Mode'}
           </span>
         </div>

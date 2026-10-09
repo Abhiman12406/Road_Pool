@@ -4,10 +4,10 @@
 
 **Blocked by:** 09: Dynamic Mid-Trip Join Injection & In-Context Two-Way Consent Workflow
 
-**Status:** ready-for-agent
+**Status:** closed
 
-- [ ] "Cancel My Ride" button provides confirmation dialog and cleanly cancels the active rider's booking.
-- [ ] "Simulate Co-Rider Cancellation" trigger removes co-riders (e.g. Passenger C), updates vehicle stops, and releases the reserved cabin seat.
-- [ ] Shared route cost and Shapley shares automatically recalculate for remaining passengers with a visible toast explaining the change.
-- [ ] Drop-off of completed passengers updates occupancy without retroactively changing completed fares.
-- [ ] When final destination is reached, displays Trip Completion Receipt with final Shapley fare paid, carbon offset, actual vs solo duration, and "Book Another Ride" action.
+- [x] "Cancel My Ride" button provides confirmation dialog and cleanly cancels the active rider's booking.
+- [x] "Simulate Co-Rider Cancellation" trigger removes co-riders (e.g. Passenger C), updates vehicle stops, and releases the reserved cabin seat.
+- [x] Shared route cost and Shapley shares automatically recalculate for remaining passengers with a visible toast explaining the change.
+- [x] Drop-off of completed passengers updates occupancy without retroactively changing completed fares.
+- [x] When final destination is reached, displays Trip Completion Receipt with final Shapley fare paid, carbon offset, actual vs solo duration, and "Book Another Ride" action.

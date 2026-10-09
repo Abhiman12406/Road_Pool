@@ -1,3 +1,5 @@
+import type { ShapleyPoolResult } from './shapley';
+
 export interface Location {
   lat: number;
   lng: number;
@@ -45,6 +47,9 @@ export interface RideRequest {
   detour_pct: number | null;
   shapley_fare_inr: number | null;
   rejection_reason?: string;
+  preferred_pickup_time?: string | null;
+  arrival_deadline?: string | null;
+  special_requirements?: string | null;
 }
 
 export interface SimulationKPIs {
@@ -66,6 +71,7 @@ export interface SimulationEngineState {
   batchThreshold: number;
   batchStatus: 'intake_open' | 'locked_optimizing' | 'dispatched';
   queuedRequestCount: number;
+  queuedSeatsCount?: number;
   lastDispatchReason?: string | null;
   lastDispatchedWindowId?: number | null;
   tickSpeed: '0.5x' | '1x' | '2x' | '5x';
@@ -83,7 +89,7 @@ export interface ActivePassengerSession {
   riderId: string;
   activeTripRequestId: string | null;
   assignedVehicleId: string | null;
-  lifecycleStatus: 'idle' | 'waiting_batch' | 'matched' | 'en_route_pickup' | 'in_transit' | 'dropped_off';
+  lifecycleStatus: 'idle' | 'waiting_batch' | 'matched' | 'en_route_pickup' | 'in_transit' | 'dropped_off' | 'no_match' | 'rejected' | 'solo_dispatched';
   guaranteedMaxDetourPct: number;
   actualDetourPct: number | null;
   fareSoloDirectInr: number;
@@ -144,4 +150,61 @@ export interface GlobalSimulationSnapshot {
   activePassengerSession: ActivePassengerSession;
   optimizationResult?: OptimizationResult | null;
   detourAudits?: DetourAuditEntry[];
+  shapleyPools?: Record<string, ShapleyPoolResult>;
+}
+
+export interface MidTripJoinCandidate {
+  request_id: string;
+  passenger_name: string;
+  pickup: Location;
+  dropoff: Location;
+  party_size: number;
+  solo_fare_inr: number;
+  proposed_fare_inr: number;
+  extra_duration_sec: number;
+  extra_distance_km: number;
+  affected_passenger_fare_before: number;
+  affected_passenger_fare_after: number;
+  affected_passenger_eta_delta_sec: number;
+  detour_pct: number;
+  is_valid: boolean;
+  rejection_reason?: string | null;
+  mathematical_proof?: string | null;
+}
+
+export interface MidTripConsentStatus {
+  candidate: MidTripJoinCandidate;
+  driver_consent?: 'pending' | 'accepted' | 'rejected';
+  passenger_consent?: 'pending' | 'accepted' | 'rejected';
+  status: 'pending' | 'accepted_both' | 'rejected_driver' | 'rejected_passenger' | 'violation_rejected';
+  message: string;
+}
+
+export interface AcceptanceScenarioDefinition {
+  id: number;
+  title: string;
+  shortTitle: string;
+  category: 'booking' | 'matching' | 'routing' | 'shapley' | 'mid-trip' | 'cancellation';
+  specSection: string;
+  description: string;
+  criteria: string[];
+  expectedBadge: string;
+  targetView:
+    | 'passenger-home'
+    | 'passenger-waiting'
+    | 'passenger-active'
+    | 'ops-overview'
+    | 'ops-batches'
+    | 'ops-optimization'
+    | 'ops-detour-guarantees'
+    | 'ops-fair-fares';
+}
+
+export interface ScenarioRunResult {
+  scenarioId: number;
+  verified: boolean;
+  timestamp: string;
+  title: string;
+  badge: string;
+  details: Record<string, any>;
 }

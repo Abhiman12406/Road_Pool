@@ -16,7 +16,7 @@ class Settings(BaseModel):
     PUNE_CENTER_LNG: float = 73.8567
     
     # Algorithmic & Simulation Defaults
-    DEFAULT_WINDOW_INTERVAL_SEC: int = 30
+    DEFAULT_WINDOW_INTERVAL_SEC: int = 45
     DEFAULT_BATCH_SIZE_THRESHOLD: int = 6
     MAX_DETOUR_PERCENT: float = 15.0  # Strict 15% Detour Cap
     

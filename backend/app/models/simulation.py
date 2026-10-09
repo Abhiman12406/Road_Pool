@@ -1,7 +1,7 @@
 """
 Simulation and Entity Models for RidePool AI
 """
-from typing import List, Dict, Optional, Literal
+from typing import List, Dict, Optional, Literal, Any
 from pydantic import BaseModel, Field
 
 class Location(BaseModel):
@@ -27,6 +27,9 @@ class RideRequest(BaseModel):
     detour_pct: Optional[float] = None
     shapley_fare_inr: Optional[float] = None
     rejection_reason: Optional[str] = None
+    preferred_pickup_time: Optional[str] = None
+    arrival_deadline: Optional[str] = None
+    special_requirements: Optional[str] = None
 
 class RouteStop(BaseModel):
     stop_id: str
@@ -104,11 +107,12 @@ class SimulationKPIs(BaseModel):
 class SimulationEngineState(BaseModel):
     status: Literal['running', 'paused', 'stepping', 'reset'] = 'running'
     currentWindowId: int = 101
-    windowIntervalSec: int = 30
-    timeRemainingInWindowSec: int = 30
+    windowIntervalSec: int = 45
+    timeRemainingInWindowSec: int = 45
     batchThreshold: int = 6
     batchStatus: Literal['intake_open', 'locked_optimizing', 'dispatched'] = 'intake_open'
     queuedRequestCount: int = 0
+    queuedSeatsCount: int = 0
     lastDispatchReason: Optional[str] = None
     lastDispatchedWindowId: Optional[int] = None
     tickSpeed: Literal['0.5x', '1x', '2x', '5x'] = '1x'
@@ -124,7 +128,7 @@ class ActivePassengerSession(BaseModel):
     riderId: str = "RIDER-PUNE-01"
     activeTripRequestId: Optional[str] = None
     assignedVehicleId: Optional[str] = None
-    lifecycleStatus: Literal['idle', 'waiting_batch', 'matched', 'en_route_pickup', 'in_transit', 'dropped_off'] = 'idle'
+    lifecycleStatus: Literal['idle', 'waiting_batch', 'matched', 'en_route_pickup', 'in_transit', 'dropped_off', 'no_match', 'rejected', 'solo_dispatched'] = 'idle'
     guaranteedMaxDetourPct: float = 15.0
     actualDetourPct: Optional[float] = None
     fareSoloDirectInr: float = 0.0
@@ -139,3 +143,29 @@ class GlobalSimulationSnapshot(BaseModel):
     activePassengerSession: ActivePassengerSession
     optimizationResult: Optional[OptimizationResult] = None
     detourAudits: List[DetourAuditEntry] = Field(default_factory=list)
+    shapleyPools: Dict[str, Any] = Field(default_factory=dict)
+
+class MidTripJoinCandidate(BaseModel):
+    request_id: str
+    passenger_name: str
+    pickup: Location
+    dropoff: Location
+    party_size: int = 1
+    solo_fare_inr: float
+    proposed_fare_inr: float
+    extra_duration_sec: int
+    extra_distance_km: float
+    affected_passenger_fare_before: float
+    affected_passenger_fare_after: float
+    affected_passenger_eta_delta_sec: int
+    detour_pct: float
+    is_valid: bool
+    rejection_reason: Optional[str] = None
+    mathematical_proof: Optional[str] = None
+
+class MidTripConsentStatus(BaseModel):
+    candidate: MidTripJoinCandidate
+    driver_consent: Optional[Literal['pending', 'accepted', 'rejected']] = 'pending'
+    passenger_consent: Optional[Literal['pending', 'accepted', 'rejected']] = 'pending'
+    status: Literal['pending', 'accepted_both', 'rejected_driver', 'rejected_passenger', 'violation_rejected'] = 'pending'
+    message: str = ""
