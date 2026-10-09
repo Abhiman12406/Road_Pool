@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSimulationSocket } from './services/simulationService';
 import { ShellHeader, type ActiveViewKey } from './components/ShellHeader';
+import { GuidedStoryView } from './views/story/GuidedStoryView';
 import { OpsOverviewView } from './views/ops/OpsOverviewView';
 import { BatchManagerView } from './views/ops/BatchManagerView';
 import { RouteOptimizationView } from './views/ops/RouteOptimizationView';
@@ -11,18 +12,21 @@ import { PassengerWaitingView } from './views/passenger/PassengerWaitingView';
 export function App() {
   const [currentView, setCurrentView] = useState<ActiveViewKey>(() => {
     const path = window.location.pathname;
+    if (path.includes('story') || path === '/story') return 'guided-story';
     if (path.includes('optimization') || path.includes('/ops/optimization')) return 'ops-optimization';
     if (path.includes('detour') || path.includes('/ops/detour-guarantees')) return 'ops-detour-guarantees';
     if (path.includes('batches') || path.includes('/ops/batches')) return 'ops-batches';
     if (path.includes('waiting') || path.includes('/passenger/waiting')) return 'passenger-waiting';
-    if (path.includes('passenger')) return 'passenger-home';
-    return 'ops-optimization'; // Default to operations optimization per Ticket 04
+    if (path.includes('passenger') || path.includes('/passenger/home')) return 'passenger-home';
+    if (path.includes('/ops')) return 'ops-overview';
+    // Default to friendly Guided Story walkthrough
+    return 'guided-story';
   });
 
   const {
     snapshot,
     isConnected,
-    error,
+    _error,
     sendControl,
     sendSelection,
     dispatchBatchNow,
@@ -35,12 +39,14 @@ export function App() {
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
-      if (path.includes('optimization')) setCurrentView('ops-optimization');
+      if (path.includes('story')) setCurrentView('guided-story');
+      else if (path.includes('optimization')) setCurrentView('ops-optimization');
       else if (path.includes('detour')) setCurrentView('ops-detour-guarantees');
       else if (path.includes('batches')) setCurrentView('ops-batches');
       else if (path.includes('waiting')) setCurrentView('passenger-waiting');
       else if (path.includes('passenger')) setCurrentView('passenger-home');
-      else setCurrentView('ops-overview');
+      else if (path.includes('/ops')) setCurrentView('ops-overview');
+      else setCurrentView('guided-story');
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -49,6 +55,7 @@ export function App() {
   const handleSwitchView = (view: ActiveViewKey) => {
     setCurrentView(view);
     const pathMap: Record<ActiveViewKey, string> = {
+      'guided-story': '/story',
       'ops-overview': '/ops',
       'ops-batches': '/ops/batches',
       'ops-optimization': '/ops/optimization',
@@ -56,7 +63,7 @@ export function App() {
       'passenger-home': '/passenger/home',
       'passenger-waiting': '/passenger/waiting',
     };
-    window.history.pushState(null, '', pathMap[view]);
+    window.history.pushState(null, '', pathMap[view] || '/');
   };
 
   const handleSelectVehicle = (vehicleId: string) => {
@@ -77,21 +84,32 @@ export function App() {
         isConnected={isConnected}
       />
 
-      {/* Connection Notice banner if offline */}
+      {/* Non-intrusive Simulation Status Banner if offline */}
       {!isConnected && (
-        <div className="mt-16 bg-error-container text-on-error-container px-6 py-2 text-xs font-semibold flex items-center justify-between">
+        <div className="mt-16 bg-surface-container-high/80 backdrop-blur border-b border-outline-variant/30 text-on-surface-variant px-6 py-2 text-xs flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[16px]">signal_disconnected</span>
-            <span>{error ? `Live stream notice: ${error}` : 'Connecting to backend live simulation stream (ws://localhost:8000/ws/live)...'}</span>
+            <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+            <span>Simulation running with built-in Pune benchmark scenarios & fallback estimates.</span>
           </div>
-          <span className="text-[11px] underline cursor-pointer" onClick={() => window.location.reload()}>
-            Retry
-          </span>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="text-[11px] font-semibold text-primary hover:underline"
+          >
+            Reconnect Live Stream
+          </button>
         </div>
       )}
 
       {/* 2. Main Content View Area */}
-      <main className={`flex-1 p-6 max-w-[1600px] w-full mx-auto ${isConnected ? 'mt-16' : 'mt-2'}`}>
+      <main className={`flex-1 p-4 sm:p-6 max-w-[1600px] w-full mx-auto ${isConnected ? 'mt-16' : 'mt-1'}`}>
+        {currentView === 'guided-story' && (
+          <GuidedStoryView
+            snapshot={snapshot}
+            onNavigateToView={(target) => handleSwitchView(target)}
+          />
+        )}
+
         {currentView === 'ops-overview' && (
           <OpsOverviewView
             snapshot={snapshot}

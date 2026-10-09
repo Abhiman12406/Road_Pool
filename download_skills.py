@@ -47,6 +47,36 @@ SKILLS_TO_INSTALL: List[Dict[str, str]] = [
         "skill": "web-artifacts-builder",
         "category": "Architecture",
         "description": "Complex multi-screen interactive web application builder"
+    },
+    {
+        "repo": "vercel-labs/agent-skills",
+        "skill": "web-design-guidelines",
+        "category": "Design/UI",
+        "description": "Vercel web design guidelines, typography, visual hierarchy, and accessibility"
+    },
+    {
+        "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
+        "skill": "ui-ux-pro-max",
+        "category": "Design/UI",
+        "description": "Comprehensive UI/UX usability heuristics and simplified workflows"
+    },
+    {
+        "repo": "pbakaus/impeccable",
+        "skill": "impeccable",
+        "category": "Design/UI",
+        "description": "Interface craft, decluttering, aesthetic polish, and micro-interactions"
+    },
+    {
+        "repo": "addyosmani/agent-skills",
+        "skill": "performance-optimization",
+        "category": "Performance",
+        "description": "Web performance optimization, debloating, and rendering speed"
+    },
+    {
+        "repo": "vercel-labs/agent-skills",
+        "skill": "vercel-optimize",
+        "category": "Performance",
+        "description": "Bundle optimization, code splitting, and bundle reduction"
     }
 ]
 
