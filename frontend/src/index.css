@@ -6,18 +6,60 @@
   html, body {
     margin: 0;
     padding: 0;
-    background-color: #fbfbfa;
-    color: #111827;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    font-family: 'UberMoveText', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-feature-settings: 'ss01', 'cv02', 'cv03', 'cv04', 'cv11';
   }
 
   /* Monospace figures for all financial, ETA, and mathematical readouts */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
+
+  /* Uber Headline styling: Sentence-case, weight 700, never letter-spaced */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'UberMove', 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Uber Typography Display Scales */
+.text-display-xxl {
+  font-family: 'UberMove', 'Inter', system-ui, sans-serif;
+  font-size: 52px;
+  line-height: 64px;
+  font-weight: 700;
+}
+
+.text-display-xl {
+  font-family: 'UberMove', 'Inter', system-ui, sans-serif;
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 700;
+}
+
+.text-display-lg {
+  font-family: 'UberMove', 'Inter', system-ui, sans-serif;
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 700;
+}
+
+.text-display-md {
+  font-family: 'UberMove', 'Inter', system-ui, sans-serif;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+}
+
+.text-display-sm {
+  font-family: 'UberMove', 'Inter', system-ui, sans-serif;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 700;
 }
 
 /* Subtle, unobtrusive scrollbars */
@@ -39,20 +81,71 @@
   background: #9ca3af;
 }
 
-/* Minimalist Utility Bento Surface */
-.bento-card {
+/* Uber Signature Components */
+.uber-card {
   background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
+  border: 1px solid #efefef;
+  border-radius: 16px;
+}
+
+.uber-card-elevated {
+  background-color: #ffffff;
+  border: 1px solid #e2e2e2;
+  border-radius: 16px;
+  box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.12);
+}
+
+.uber-pill {
+  border-radius: 999px;
+}
+
+.btn-uber-primary {
+  background-color: #000000;
+  color: #ffffff;
+  border-radius: 999px;
+  font-weight: 500;
+  padding: 10px 18px;
+  transition: all 0.15s ease;
+}
+
+.btn-uber-primary:hover {
+  background-color: #282828;
+}
+
+.btn-uber-secondary {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #e2e2e2;
+  border-radius: 999px;
+  font-weight: 500;
+  padding: 10px 18px;
+  transition: all 0.15s ease;
+}
+
+.btn-uber-secondary:hover {
+  background-color: #f3f3f3;
+}
+
+.btn-uber-subtle {
+  background-color: #efefef;
+  color: #000000;
+  border-radius: 999px;
+  font-weight: 500;
+  padding: 8px 16px;
+  transition: all 0.15s ease;
+}
+
+.btn-uber-subtle:hover {
+  background-color: #e2e2e2;
 }
 
 /* Leaflet map custom styling */
 .leaflet-container {
-  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-family: 'UberMoveText', 'Inter', sans-serif !important;
   background-color: #f3f4f6 !important;
   width: 100%;
   height: 100%;
-  border-radius: 0.75rem;
+  border-radius: 16px;
   border: 1px solid #e5e7eb;
 }
 

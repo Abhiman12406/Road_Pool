@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSimulationSocket } from './services/simulationService';
 import { ShellHeader, type ActiveViewKey } from './components/ShellHeader';
-import { GuidedStoryView } from './views/story/GuidedStoryView';
 import { DemoScenarioDrawer } from './components/DemoScenarioDrawer';
-import { GuidedStoryOverlay } from './components/GuidedStoryOverlay';
 import type { GlobalSimulationSnapshot, MidTripJoinCandidate } from './types/simulation';
 import { OpsOverviewView } from './views/ops/OpsOverviewView';
 import { BatchManagerView } from './views/ops/BatchManagerView';
@@ -13,11 +11,16 @@ import { FairFaresView } from './views/ops/FairFaresView';
 import { PassengerHomeView } from './views/passenger/PassengerHomeView';
 import { PassengerWaitingView } from './views/passenger/PassengerWaitingView';
 import { PassengerActiveView } from './views/passenger/PassengerActiveView';
+import { DriverHomeView } from './views/driver/DriverHomeView';
+import { DriverTripsView } from './views/driver/DriverTripsView';
+import { DriverActivityView } from './views/driver/DriverActivityView';
+import { DriverProfileView } from './views/driver/DriverProfileView';
+import { DriverSidebar } from './components/driver/DriverSidebar';
+import { DriverTopHeader } from './components/driver/DriverTopHeader';
 
 export function App() {
   const [currentView, setCurrentView] = useState<ActiveViewKey>(() => {
     const path = window.location.pathname;
-    if (path.includes('story') || path === '/story') return 'guided-story';
     if (path.includes('fair-fares') || path.includes('/ops/fair-fares')) return 'ops-fair-fares';
     if (path.includes('active') || path.includes('/passenger/active')) return 'passenger-active';
     if (path.includes('optimization') || path.includes('/ops/optimization')) return 'ops-optimization';
@@ -25,9 +28,13 @@ export function App() {
     if (path.includes('batches') || path.includes('/ops/batches')) return 'ops-batches';
     if (path.includes('waiting') || path.includes('/passenger/waiting')) return 'passenger-waiting';
     if (path.includes('passenger') || path.includes('/passenger/home')) return 'passenger-home';
+    if (path.includes('driver/trips')) return 'driver-trips';
+    if (path.includes('driver/activity')) return 'driver-activity';
+    if (path.includes('driver/profile')) return 'driver-profile';
+    if (path.includes('driver')) return 'driver-home';
     if (path.includes('/ops')) return 'ops-overview';
-    // Default to friendly Guided Story walkthrough
-    return 'guided-story';
+    // Default to Driver Cockpit
+    return 'driver-home';
   });
 
   const {
@@ -46,8 +53,11 @@ export function App() {
     resetPassengerSession,
   } = useSimulationSocket();
 
-  // Acceptance Scenarios & Guided Story Mode states
-  const [isStoryModeOpen, setIsStoryModeOpen] = useState<boolean>(false);
+  // Driver Cockpit state
+  const [isDriverOnline, setIsDriverOnline] = useState<boolean>(true);
+  const [selectedDriverVehicleId, setSelectedDriverVehicleId] = useState<string>('V-101');
+
+  // Acceptance Scenarios states
   const [isDemoDrawerOpen, setIsDemoDrawerOpen] = useState<boolean>(false);
   const [scenarioSnapshotOverride, setScenarioSnapshotOverride] = useState<GlobalSimulationSnapshot | null>(null);
   const [activeCandidateOverride, setActiveCandidateOverride] = useState<MidTripJoinCandidate | null>(null);
@@ -74,16 +84,19 @@ export function App() {
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
-      if (path.includes('story')) setCurrentView('guided-story');
-      else if (path.includes('fair-fares')) setCurrentView('ops-fair-fares');
+      if (path.includes('fair-fares')) setCurrentView('ops-fair-fares');
       else if (path.includes('active')) setCurrentView('passenger-active');
       else if (path.includes('optimization')) setCurrentView('ops-optimization');
       else if (path.includes('detour')) setCurrentView('ops-detour-guarantees');
       else if (path.includes('batches')) setCurrentView('ops-batches');
       else if (path.includes('waiting')) setCurrentView('passenger-waiting');
       else if (path.includes('passenger')) setCurrentView('passenger-home');
+      else if (path.includes('driver/trips')) setCurrentView('driver-trips');
+      else if (path.includes('driver/activity')) setCurrentView('driver-activity');
+      else if (path.includes('driver/profile')) setCurrentView('driver-profile');
+      else if (path.includes('driver')) setCurrentView('driver-home');
       else if (path.includes('/ops')) setCurrentView('ops-overview');
-      else setCurrentView('guided-story');
+      else setCurrentView('driver-home');
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -92,7 +105,6 @@ export function App() {
   const handleSwitchView = (view: ActiveViewKey) => {
     setCurrentView(view);
     const pathMap: Record<ActiveViewKey, string> = {
-      'guided-story': '/story',
       'ops-overview': '/ops',
       'ops-batches': '/ops/batches',
       'ops-optimization': '/ops/optimization',
@@ -101,6 +113,10 @@ export function App() {
       'passenger-home': '/passenger/home',
       'passenger-waiting': '/passenger/waiting',
       'passenger-active': '/passenger/active',
+      'driver-home': '/driver/home',
+      'driver-trips': '/driver/trips',
+      'driver-activity': '/driver/activity',
+      'driver-profile': '/driver/profile',
     };
     window.history.pushState(null, '', pathMap[view] || '/');
   };
@@ -134,35 +150,42 @@ export function App() {
     setTimeout(() => setAutoOpenShapleySheet(false), 500);
   };
 
+  const handleToggleDemoDrawer = () => {
+    setIsDemoDrawerOpen((prev) => !prev);
+  };
+
+  const handleOpenDemoDrawer = () => {
+    setIsDemoDrawerOpen(true);
+  };
+
   // When a scenario is explicitly selected, use that snapshot; otherwise use live socket snapshot
   const effectiveSnapshot = scenarioSnapshotOverride || snapshot;
+  const isDriver = currentView.startsWith('driver');
 
   return (
-    <div className="min-h-screen bg-background text-on-surface flex flex-col font-sans selection:bg-slate-200">
+    <div className="min-h-screen bg-white text-black flex flex-col font-sans selection:bg-[#efefef]">
       {/* 1. Global Shell Navigation Bar */}
       <ShellHeader
         currentView={currentView}
         onSwitchView={handleSwitchView}
         snapshot={effectiveSnapshot}
         isConnected={isConnected}
-        isStoryModeOpen={isStoryModeOpen}
-        onToggleStoryMode={() => setIsStoryModeOpen((prev) => !prev)}
         isScenariosBarOpen={isDemoDrawerOpen}
-        onToggleScenariosBar={() => setIsDemoDrawerOpen((prev) => !prev)}
-        onOpenDemoDrawer={() => setIsDemoDrawerOpen(true)}
+        onToggleScenariosBar={handleToggleDemoDrawer}
+        onOpenDemoDrawer={handleOpenDemoDrawer}
       />
 
       {/* Connection Notice banner if offline and not in scenario demo override */}
       {!isConnected && (
-        <div className="mt-14 bg-amber-50 border-b border-amber-200 text-amber-900 px-6 py-2 text-xs font-semibold flex items-center justify-between">
+        <div className="mt-14 bg-[#efefef] border-b border-[#e2e2e2] text-black px-6 py-2 text-xs font-medium flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[16px] text-amber-700">sensors_off</span>
+            <span className="material-symbols-outlined text-[16px] text-black">sensors_off</span>
             <span>{error ? `Live stream notice: ${error}` : 'Simulation running with built-in Pune benchmark scenarios & fallback estimates.'}</span>
           </div>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="text-[11px] font-bold text-slate-900 hover:underline"
+            className="text-[11px] font-bold text-black hover:underline"
           >
             Reconnect Live Stream
           </button>
@@ -171,12 +194,6 @@ export function App() {
 
       {/* 2. Main Content View Area */}
       <main className={`flex-1 p-4 sm:p-6 max-w-[1600px] w-full mx-auto ${isConnected ? 'mt-14' : ''}`}>
-        {currentView === 'guided-story' && (
-          <GuidedStoryView
-            snapshot={effectiveSnapshot}
-            onNavigateToView={(target) => handleSwitchView(target)}
-          />
-        )}
         {currentView === 'ops-overview' && (
           <OpsOverviewView
             snapshot={effectiveSnapshot}
@@ -243,6 +260,46 @@ export function App() {
           />
         )}
 
+        {/* 2.1 Driver Cockpit Workspace */}
+        {isDriver && (
+          <div className="flex flex-col md:flex-row min-h-[calc(100vh-5rem)] -m-4 sm:-m-6 bg-[#f8f8f8]">
+            <div className="hidden md:block">
+              <DriverSidebar
+                currentView={currentView}
+                onSwitchView={handleSwitchView}
+                isOnline={isDriverOnline}
+                onToggleOnline={() => setIsDriverOnline((prev) => !prev)}
+              />
+            </div>
+            <div className="flex-1 flex flex-col min-w-0 bg-[#f8f8f8]">
+              <DriverTopHeader
+                isOnline={isDriverOnline}
+                onToggleOnline={() => setIsDriverOnline((prev) => !prev)}
+                selectedVehicleId={selectedDriverVehicleId}
+                onSelectVehicleId={setSelectedDriverVehicleId}
+                vehicles={effectiveSnapshot?.vehicles || {}}
+                onNavigateToView={handleSwitchView}
+              />
+              <div className="p-4 sm:p-6 max-w-[1600px] w-full mx-auto">
+                {currentView === 'driver-home' && (
+                  <DriverHomeView
+                    snapshot={effectiveSnapshot}
+                    isOnline={isDriverOnline}
+                    onToggleOnline={() => setIsDriverOnline((prev) => !prev)}
+                    selectedVehicleId={selectedDriverVehicleId}
+                    onSelectVehicleId={setSelectedDriverVehicleId}
+                    onAdvanceStop={advanceVehicleStop}
+                    onNavigateToView={handleSwitchView}
+                  />
+                )}
+                {currentView === 'driver-trips' && <DriverTripsView />}
+                {currentView === 'driver-activity' && <DriverActivityView />}
+                {currentView === 'driver-profile' && <DriverProfileView />}
+              </div>
+            </div>
+          </div>
+        )}
+
         {currentView === 'passenger-active' && (
           <PassengerActiveView
             snapshot={effectiveSnapshot}
@@ -266,19 +323,10 @@ export function App() {
         onApplyScenarioSnapshot={handleApplyScenarioSnapshot}
         onOpenShapleySheet={handleOpenShapleySheet}
         onResetToLive={handleResetToLive}
-        onLaunchStoryMode={() => setIsStoryModeOpen(true)}
         onAdvanceStop={advanceVehicleStop}
         onSimulateCoRiderCancellation={simulateCoRiderCancellation}
         onResetSession={resetPassengerSession}
         isLiveMode={scenarioSnapshotOverride === null}
-      />
-
-      {/* 4. Global Interactive Guided Story Mode Wizard Overlay */}
-      <GuidedStoryOverlay
-        isOpen={isStoryModeOpen}
-        onToggle={() => setIsStoryModeOpen((prev) => !prev)}
-        onApplyScenarioSnapshot={handleApplyScenarioSnapshot}
-        onOpenShapleySheet={handleOpenShapleySheet}
       />
     </div>
   );

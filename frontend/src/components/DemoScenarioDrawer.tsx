@@ -116,22 +116,22 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-xl bg-white border-l border-slate-200 flex flex-col shadow-2xl">
+        <div className="w-screen max-w-xl bg-white border-l border-[#efefef] flex flex-col shadow-2xl">
           {/* Header */}
-          <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+          <div className="p-5 border-b border-[#efefef] flex items-center justify-between bg-white">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-sm">
+              <div className="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center font-bold text-sm">
                 <span className="material-symbols-outlined text-[18px]">verified</span>
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-bold text-slate-900">Demo & Verification Console</h2>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-200 text-slate-700 font-mono">
+                  <h2 className="text-base font-bold text-black">Acceptance test suite</h2>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#efefef] text-black font-mono">
                     Section 11
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  12 Deterministic Acceptance Tests & Simulation Triggers
+                <p className="text-xs text-[#5e5e5e] mt-0.5">
+                  12 deterministic acceptance tests & simulation triggers
                 </p>
               </div>
             </div>
@@ -140,7 +140,7 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200/60 transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[#5e5e5e] hover:text-black hover:bg-[#efefef] transition-colors"
                 aria-label="Close drawer"
               >
                 <span className="material-symbols-outlined text-[20px]">close</span>
@@ -149,29 +149,29 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
           </div>
 
           {/* Mode Tab Switcher */}
-          <div className="px-5 pt-3 pb-2 border-b border-slate-200 flex items-center justify-between gap-2 bg-white">
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg text-xs font-medium">
+          <div className="px-5 py-3 border-b border-[#efefef] flex items-center justify-between gap-2 bg-white">
+            <div className="flex items-center gap-1 bg-[#efefef] p-1 rounded-full text-xs font-medium">
               <button
                 type="button"
                 onClick={() => setActiveTab('scenarios')}
-                className={`px-3 py-1 rounded-md transition-all ${
+                className={`px-3 py-1 rounded-full transition-all ${
                   activeTab === 'scenarios'
-                    ? 'bg-white text-slate-900 font-bold shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-black text-white font-medium shadow-sm'
+                    : 'text-[#5e5e5e] hover:text-black'
                 }`}
               >
-                12 Acceptance Scenarios
+                12 Acceptance scenarios
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab('simulator')}
-                className={`px-3 py-1 rounded-md transition-all ${
+                className={`px-3 py-1 rounded-full transition-all ${
                   activeTab === 'simulator'
-                    ? 'bg-white text-slate-900 font-bold shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-black text-white font-medium shadow-sm'
+                    : 'text-[#5e5e5e] hover:text-black'
                 }`}
               >
-                Simulation Triggers
+                Simulation triggers
               </button>
             </div>
 
@@ -181,7 +181,7 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                   type="button"
                   id="btn-reset-to-live"
                   onClick={handleResetToLiveStream}
-                  className="px-2.5 py-1 rounded text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 flex items-center gap-1 transition-colors"
+                  className="px-3 py-1 rounded-full text-xs font-medium text-black bg-[#efefef] hover:bg-[#e2e2e2] flex items-center gap-1 transition-colors"
                 >
                   <span className="material-symbols-outlined text-[14px]">sensors</span>
                   <span>Reset to Live</span>
@@ -192,7 +192,7 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                   type="button"
                   id="btn-run-next-scenario"
                   onClick={handleNextScenario}
-                  className="px-2.5 py-1 rounded text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition-colors flex items-center gap-1"
+                  className="px-3.5 py-1 rounded-full text-xs font-medium bg-black text-white hover:bg-[#282828] transition-colors flex items-center gap-1 shadow-sm"
                 >
                   <span className="material-symbols-outlined text-[14px]">fast_forward</span>
                   <span>{activeScenarioId ? `Next (${(activeScenarioId % 12) + 1}/12)` : 'Run First'}</span>
@@ -203,22 +203,22 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
 
           {/* Active Verification Toast in Drawer */}
           {verificationResult && (
-            <div className="m-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-xs">
+            <div className="m-4 p-3.5 rounded-2xl bg-[#efefef] border border-[#e2e2e2] text-xs">
               <div className="flex items-start justify-between gap-2">
-                <div className="flex items-start gap-2">
-                  <span className="material-symbols-outlined text-emerald-700 text-[18px] shrink-0 mt-0.5">
+                <div className="flex items-start gap-2.5">
+                  <span className="material-symbols-outlined text-black text-[18px] shrink-0 mt-0.5">
                     check_circle
                   </span>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-emerald-950">
+                      <span className="font-bold text-black">
                         Scenario #{verificationResult.scenario.id}: {verificationResult.scenario.title}
                       </span>
-                      <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-600 text-white uppercase tracking-wider">
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-black text-white uppercase tracking-wider">
                         PASSED
                       </span>
                     </div>
-                    <p className="text-emerald-800 font-mono text-[11px] mt-0.5">
+                    <p className="text-[#5e5e5e] font-mono text-[11px] mt-0.5">
                       {verificationResult.badge}
                     </p>
                   </div>
@@ -226,7 +226,7 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                 <button
                   type="button"
                   onClick={() => setVerificationResult(null)}
-                  className="text-emerald-700 hover:text-emerald-900 font-bold"
+                  className="text-[#5e5e5e] hover:text-black font-bold p-1"
                 >
                   ✕
                 </button>
@@ -245,10 +245,10 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                       key={cat}
                       type="button"
                       onClick={() => setCategoryFilter(cat)}
-                      className={`px-2.5 py-1 rounded text-[11px] font-medium capitalize transition-colors ${
+                      className={`px-3 py-1 rounded-full text-[11px] font-medium capitalize transition-colors ${
                         categoryFilter === cat
-                          ? 'bg-slate-900 text-white font-bold'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          ? 'bg-black text-white font-medium'
+                          : 'bg-[#efefef] text-[#5e5e5e] hover:text-black hover:bg-[#e2e2e2]'
                       }`}
                     >
                       {cat}
@@ -257,7 +257,7 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                 </div>
 
                 {/* Scenarios Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {filteredScenarios.map((scenario) => {
                     const isSelected = activeScenarioId === scenario.id;
                     return (
@@ -266,25 +266,25 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                         type="button"
                         id={`btn-scenario-${scenario.id}`}
                         onClick={() => handleRunScenario(scenario)}
-                        className={`p-3 rounded-lg text-left border transition-all flex flex-col justify-between gap-1.5 ${
+                        className={`p-4 rounded-2xl text-left border transition-all flex flex-col justify-between gap-2 ${
                           isSelected
-                            ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
-                            : 'bg-white hover:bg-slate-50 text-slate-900 border-slate-200 hover:border-slate-300'
+                            ? 'bg-black text-white border-black shadow-md'
+                            : 'bg-white hover:bg-[#efefef] text-black border-[#efefef] hover:border-[#e2e2e2]'
                         }`}
                       >
                         <div className="flex items-center justify-between w-full">
                           <span
-                            className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                            className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
                               isSelected
-                                ? 'bg-white/20 text-white'
-                                : 'bg-slate-100 text-slate-700'
+                                ? 'bg-[#282828] text-white'
+                                : 'bg-[#efefef] text-black'
                             }`}
                           >
                             #{scenario.id}
                           </span>
                           <span
                             className={`text-[9px] uppercase font-bold tracking-wider ${
-                              isSelected ? 'text-slate-300' : 'text-slate-400'
+                              isSelected ? 'text-[#afafaf]' : 'text-[#5e5e5e]'
                             }`}
                           >
                             {scenario.category}
@@ -297,7 +297,7 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
 
                         <span
                           className={`text-[10px] truncate ${
-                            isSelected ? 'text-slate-300' : 'text-slate-500'
+                            isSelected ? 'text-[#afafaf]' : 'text-[#5e5e5e]'
                           }`}
                         >
                           {scenario.specSection}
@@ -310,19 +310,19 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
             ) : (
               /* Simulation Triggers Tab */
               <div className="space-y-4">
-                <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-600">
-                  <p className="font-semibold text-slate-900 mb-1">
-                    Direct Simulation Controls
+                <div className="p-4 rounded-2xl bg-[#efefef] border border-[#e2e2e2] text-xs text-[#5e5e5e]">
+                  <p className="font-bold text-black mb-1">
+                    Direct simulation controls
                   </p>
                   <p>
                     Trigger real-time state changes on active vehicle{' '}
-                    <span className="font-mono font-bold text-slate-900">{activeVehicleId}</span>{' '}
+                    <span className="font-mono font-bold text-black">{activeVehicleId}</span>{' '}
                     without cluttering the passenger view with test buttons.
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <div className="text-[11px] font-bold text-[#5e5e5e] uppercase tracking-wider">
                     Stop Progression & Timing
                   </div>
                   <button
@@ -338,22 +338,22 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                       }
                     }}
                     disabled={!onAdvanceStop || simActionPending === 'advance'}
-                    className="w-full p-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 text-xs font-semibold flex items-center justify-between transition-colors disabled:opacity-50"
+                    className="w-full p-3.5 rounded-xl border border-[#efefef] bg-white hover:bg-[#efefef] text-black text-xs font-medium flex items-center justify-between transition-colors disabled:opacity-50"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-slate-700">
+                    <div className="flex items-center gap-2.5">
+                      <span className="material-symbols-outlined text-[18px] text-black">
                         skip_next
                       </span>
-                      <span>Advance Vehicle Next Stop</span>
+                      <span>Advance vehicle to next stop</span>
                     </div>
-                    <span className="text-[11px] text-slate-500 font-mono">
+                    <span className="text-[11px] text-[#5e5e5e] font-mono">
                       {simActionPending === 'advance' ? 'Advancing...' : 'V-101'}
                     </span>
                   </button>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <div className="text-[11px] font-bold text-[#5e5e5e] uppercase tracking-wider">
                     Mid-Trip Co-Rider Join Injections
                   </div>
                   <button
@@ -362,15 +362,15 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                       if (onSimulateCompatibleJoiner) onSimulateCompatibleJoiner();
                       onClose();
                     }}
-                    className="w-full p-3 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-950 text-xs font-semibold flex items-center justify-between transition-colors"
+                    className="w-full p-3.5 rounded-xl border border-[#efefef] bg-white hover:bg-[#efefef] text-black text-xs font-medium flex items-center justify-between transition-colors"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-emerald-700">
+                    <div className="flex items-center gap-2.5">
+                      <span className="material-symbols-outlined text-[18px] text-black">
                         person_add
                       </span>
-                      <span>Inject Compatible Joiner (Detour ≤ 15%)</span>
+                      <span>Inject compatible joiner (detour ≤ 15%)</span>
                     </div>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-200 text-emerald-800">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#efefef] text-black">
                       Eligible
                     </span>
                   </button>
@@ -381,22 +381,22 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                       if (onSimulateIncompatibleJoiner) onSimulateIncompatibleJoiner();
                       onClose();
                     }}
-                    className="w-full p-3 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-950 text-xs font-semibold flex items-center justify-between transition-colors"
+                    className="w-full p-3.5 rounded-xl border border-[#efefef] bg-white hover:bg-[#efefef] text-black text-xs font-medium flex items-center justify-between transition-colors"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-rose-700">
+                    <div className="flex items-center gap-2.5">
+                      <span className="material-symbols-outlined text-[18px] text-black">
                         block
                       </span>
-                      <span>Inject Incompatible Joiner (Detour &gt; 15%)</span>
+                      <span>Inject incompatible joiner (detour &gt; 15%)</span>
                     </div>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-200 text-rose-800">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#efefef] text-black">
                       Rejected
                     </span>
                   </button>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <div className="text-[11px] font-bold text-[#5e5e5e] uppercase tracking-wider">
                     Dynamic Cancellation & Rebalancing
                   </div>
                   <button
@@ -412,15 +412,15 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                       }
                     }}
                     disabled={!onSimulateCoRiderCancellation || simActionPending === 'corider_cancel'}
-                    className="w-full p-3 rounded-lg border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-950 text-xs font-semibold flex items-center justify-between transition-colors disabled:opacity-50"
+                    className="w-full p-3.5 rounded-xl border border-[#efefef] bg-white hover:bg-[#efefef] text-black text-xs font-medium flex items-center justify-between transition-colors disabled:opacity-50"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-amber-700">
+                    <div className="flex items-center gap-2.5">
+                      <span className="material-symbols-outlined text-[18px] text-black">
                         person_remove
                       </span>
-                      <span>Simulate Co-Rider Cancellation (Mid-Trip)</span>
+                      <span>Simulate co-rider cancellation (mid-trip)</span>
                     </div>
-                    <span className="text-[11px] text-amber-800 font-mono">
+                    <span className="text-[11px] text-[#5e5e5e] font-mono">
                       {simActionPending === 'corider_cancel' ? 'Rebalancing...' : 'Seat Released'}
                     </span>
                   </button>
@@ -438,16 +438,35 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                       }
                     }}
                     disabled={!onResetSession || simActionPending === 'reset'}
-                    className="w-full p-3 rounded-lg border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold flex items-center justify-between transition-colors disabled:opacity-50"
+                    className="w-full p-3.5 rounded-xl border border-[#efefef] bg-[#efefef] hover:bg-[#e2e2e2] text-black text-xs font-medium flex items-center justify-between transition-colors disabled:opacity-50"
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px] text-slate-700">
+                    <div className="flex items-center gap-2.5">
+                      <span className="material-symbols-outlined text-[18px] text-black">
                         restart_alt
                       </span>
-                      <span>Reset Passenger Session</span>
+                      <span>Reset passenger session</span>
                     </div>
-                    <span className="text-[11px] text-slate-500 font-mono">
-                      {simActionPending === 'reset' ? 'Resetting...' : 'Fresh State'}
+                    <span className="text-[11px] text-[#5e5e5e] font-mono">
+                      {simActionPending === 'reset' ? 'Resetting...' : 'Fresh state'}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onApplyScenarioSnapshot(buildDeterministicScenarioSnapshot(1), 'driver-home');
+                    }}
+                    className="w-full p-3.5 rounded-xl border border-black bg-black text-white hover:bg-[#282828] text-xs font-medium flex items-center justify-between transition-colors shadow-sm"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="material-symbols-outlined text-[18px]">
+                        sports_motorsports
+                      </span>
+                      <span>Switch to Driver Cockpit & Live Manifest</span>
+                    </div>
+                    <span className="text-[11px] text-[#afafaf] font-mono">
+                      Driver view
                     </span>
                   </button>
                 </div>
@@ -456,11 +475,11 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between text-xs text-slate-500">
+          <div className="p-4 border-t border-[#efefef] bg-white flex items-center justify-between text-xs text-[#5e5e5e]">
             <div className="flex items-center gap-2">
               <span className={`w-2 h-2 rounded-full ${isLiveMode ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-              <span className="font-medium">
-                {isLiveMode ? 'Connected to Simulation' : 'Viewing Scenario Override'}
+              <span className="font-medium text-black">
+                {isLiveMode ? 'Connected to simulation' : 'Viewing scenario override'}
               </span>
             </div>
             {onLaunchStoryMode && (
@@ -470,9 +489,9 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
                   onClose();
                   onLaunchStoryMode();
                 }}
-                className="text-slate-900 hover:underline font-bold flex items-center gap-1"
+                className="text-black hover:underline font-bold flex items-center gap-1"
               >
-                <span>Guided Story Walkthrough</span>
+                <span>Guided Story walkthrough</span>
                 <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
               </button>
             )}

@@ -2,10 +2,13 @@ import React from 'react';
 import type { GlobalSimulationSnapshot } from '../types/simulation';
 
 export type ActiveViewKey =
-  | 'guided-story'
   | 'passenger-home'
   | 'passenger-waiting'
   | 'passenger-active'
+  | 'driver-home'
+  | 'driver-trips'
+  | 'driver-activity'
+  | 'driver-profile'
   | 'ops-overview'
   | 'ops-batches'
   | 'ops-optimization'
@@ -17,8 +20,6 @@ interface ShellHeaderProps {
   onSwitchView: (view: ActiveViewKey) => void;
   snapshot: GlobalSimulationSnapshot | null;
   isConnected: boolean;
-  isStoryModeOpen?: boolean;
-  onToggleStoryMode?: () => void;
   isScenariosBarOpen?: boolean;
   onToggleScenariosBar?: () => void;
   onOpenDemoDrawer?: () => void;
@@ -29,16 +30,14 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
   onSwitchView,
   snapshot,
   isConnected,
-  isStoryModeOpen = false,
-  onToggleStoryMode,
   isScenariosBarOpen = false,
   onToggleScenariosBar,
   onOpenDemoDrawer,
 }) => {
   const kpis = snapshot?.kpis;
   const isPassenger = currentView.startsWith('passenger');
+  const isDriver = currentView.startsWith('driver');
   const isOps = currentView.startsWith('ops');
-  const isStory = currentView === 'guided-story';
 
   const handleOpenDemo = () => {
     if (onOpenDemoDrawer) {
@@ -49,37 +48,37 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-14 bg-white/95 backdrop-blur-md z-40 border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 h-16 bg-white/98 backdrop-blur-md z-40 border-b border-[#efefef] px-4 sm:px-6 flex items-center justify-between">
       {/* 1. Brand Logo */}
       <div className="flex items-center gap-5">
         <button
           type="button"
-          onClick={() => onSwitchView('guided-story')}
+          onClick={() => onSwitchView('passenger-home')}
           className="flex items-center gap-2.5 text-left group focus:outline-none"
         >
-          <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold text-xs">
-            <span className="material-symbols-outlined text-[18px]">alt_route</span>
+          <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white font-bold text-xs shadow-sm">
+            <span className="material-symbols-outlined text-[17px]">alt_route</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-sm tracking-tight text-slate-900">
-              RidePool<span className="text-slate-500 font-normal">.AI</span>
+            <span className="font-extrabold text-base tracking-tight text-black font-display">
+              RidePool<span className="text-[#5e5e5e] font-normal">.AI</span>
             </span>
-            <span className="text-[10px] text-slate-500 font-medium">
+            <span className="text-[10px] text-[#5e5e5e] font-medium">
               Pune EV Metro Corridor
             </span>
           </div>
         </button>
 
-        {/* 2. Primary Mode Segmented Control */}
-        <nav aria-label="Mode selector" className="bg-slate-100 p-0.5 rounded-lg flex items-center border border-slate-200/60">
+        {/* 2. Primary Mode Segmented Control (Uber signature pill) */}
+        <nav aria-label="Mode selector" className="bg-[#efefef] p-1 rounded-full flex items-center border border-[#e2e2e2]">
           <button
             type="button"
             id="nav-passenger-mode-btn"
             onClick={() => onSwitchView('passenger-home')}
-            className={`px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-all ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all ${
               isPassenger
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-black text-white shadow-sm'
+                : 'text-[#5e5e5e] hover:text-black'
             }`}
           >
             <span className="material-symbols-outlined text-[15px]">person</span>
@@ -88,70 +87,126 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
 
           <button
             type="button"
+            id="nav-driver-mode-btn"
+            onClick={() => onSwitchView('driver-home')}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all ${
+              isDriver
+                ? 'bg-black text-white shadow-sm'
+                : 'text-[#5e5e5e] hover:text-black'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[15px]">sports_motorsports</span>
+            <span>Driver Cockpit</span>
+          </button>
+
+          <button
+            type="button"
             id="nav-ops-mode-btn"
             onClick={() => onSwitchView('ops-overview')}
-            className={`px-3 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-all ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all ${
               isOps
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-black text-white shadow-sm'
+                : 'text-[#5e5e5e] hover:text-black'
             }`}
           >
             <span className="material-symbols-outlined text-[15px]">grid_view</span>
             <span>Operations Console</span>
           </button>
-
-          <button
-            type="button"
-            id="nav-story-mode-btn"
-            onClick={() => onSwitchView('guided-story')}
-            className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-all ${
-              isStory
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <span className="material-symbols-outlined text-[15px]">school</span>
-            <span className="hidden sm:inline">Guided Story</span>
-          </button>
         </nav>
 
-        {/* 3. Sub-View Navigation (Context-Aware) */}
+        {/* 3. Sub-View Navigation (Context-Aware Pill Controls) */}
+        {isDriver && (
+          <div className="hidden xl:flex items-center gap-1 border-l border-[#efefef] pl-4 text-xs font-medium text-[#5e5e5e]">
+            <button
+              type="button"
+              id="nav-driver-home"
+              onClick={() => onSwitchView('driver-home')}
+              className={`px-3 py-1 rounded-full transition-colors ${
+                currentView === 'driver-home'
+                  ? 'text-black font-semibold bg-[#efefef]'
+                  : 'hover:text-black'
+              }`}
+            >
+              1. Cockpit & Map
+            </button>
+            <span className="text-[#afafaf]">/</span>
+            <button
+              type="button"
+              id="nav-driver-trips"
+              onClick={() => onSwitchView('driver-trips')}
+              className={`px-3 py-1 rounded-full transition-colors ${
+                currentView === 'driver-trips'
+                  ? 'text-black font-semibold bg-[#efefef]'
+                  : 'hover:text-black'
+              }`}
+            >
+              2. My Trips
+            </button>
+            <span className="text-[#afafaf]">/</span>
+            <button
+              type="button"
+              id="nav-driver-activity"
+              onClick={() => onSwitchView('driver-activity')}
+              className={`px-3 py-1 rounded-full transition-colors ${
+                currentView === 'driver-activity'
+                  ? 'text-black font-semibold bg-[#efefef]'
+                  : 'hover:text-black'
+              }`}
+            >
+              3. Activity
+            </button>
+            <span className="text-[#afafaf]">/</span>
+            <button
+              type="button"
+              id="nav-driver-profile"
+              onClick={() => onSwitchView('driver-profile')}
+              className={`px-3 py-1 rounded-full transition-colors ${
+                currentView === 'driver-profile'
+                  ? 'text-black font-semibold bg-[#efefef]'
+                  : 'hover:text-black'
+              }`}
+            >
+              4. Profile
+            </button>
+          </div>
+        )}
+
         {isPassenger && (
-          <div className="hidden xl:flex items-center gap-1 border-l border-slate-200 pl-4 text-xs font-medium text-slate-600">
+          <div className="hidden xl:flex items-center gap-1 border-l border-[#efefef] pl-4 text-xs font-medium text-[#5e5e5e]">
             <button
               type="button"
               id="nav-passenger-home"
               onClick={() => onSwitchView('passenger-home')}
-              className={`px-2.5 py-1 rounded transition-colors ${
+              className={`px-3 py-1 rounded-full transition-colors ${
                 currentView === 'passenger-home'
-                  ? 'text-slate-900 font-bold bg-slate-100'
-                  : 'hover:text-slate-900'
+                  ? 'text-black font-semibold bg-[#efefef]'
+                  : 'hover:text-black'
               }`}
             >
               1. Book Ride
             </button>
-            <span className="text-slate-300">/</span>
+            <span className="text-[#afafaf]">/</span>
             <button
               type="button"
               id="nav-passenger-waiting"
               onClick={() => onSwitchView('passenger-waiting')}
-              className={`px-2.5 py-1 rounded transition-colors ${
+              className={`px-3 py-1 rounded-full transition-colors ${
                 currentView === 'passenger-waiting'
-                  ? 'text-slate-900 font-bold bg-slate-100'
-                  : 'hover:text-slate-900'
+                  ? 'text-black font-semibold bg-[#efefef]'
+                  : 'hover:text-black'
               }`}
             >
               2. Batch Matching
             </button>
-            <span className="text-slate-300">/</span>
+            <span className="text-[#afafaf]">/</span>
             <button
               type="button"
               id="nav-passenger-active"
               onClick={() => onSwitchView('passenger-active')}
-              className={`px-2.5 py-1 rounded transition-colors ${
+              className={`px-3 py-1 rounded-full transition-colors ${
                 currentView === 'passenger-active'
-                  ? 'text-slate-900 font-bold bg-slate-100'
-                  : 'hover:text-slate-900'
+                  ? 'text-black font-semibold bg-[#efefef]'
+                  : 'hover:text-black'
               }`}
             >
               3. In-Ride Trip
@@ -160,13 +215,13 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
         )}
 
         {isOps && (
-          <div className="hidden xl:flex items-center gap-1 border-l border-slate-200 pl-4 text-xs font-medium text-slate-600">
+          <div className="hidden xl:flex items-center gap-1 border-l border-[#efefef] pl-4 text-xs font-medium text-[#5e5e5e]">
             <button
               type="button"
               id="nav-ops-overview"
               onClick={() => onSwitchView('ops-overview')}
-              className={`px-2 py-1 rounded transition-colors ${
-                currentView === 'ops-overview' ? 'text-slate-900 font-bold bg-slate-100' : 'hover:text-slate-900'
+              className={`px-3 py-1 rounded-full transition-colors ${
+                currentView === 'ops-overview' ? 'text-black font-semibold bg-[#efefef]' : 'hover:text-black'
               }`}
             >
               Fleet Map
@@ -175,8 +230,8 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
               type="button"
               id="nav-ops-batches"
               onClick={() => onSwitchView('ops-batches')}
-              className={`px-2 py-1 rounded transition-colors ${
-                currentView === 'ops-batches' ? 'text-slate-900 font-bold bg-slate-100' : 'hover:text-slate-900'
+              className={`px-3 py-1 rounded-full transition-colors ${
+                currentView === 'ops-batches' ? 'text-black font-semibold bg-[#efefef]' : 'hover:text-black'
               }`}
             >
               Batches
@@ -185,8 +240,8 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
               type="button"
               id="nav-ops-optimization"
               onClick={() => onSwitchView('ops-optimization')}
-              className={`px-2 py-1 rounded transition-colors ${
-                currentView === 'ops-optimization' ? 'text-slate-900 font-bold bg-slate-100' : 'hover:text-slate-900'
+              className={`px-3 py-1 rounded-full transition-colors ${
+                currentView === 'ops-optimization' ? 'text-black font-semibold bg-[#efefef]' : 'hover:text-black'
               }`}
             >
               Route Optimization
@@ -195,8 +250,8 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
               type="button"
               id="nav-ops-detour-guarantees"
               onClick={() => onSwitchView('ops-detour-guarantees')}
-              className={`px-2 py-1 rounded transition-colors ${
-                currentView === 'ops-detour-guarantees' ? 'text-slate-900 font-bold bg-slate-100' : 'hover:text-slate-900'
+              className={`px-3 py-1 rounded-full transition-colors ${
+                currentView === 'ops-detour-guarantees' ? 'text-black font-semibold bg-[#efefef]' : 'hover:text-black'
               }`}
             >
               Detour Guarantees (≤15%)
@@ -205,8 +260,8 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
               type="button"
               id="nav-ops-fair-fares"
               onClick={() => onSwitchView('ops-fair-fares')}
-              className={`px-2 py-1 rounded transition-colors ${
-                currentView === 'ops-fair-fares' ? 'text-slate-900 font-bold bg-slate-100' : 'hover:text-slate-900'
+              className={`px-3 py-1 rounded-full transition-colors ${
+                currentView === 'ops-fair-fares' ? 'text-black font-semibold bg-[#efefef]' : 'hover:text-black'
               }`}
             >
               Fair Fares (Shapley)
@@ -236,39 +291,64 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
 
       {/* 5. Right Action Area */}
       <div className="flex items-center gap-2">
-        {/* Story Mode Shortcut */}
-        {onToggleStoryMode && (
+        {/* Universal Demo Role Switcher [ P ] [ D ] [ A ] (Uber signature pill) */}
+        <div
+          role="group"
+          aria-label="Universal Demo Role Switcher"
+          className="hidden sm:flex items-center p-0.5 bg-[#efefef] rounded-full border border-[#e2e2e2] mr-1"
+        >
           <button
             type="button"
-            id="nav-guided-story-mode-btn"
-            onClick={onToggleStoryMode}
-            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all flex items-center gap-1 border ${
-              isStoryModeOpen
-                ? 'bg-slate-900 text-white border-slate-900'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            id="shell-role-p"
+            onClick={() => onSwitchView('passenger-home')}
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+              isPassenger ? 'bg-black text-white shadow-sm' : 'text-[#5e5e5e] hover:text-black'
             }`}
-            title="Open Interactive Guided Story Mode Wizard"
+            title="Switch to Passenger App"
           >
-            <span className="material-symbols-outlined text-[15px]">auto_stories</span>
-            <span className="hidden md:inline">Story Wizard</span>
+            P
           </button>
-        )}
+          <button
+            type="button"
+            id="shell-role-d"
+            onClick={() => onSwitchView('driver-home')}
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+              isDriver ? 'bg-black text-white shadow-sm' : 'text-[#5e5e5e] hover:text-black'
+            }`}
+            title="Switch to Driver Dashboard"
+          >
+            D
+          </button>
+          <button
+            type="button"
+            id="shell-role-a"
+            onClick={() => onSwitchView('ops-overview')}
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+              isOps ? 'bg-black text-white shadow-sm' : 'text-[#5e5e5e] hover:text-black'
+            }`}
+            title="Switch to Operations Console"
+          >
+            A
+          </button>
+        </div>
+
+
 
         {/* Demo Scenarios Drawer Trigger */}
         <button
           type="button"
           id="nav-scenarios-bar-btn"
           onClick={handleOpenDemo}
-          className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 border ${
+          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
             isScenariosBarOpen
-              ? 'bg-slate-900 text-white border-slate-900'
-              : 'bg-slate-900 text-white border-slate-900 hover:bg-slate-800'
+              ? 'bg-[#282828] text-white shadow-inner ring-2 ring-black'
+              : 'bg-black hover:bg-[#282828] text-white shadow-sm'
           }`}
           title="Open 12 Acceptance Scenarios & Simulator Console (Press 'D')"
         >
-          <span className="material-symbols-outlined text-[15px]">fact_check</span>
+          <span className="material-symbols-outlined text-[16px]">fact_check</span>
           <span>Scenarios (12)</span>
-          <kbd className="hidden sm:inline px-1 py-0.2 rounded text-[10px] bg-slate-800 text-slate-300 font-mono">D</kbd>
+          <kbd className="hidden sm:inline px-1 py-0.2 rounded text-[10px] bg-neutral-800 text-neutral-300 font-mono">D</kbd>
         </button>
 
         {/* Live connection dot */}

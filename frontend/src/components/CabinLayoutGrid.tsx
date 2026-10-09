@@ -78,29 +78,29 @@ export const CabinLayoutGrid: React.FC<CabinLayoutGridProps> = ({
   const renderSeatPill = (seat: CabinSeat) => {
     if (seat.isDriver) {
       return (
-        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface">
+        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface shrink-0 whitespace-nowrap">
           Pilot
         </span>
       );
     }
     if (seat.status === 'onboard') {
       return (
-        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1 shrink-0 whitespace-nowrap">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
           Onboard
         </span>
       );
     }
     if (seat.status === 'reserved') {
       return (
-        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 flex items-center gap-1 shrink-0 whitespace-nowrap">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
           Reserved
         </span>
       );
     }
     return (
-      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant/30">
+      <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant/30 shrink-0 whitespace-nowrap">
         Available
       </span>
     );
@@ -112,50 +112,61 @@ export const CabinLayoutGrid: React.FC<CabinLayoutGridProps> = ({
         key={seat.seatId}
         type="button"
         onClick={() => handleSeatClick(seat)}
-        className={`p-3 rounded-2xl border transition-all text-left flex flex-col justify-between min-h-[96px] ${getSeatCardClasses(
+        className={`p-2.5 sm:p-3 rounded-2xl border transition-all text-left flex flex-col justify-between min-h-[104px] overflow-hidden w-full min-w-0 relative ${getSeatCardClasses(
           seat
         )}`}
       >
-        <div className="flex items-center justify-between w-full gap-2">
-          <div className="flex items-center gap-2">
-            {renderSeatIcon(seat)}
-            <div className="flex flex-col">
-              <span className="text-[11px] font-bold text-on-surface line-clamp-1">
-                {seat.passengerName || seat.seatLabel}
-              </span>
-              <span className="text-[10px] text-on-surface-variant font-medium">
-                {seat.seatLabel}
-              </span>
-            </div>
-          </div>
+        {/* Top Header: Icon on Left, Compact Status Pill on Right */}
+        <div className="flex items-center justify-between w-full min-w-0 gap-1.5">
+          {renderSeatIcon(seat)}
           {renderSeatPill(seat)}
         </div>
 
-        <div className="mt-2 pt-1.5 border-t border-outline-variant/20 flex items-center justify-between text-[10px]">
+        {/* Middle Details: Full-width Passenger Name & Seat Position */}
+        <div className="min-w-0 w-full mt-1.5">
+          <span
+            className="text-[11px] font-bold text-on-surface truncate block"
+            title={seat.passengerName || seat.seatLabel}
+          >
+            {seat.passengerName || seat.seatLabel}
+          </span>
+          <span className="text-[10px] text-on-surface-variant font-medium truncate block">
+            {seat.seatLabel}
+          </span>
+        </div>
+
+        {/* Bottom Route & Fare Sub-bar */}
+        <div className="mt-2 pt-1.5 border-t border-outline-variant/20 flex items-center justify-between text-[10px] w-full min-w-0 gap-1">
           {seat.isDriver ? (
-            <span className="text-on-surface-variant italic">Standard Driving Seat</span>
+            <span className="text-on-surface-variant italic truncate">Standard Driving Seat</span>
           ) : seat.status === 'onboard' ? (
             <>
-              <span className="font-semibold text-emerald-800 dark:text-emerald-200 truncate">
+              <span
+                className="font-semibold text-emerald-800 dark:text-emerald-200 truncate min-w-0 flex-1"
+                title={seat.dropoffName || 'Destination'}
+              >
                 To: {seat.dropoffName || 'Destination'}
               </span>
-              <span className="font-extrabold text-emerald-800 dark:text-emerald-200 shrink-0">
+              <span className="font-extrabold text-emerald-800 dark:text-emerald-200 shrink-0 tabular-nums">
                 ₹{seat.shapleyFareInr?.toFixed(2) || '0.00'}
               </span>
             </>
           ) : seat.status === 'reserved' ? (
             <>
-              <span className="font-semibold text-amber-800 dark:text-amber-200 truncate">
+              <span
+                className="font-semibold text-amber-800 dark:text-amber-200 truncate min-w-0 flex-1"
+                title={seat.pickupName || 'Pickup Point'}
+              >
                 From: {seat.pickupName || 'Pickup Point'}
               </span>
-              <span className="font-extrabold text-amber-800 dark:text-amber-200 shrink-0">
+              <span className="font-extrabold text-amber-800 dark:text-amber-200 shrink-0 tabular-nums">
                 ₹{seat.shapleyFareInr?.toFixed(2) || '0.00'}
               </span>
             </>
           ) : (
-            <span className="text-primary font-semibold flex items-center gap-1">
-              <span className="material-symbols-outlined text-[12px]">add_circle</span>
-              Open for Pool Booking
+            <span className="text-primary font-semibold flex items-center gap-1 truncate text-[10px]">
+              <span className="material-symbols-outlined text-[13px] shrink-0">add_circle</span>
+              <span className="truncate">Open for Pool</span>
             </span>
           )}
         </div>
@@ -164,35 +175,35 @@ export const CabinLayoutGrid: React.FC<CabinLayoutGridProps> = ({
   };
 
   return (
-    <div className="bg-surface-container-lowest rounded-3xl p-5 border border-outline-variant/30 shadow-card flex flex-col gap-4">
+    <div className="bg-surface-container-lowest rounded-3xl p-5 border border-outline-variant/30 shadow-card flex flex-col gap-4 overflow-hidden">
       {/* Top Occupancy Header & Metrics */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/30">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-primary-container text-on-primary-container flex items-center justify-center font-bold shadow-sm">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-9 h-9 rounded-xl bg-primary-container text-on-primary-container flex items-center justify-center font-bold shadow-sm shrink-0">
             <span className="material-symbols-outlined text-[20px]">airline_seat_recline_extra</span>
           </div>
-          <div>
-            <h2 className="text-sm font-bold text-on-surface tracking-tight">
+          <div className="min-w-0">
+            <h2 className="text-sm font-bold text-on-surface tracking-tight truncate">
               4-Seat Cabin Occupancy Grid
             </h2>
-            <span className="text-[11px] text-on-surface-variant font-medium">
+            <span className="text-[11px] text-on-surface-variant font-medium truncate block">
               Vehicle {vehicleId} • {vehicleName}
             </span>
           </div>
         </div>
 
         {/* Status Count Badges */}
-        <div className="flex items-center gap-2 text-xs flex-wrap">
-          <div className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-200 font-bold flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <div className="flex items-center gap-1.5 text-xs flex-wrap">
+          <div className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-200 font-bold flex items-center gap-1 shrink-0 text-[11px]">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
             <span>{occupiedCount} Onboard</span>
           </div>
-          <div className="px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-200 font-bold flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+          <div className="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-200 font-bold flex items-center gap-1 shrink-0 text-[11px]">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
             <span>{reservedCount} Reserved</span>
           </div>
-          <div className="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-semibold border border-outline-variant/30 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-outline"></span>
+          <div className="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-semibold border border-outline-variant/30 flex items-center gap-1 shrink-0 text-[11px]">
+            <span className="w-1.5 h-1.5 rounded-full bg-outline shrink-0"></span>
             <span>{availableCount} Free</span>
           </div>
         </div>
@@ -221,7 +232,7 @@ export const CabinLayoutGrid: React.FC<CabinLayoutGridProps> = ({
         </div>
 
         {/* Row 2: Rear 3 Passenger Seats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2">
           {renderSeatContent(rearLeft)}
           {renderSeatContent(rearMiddle)}
           {renderSeatContent(rearRight)}

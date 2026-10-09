@@ -32,27 +32,27 @@ export const ActiveTripFarePanel: React.FC<ActiveTripFarePanelProps> = ({
   return (
     <div className="space-y-4">
       {/* 1. Transparent Fair Fare Card */}
-      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div className="bg-white p-6 rounded-2xl border border-[#efefef] shadow-card space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-[#efefef]">
           <div>
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
-              Transparent In-Ride Fare
+            <span className="text-[11px] uppercase font-medium text-[#5e5e5e] tracking-wider block">
+              In-ride fare
             </span>
             <div className="flex items-baseline gap-2 mt-0.5">
-              <span className="text-2xl font-bold font-mono text-slate-900 tabular-nums">
+              <span className="text-3xl font-bold font-display text-black tabular-nums">
                 ₹{currentFare.toFixed(2)}
               </span>
-              <span className="text-xs font-mono text-slate-400 line-through tabular-nums">
+              <span className="text-sm font-mono text-[#5e5e5e] line-through tabular-nums">
                 ₹{soloFare.toFixed(2)}
               </span>
             </div>
           </div>
 
-          <div className="flex flex-col items-end gap-1">
-            <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800 font-mono">
+          <div className="flex flex-col items-end gap-1.5">
+            <span className="px-3 py-1 rounded-full text-xs font-medium bg-black text-white font-mono">
               Save {savingsPct}% (Shapley)
             </span>
-            <span className="text-[10px] text-slate-500 font-mono">
+            <span className="text-xs text-[#5e5e5e] font-mono">
               Detour: +{detourPct.toFixed(1)}% (Cap ≤15%)
             </span>
           </div>
@@ -62,38 +62,38 @@ export const ActiveTripFarePanel: React.FC<ActiveTripFarePanelProps> = ({
           type="button"
           id="btn-open-shapley-sheet"
           onClick={onOpenShapleySheet}
-          className="w-full py-2 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+          className="btn-uber-subtle w-full py-3 text-xs flex items-center justify-center gap-2"
         >
-          <span className="material-symbols-outlined text-[16px] text-slate-700">balance</span>
-          <span>View Shapley Savings Breakdown</span>
+          <span className="material-symbols-outlined text-[16px]">balance</span>
+          <span>View Shapley savings breakdown</span>
         </button>
       </div>
 
-      {/* 2. Mid-Trip Co-Rider Consent Prompt (When candidate is pending) */}
+      {/* 2. Mid-Trip Co-Rider Consent Prompt */}
       {activeJoinCandidate && onAcceptCandidate && onDeclineCandidate && (
-        <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 space-y-3 animate-in fade-in">
+        <div className="p-5 rounded-2xl bg-[#efefef] border border-[#e2e2e2] space-y-3 animate-in fade-in">
           <div className="flex items-start justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-amber-700 text-[18px]">
-                group_add
-              </span>
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-bold">
+                <span className="material-symbols-outlined text-[18px]">group_add</span>
+              </div>
               <div>
-                <span className="font-bold text-xs text-amber-950 block">
-                  Mid-Trip Co-Rider Request
+                <span className="font-bold text-xs text-black block">
+                  Mid-trip co-rider request
                 </span>
-                <span className="text-[11px] text-amber-800">
+                <span className="text-[11px] text-[#5e5e5e]">
                   {activeJoinCandidate.passenger_name} wants to join at {activeJoinCandidate.pickup.name}
                 </span>
               </div>
             </div>
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-200 text-amber-900 font-mono">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-black text-white">
               Detour +{activeJoinCandidate.detour_pct.toFixed(1)}% ≤ 15%
             </span>
           </div>
 
-          <div className="p-2.5 rounded-lg bg-white/80 border border-amber-200 text-[11px] flex justify-between text-slate-700 font-mono">
-            <span>Your Fare: ₹{activeJoinCandidate.affected_passenger_fare_before.toFixed(2)} → <strong className="text-emerald-700">₹{activeJoinCandidate.affected_passenger_fare_after.toFixed(2)}</strong></span>
-            <span className="text-emerald-700 font-bold">Extra Savings ₹{(activeJoinCandidate.affected_passenger_fare_before - activeJoinCandidate.affected_passenger_fare_after).toFixed(2)}</span>
+          <div className="p-3 rounded-xl bg-white border border-[#efefef] text-xs flex flex-wrap items-center justify-between gap-2 text-[#5e5e5e] font-mono">
+            <span>Your fare: ₹{activeJoinCandidate.affected_passenger_fare_before.toFixed(2)} → <strong className="text-black">₹{activeJoinCandidate.affected_passenger_fare_after.toFixed(2)}</strong></span>
+            <span className="text-black font-bold">Extra savings ₹{(activeJoinCandidate.affected_passenger_fare_before - activeJoinCandidate.affected_passenger_fare_after).toFixed(2)}</span>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
@@ -101,15 +101,15 @@ export const ActiveTripFarePanel: React.FC<ActiveTripFarePanelProps> = ({
               type="button"
               id="btn-passenger-accept-join"
               onClick={onAcceptCandidate}
-              className="py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-colors shadow-xs"
+              className="btn-uber-primary py-2.5 text-xs"
             >
-              Accept Co-Rider
+              Accept co-rider
             </button>
             <button
               type="button"
               id="btn-passenger-decline-join"
               onClick={onDeclineCandidate}
-              className="py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-colors"
+              className="btn-uber-subtle py-2.5 text-xs"
             >
               Decline
             </button>
@@ -118,18 +118,18 @@ export const ActiveTripFarePanel: React.FC<ActiveTripFarePanelProps> = ({
       )}
 
       {/* 3. Cabin Occupancy Grid (4 Seats) */}
-      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+      <div className="bg-white p-6 rounded-2xl border border-[#efefef] shadow-card space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-xs text-slate-900 uppercase tracking-wider">
-              Cabin Occupancy
+            <h3 className="font-bold text-xs text-black uppercase tracking-wider">
+              Cabin occupancy
             </h3>
-            <span className="text-[11px] text-slate-500">
-              Tata Tigor EV • 4-Seat Layout
+            <span className="text-xs text-[#5e5e5e]">
+              Tata Tigor EV • 4-seat layout
             </span>
           </div>
-          <span className="text-xs font-mono font-bold text-slate-900 px-2 py-0.5 rounded bg-slate-100">
-            {cabinState.occupiedCount}/{cabinState.totalCapacity} Seats
+          <span className="text-xs font-mono font-medium text-black px-2.5 py-0.5 rounded-full bg-[#efefef]">
+            {cabinState.occupiedCount}/{cabinState.totalCapacity} seats
           </span>
         </div>
 

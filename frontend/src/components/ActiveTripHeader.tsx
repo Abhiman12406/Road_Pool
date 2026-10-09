@@ -20,53 +20,53 @@ export const ActiveTripHeader: React.FC<ActiveTripHeaderProps> = ({
   const etaMinutes = nextStop ? Math.max(1, Math.round(nextStop.eta_seconds_from_now / 60)) : 0;
 
   return (
-    <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="bg-white p-5 rounded-2xl border border-[#efefef] shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
       {/* Left: Vehicle & Current Movement */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold">
+        <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">
           <span className="material-symbols-outlined text-[20px]">electric_car</span>
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-bold text-sm sm:text-base text-slate-900">
+            <h2 className="font-bold text-base text-black font-display">
               {vehicle.name}
             </h2>
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-slate-700">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-[#efefef] text-black">
               {vehicle.vehicle_id}
             </span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+          <div className="flex items-center gap-2 text-xs text-[#5e5e5e] mt-0.5">
             <span className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-[14px] text-emerald-600">battery_charging_full</span>
+              <span className="material-symbols-outlined text-[15px] text-black">battery_charging_full</span>
               <span className="font-mono">{vehicle.battery_pct}% EV</span>
             </span>
             <span>•</span>
-            <span>Rider: <strong className="text-slate-800">{activeRequest?.passenger_name || 'Rider'}</strong></span>
+            <span>Rider: <strong className="text-black font-medium">{activeRequest?.passenger_name || 'Rider'}</strong></span>
             <span>•</span>
-            <span>At: <strong className="text-slate-800">{vehicle.current_location.name}</strong></span>
+            <span>At: <strong className="text-black font-medium">{vehicle.current_location.name}</strong></span>
           </div>
         </div>
       </div>
 
       {/* Center: Next Stop ETA */}
       {nextStop ? (
-        <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[#efefef] text-xs">
+          <div className="w-2 h-2 rounded-full bg-black animate-pulse" />
           <div>
-            <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-              Next: {nextStop.stop_type === 'pickup' ? 'Passenger Pickup' : 'Drop-off'}
+            <div className="text-[10px] uppercase font-medium text-[#5e5e5e] tracking-wider">
+              Next: {nextStop.stop_type === 'pickup' ? 'Passenger pickup' : 'Drop-off'}
             </div>
-            <div className="font-bold text-slate-900">
+            <div className="font-bold text-black">
               {nextStop.location.name}
-              <span className="text-emerald-700 ml-1.5 font-mono">
+              <span className="text-black ml-1.5 font-mono">
                 (~{etaMinutes} min)
               </span>
             </div>
           </div>
         </div>
       ) : (
-        <div className="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-semibold">
-          Final Destination Reached
+        <div className="px-4 py-2 rounded-full bg-[#efefef] text-black text-xs font-medium">
+          Final destination reached
         </div>
       )}
 
@@ -78,11 +78,11 @@ export const ActiveTripHeader: React.FC<ActiveTripHeaderProps> = ({
             id="btn-advance-stop"
             onClick={() => onAdvanceStop(vehicle.vehicle_id)}
             disabled={isAdvancing}
-            className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50"
+            className="btn-uber-subtle px-4 py-2 text-xs flex items-center gap-1.5"
             title="Simulate vehicle reaching next scheduled stop"
           >
-            <span className="material-symbols-outlined text-[16px] text-slate-700">skip_next</span>
-            <span>{isAdvancing ? 'Advancing...' : 'Next Stop'}</span>
+            <span className="material-symbols-outlined text-[16px]">skip_next</span>
+            <span>{isAdvancing ? 'Advancing...' : 'Next stop'}</span>
           </button>
         )}
 
@@ -91,7 +91,7 @@ export const ActiveTripHeader: React.FC<ActiveTripHeaderProps> = ({
             type="button"
             id="btn-cancel-active-ride"
             onClick={onCancelClick}
-            className="px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 text-xs font-semibold transition-colors"
+            className="px-3 py-1.5 rounded-full text-[#5e5e5e] hover:text-black hover:bg-[#efefef] text-xs font-medium transition-colors"
             title="Cancel active booking"
           >
             Cancel

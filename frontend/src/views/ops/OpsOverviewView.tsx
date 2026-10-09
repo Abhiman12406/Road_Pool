@@ -118,6 +118,7 @@ export const OpsOverviewView: React.FC<OpsOverviewViewProps> = ({
           </div>
           <div className="flex-1 h-[520px] rounded-xl overflow-hidden border border-neutral-200">
             <LiveMap
+              mapId="ops-overview"
               vehicles={vehicles}
               requests={requests}
               selectedVehicleId={selectedVehicleId}
