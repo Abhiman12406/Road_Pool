@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"on-tertiary":"#ffffff","background":"#f9f9ff","surface-container-high":"#dee8ff","on-primary-container":"#004965","inverse-surface":"#263143","outline-variant":"#bdc8d1","on-background":"#111c2d","secondary-fixed-dim":"#eec200","on-error-container":"#93000a","on-secondary-fixed-variant":"#574500","on-tertiary-container":"#344b00","outline":"#6e7980","surface":"#f9f9ff","primary-container":"#38bdf8","surface-container-lowest":"#ffffff","on-primary":"#ffffff","tertiary-container":"#9ebc67","on-tertiary-fixed-variant":"#364e03","tertiary-fixed":"#ceee93","surface-bright":"#f9f9ff","on-surface":"#111c2d","surface-dim":"#cfdaf2","surface-container":"#e7eeff","on-secondary":"#ffffff","surface-container-highest":"#d8e3fb","error":"#ba1a1a","primary-fixed":"#c4e7ff","primary":"#00668a","on-primary-fixed":"#001e2c","on-primary-fixed-variant":"#004c69","on-tertiary-fixed":"#131f00","secondary":"#735c00","inverse-primary":"#7bd0ff","error-container":"#ffdad6","on-secondary-container":"#6f5900","on-secondary-fixed":"#231b00","secondary-fixed":"#ffe083","secondary-container":"#fed01b","tertiary-fixed-dim":"#b3d17a","primary-fixed-dim":"#7bd0ff","on-error":"#ffffff","on-surface-variant":"#3e484f","surface-container-low":"#f0f3ff","surface-tint":"#00668a","inverse-on-surface":"#ecf1ff","tertiary":"#4d661c","surface-variant":"#d8e3fb"},"borderRadius":{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"},"spacing":{"gutter":"1.5rem","space-md":"1rem","space-xs":"0.375rem","space-lg":"1.5rem","margin":"2rem","space-sm":"0.75rem","space-xl":"2.25rem"},"fontFamily":{"body-lg":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"headline-xl-mobile":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"title-lg":["Plus Jakarta Sans"],"title-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"]},"fontSize":{"body-lg":["15px",{"lineHeight":"22px","fontWeight":"500"}],"headline-lg":["36px",{"lineHeight":"44px","fontWeight":"700"}],"headline-xl-mobile":["32px",{"lineHeight":"40px","fontWeight":"800"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"500"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"700"}],"headline-xl":["44px",{"lineHeight":"52px","fontWeight":"800"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"700"}],"title-lg":["20px",{"lineHeight":"28px","fontWeight":"600"}],"title-md":["16px",{"lineHeight":"24px","fontWeight":"600"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-lg text-body-lg text-on-surface min-h-screen"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low/95 backdrop-blur-xl z-50 flex flex-col justify-between py-space-md shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)]"><div class="flex flex-col gap-space-md"><div class="px-space-md flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shadow-[0_4px_12px_rgba(56,189,248,0.35)]"><span class="material-symbols-outlined text-on-primary-container text-[22px]">hub</span></div><div class="flex flex-col"><span class="font-title-md text-title-md text-on-surface tracking-tight">RidePool<span class="text-primary">.AI</span></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Cooperative Dispatch</span></div></div></div><div class="px-space-md"><div class="bg-surface-container-high p-space-xs rounded-full flex items-center gap-1 shadow-inner"><a class="flex-1 text-center py-1 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-on-surface shadow-sm" data-path="live-dispatch-console" href="#">Dispatch</a><a class="flex-1 text-center py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface" data-path="passenger-flow-simulator" href="#">Rider App</a></div></div><div class="px-space-md"><div class="px-space-sm py-space-xs bg-tertiary-fixed/30 rounded-full flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span class="font-label-sm text-label-sm text-on-tertiary-container font-semibold truncate">Window #148 • 30s rolling</span></div></div><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-primary-container text-on-primary-container font-semibold shadow-sm"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="live-dispatch-console" href="#"><span class="material-symbols-outlined text-[20px]">radar</span><span class="font-title-md text-title-md">Live Dispatch Console</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="shapley-pricing-matrix" href="#"><span class="material-symbols-outlined text-[20px]">pie_chart</span><span class="font-title-md text-title-md">Shapley Cost Matrix</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="fleet-telemetry-map" href="#"><span class="material-symbols-outlined text-[20px]">directions_car</span><span class="font-title-md text-title-md">Fleet Telemetry Map</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="passenger-flow-simulator" href="#"><span class="material-symbols-outlined text-[20px]">person_pin_circle</span><span class="font-title-md text-title-md">Passenger Simulator</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="algorithm-benchmarks" href="#"><span class="material-symbols-outlined text-[20px]">query_stats</span><span class="font-title-md text-title-md">Algorithm Benchmarks</span></a></nav></div><div class="px-space-md flex flex-col gap-space-sm"><div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,23,42,0.04)] flex flex-col gap-space-xs"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sim Engine</span><span class="font-label-sm text-label-sm text-primary font-bold">1x Active</span></div><div class="flex items-center justify-between gap-1"><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-primary-container text-on-surface hover:text-on-primary-container flex items-center justify-center transition-colors" title="Run Simulation" type="button"><span class="material-symbols-outlined text-[16px]">play_arrow</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Pause" type="button"><span class="material-symbols-outlined text-[16px]">pause</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Step 10s" type="button"><span class="material-symbols-outlined text-[16px]">forward_10</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Reset Data" type="button"><span class="material-symbols-outlined text-[16px]">replay</span></button></div></div><div class="pt-space-xs flex items-center justify-between px-space-xs"><div class="flex items-center gap-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-title-md text-title-md leading-tight text-on-surface">Dr. L. Moreau</span><span class="font-label-sm text-label-sm text-on-surface-variant">Lead Dispatcher</span></div></div><button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">tune</span></button></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-8 flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-1"><div class="hidden xl:flex items-center gap-space-sm px-space-md py-1.5 rounded-full bg-surface-container-lowest shadow-sm"><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Active Pools</span><span class="font-title-md text-title-md text-primary font-bold">184 Trips</span></div><div class="w-1 h-3.5 bg-outline-variant/60 rounded-full"></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Avg Detour</span><span class="font-title-md text-title-md text-on-surface font-semibold">+8.4%</span><span class="font-label-sm text-label-sm text-on-surface-variant">(Cap 15%)</span></div><div class="w-1 h-3.5 bg-outline-variant/60 rounded-full"></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Shapley Savings</span><span class="font-title-md text-title-md text-tertiary font-bold">-28.6%</span></div></div></div><div class="flex items-center gap-space-sm"><div class="relative flex items-center"><input class="w-64 h-9 pl-9 pr-3 rounded-full bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner" placeholder="Search trip ID, rider, or vehicle..." type="text"/><span class="material-symbols-outlined absolute left-2.5 text-[18px] text-on-surface-variant">search</span></div><button class="w-9 h-9 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container shadow-sm relative transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Global Simulation Bar & Filter HUD -->
+<div class="px-6 py-4 flex flex-col gap-3">
+<!-- Simulation Stage / Edge Case Switcher -->
+<div class="flex flex-wrap items-center justify-between gap-3 bg-surface-container-low/90 backdrop-blur-md px-5 py-3 rounded-full shadow-sm">
+<div class="flex items-center gap-3">
+<span class="flex h-2.5 w-2.5 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+</span>
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-bold">GIS Spatial Stream</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest font-label-sm text-label-sm text-primary font-bold">SF Sub-Network • Batch #148</span>
+</div>
+<!-- Quick Scenario Switcher (Reactive JS) -->
+<div class="flex items-center gap-1.5 overflow-x-auto p-1 bg-surface-container rounded-full text-on-surface-variant">
+<button class="scenario-btn px-3 py-1 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-xs transition-all font-semibold" id="scenario-active" onclick="setScenario('active')">
+          Active Live Sim
+        </button>
+<button class="scenario-btn px-3 py-1 rounded-full font-label-md text-label-md hover:text-on-surface transition-all" id="scenario-standby" onclick="setScenario('standby')">
+          Fleet Standby
+        </button>
+<button class="scenario-btn px-3 py-1 rounded-full font-label-md text-label-md hover:text-on-surface transition-all" id="scenario-offline" onclick="setScenario('offline')">
+          Telemetry Loss
+        </button>
+<button class="scenario-btn px-3 py-1 rounded-full font-label-md text-label-md hover:text-on-surface transition-all" id="scenario-empty" onclick="setScenario('empty')">
+          Zero Vehicles
+        </button>
+</div>
+<!-- System Constraint Monitor Pill -->
+<div class="hidden 2xl:flex items-center gap-3 bg-surface-container-lowest px-4 py-1.5 rounded-full shadow-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Max Detour Cap</span>
+<span class="font-title-md text-title-md text-error font-extrabold">≤ 15.0%</span>
+<span class="text-outline-variant font-label-sm text-label-sm">|</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Avg Coalition Saving</span>
+<span class="font-title-md text-title-md text-tertiary font-extrabold">27.3%</span>
+</div>
+</div>
+</div>
+<!-- Primary Split-Screen Workspace -->
+<div class="px-6 pb-8 grid grid-cols-12 gap-6 items-start">
+<!-- LEFT PANEL: Fleet Roster & Filter Controls (Width: 3.5 cols on large desktop) -->
+<section class="col-span-12 lg:col-span-4 xl:col-span-3 flex flex-col gap-4">
+<!-- Panel Header & Search -->
+<div class="bg-surface-container-lowest p-5 rounded-lg shadow-sm flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-title-lg text-title-lg text-on-surface font-bold tracking-tight">Active Fleet</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Real-time Shapley-routed shuttles</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md font-bold">
+            3 Dispatched
+          </span>
+</div>
+<!-- Filter Chips Bar -->
+<div class="flex flex-wrap gap-1.5" id="roster-filter-pills">
+<button class="roster-filter px-3 py-1 rounded-full font-label-sm text-label-sm bg-primary text-on-primary font-bold transition-all shadow-xs" data-filter="all" onclick="filterFleet('all')">All (4)</button>
+<button class="roster-filter px-3 py-1 rounded-full font-label-sm text-label-sm bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-medium transition-all" data-filter="in-route" onclick="filterFleet('in-route')">En Route (3)</button>
+<button class="roster-filter px-3 py-1 rounded-full font-label-sm text-label-sm bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-medium transition-all" data-filter="standby" onclick="filterFleet('standby')">Depot (1)</button>
+</div>
+</div>
+<!-- Vehicle Card List -->
+<div class="flex flex-col gap-3" id="fleet-list-container">
+<!-- CARD: Vehicle V-12 (Focused Primary) -->
+<div class="cursor-pointer vehicle-card p-4 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md transition-all relative overflow-hidden ring-2 ring-primary" id="vcard-v12" onclick="selectVehicle('V-12')">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary"></div>
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">electric_rickshaw</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface font-bold">V-12</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed font-label-sm text-label-sm font-semibold">Active Pool</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant truncate">Ford E-Transit • Carlos M.</span>
+</div>
+</div>
+<!-- Battery Pill -->
+<div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-tertiary font-bold">
+<span class="material-symbols-outlined text-[14px]">battery_5_bar</span>
+<span>91%</span>
+</div>
+</div>
+<!-- Capacity Bar & Metas -->
+<div class="mt-4 pt-3 border-none flex flex-col gap-2 bg-surface-container-low p-2.5 rounded-DEFAULT">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Occupancy: 3 / 6 Pax</span>
+<span class="text-primary font-bold">ETA 2m to Stop #1</span>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-500" style="width: 50%;"></div>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant mt-0.5">
+<span>Detour Avg: <b class="text-on-surface">+8.4%</b></span>
+<span>Trip Finish: <b class="text-on-surface">12m</b></span>
+</div>
+</div>
+</div>
+<!-- CARD: Vehicle V-08 -->
+<div class="cursor-pointer vehicle-card p-4 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md transition-all relative overflow-hidden" id="vcard-v08" onclick="selectVehicle('V-08')">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[24px]">airport_shuttle</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface font-bold">V-08</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">FiDi Express</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant truncate">Merc Sprinter • Sarah T.</span>
+</div>
+</div>
+<div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-bold">
+<span class="material-symbols-outlined text-[14px]">battery_4_bar</span>
+<span>78%</span>
+</div>
+</div>
+<div class="mt-3 flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant px-1">
+<span>Occupancy: <strong class="text-on-surface">4 / 6</strong></span>
+<span>Detour: <strong class="text-tertiary">+6.1%</strong></span>
+<span>Next: <strong class="text-primary">Bush &amp; Mont</strong></span>
+</div>
+</div>
+<!-- CARD: Vehicle V-03 -->
+<div class="cursor-pointer vehicle-card p-4 rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md transition-all relative overflow-hidden" id="vcard-v03" onclick="selectVehicle('V-03')">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[24px]">directions_car</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface font-bold">V-03</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">Potrero Shuttle</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant truncate">Chevy Bolt EV • Jin W.</span>
+</div>
+</div>
+<div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-tertiary font-bold">
+<span class="material-symbols-outlined text-[14px]">battery_5_bar</span>
+<span>85%</span>
+</div>
+</div>
+<div class="mt-3 flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant px-1">
+<span>Occupancy: <strong class="text-on-surface">2 / 4</strong></span>
+<span>Detour: <strong class="text-tertiary">+12.4%</strong></span>
+<span>Next: <strong class="text-primary">16th &amp; Utah</strong></span>
+</div>
+</div>
+<!-- CARD: Vehicle V-15 (Depot Standby) -->
+<div class="cursor-pointer vehicle-card p-4 rounded-lg bg-surface-container-low opacity-75 hover:opacity-100 transition-all relative overflow-hidden" id="vcard-v15" onclick="selectVehicle('V-15')">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-surface-container-high flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[24px]">garage</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface font-bold">V-15</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-semibold">Standby</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant truncate">SOMA Depot Unit 4</span>
+</div>
+</div>
+<div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-highest font-label-sm text-label-sm text-on-surface-variant font-bold">
+<span class="material-symbols-outlined text-[14px]">bolt</span>
+<span>100%</span>
+</div>
+</div>
+<div class="mt-2 text-label-sm font-label-sm text-on-surface-variant px-1">
+            Available for cooperative assignment on next 30s batch window.
+          </div>
+</div>
+</div>
+<!-- Algorithm Detour Rule Callout -->
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-sm flex items-start gap-3">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed/40 flex items-center justify-center text-on-secondary-fixed shrink-0">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface">Detour Cap Enforcement</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+            Every candidate addition is simulated via Dijkstra dynamic graph. Any ride deviating &gt;15.0% travel time beyond direct solo is immediately pruned to prevent passenger fatigue.
+          </p>
+</div>
+</div>
+</section>
+<!-- CENTER / RIGHT: Interactive GIS Map Canvas & Overlays (Width: 8.5 cols on large desktop) -->
+<main class="col-span-12 lg:col-span-8 xl:col-span-9 flex flex-col gap-4">
+<!-- Interactive Map Frame with Overlays -->
+<div class="relative w-full h-[720px] rounded-lg overflow-hidden bg-surface-container-highest shadow-xl flex flex-col" id="map-viewport">
+<!-- TOP HUD: Map Filters Pill Bar -->
+<div class="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+<div class="flex flex-wrap items-center gap-2 pointer-events-auto bg-surface-container-lowest/90 backdrop-blur-md p-1.5 rounded-full shadow-md">
+<button class="layer-pill px-3 py-1.5 rounded-full font-label-md text-label-md bg-on-surface text-surface font-bold shadow-xs transition-all" id="layer-all" onclick="toggleMapLayer('all')">
+              All Elements
+            </button>
+<button class="layer-pill px-3 py-1.5 rounded-full font-label-md text-label-md bg-primary-container text-on-primary-container font-bold transition-all" id="layer-v12" onclick="toggleMapLayer('v12')">
+              Vehicle V-12 Solo Focus
+            </button>
+<button class="layer-pill px-3 py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5" id="layer-pickups" onclick="toggleMapLayer('pickups')">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed-dim"></span> Pickups (3)
+            </button>
+<button class="layer-pill px-3 py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all flex items-center gap-1.5" id="layer-dropoffs" onclick="toggleMapLayer('dropoffs')">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span> Drop-offs (3)
+            </button>
+<button class="layer-pill px-3 py-1.5 rounded-full font-label-md text-label-md text-error hover:bg-error-container/40 transition-all flex items-center gap-1.5" id="layer-rejected" onclick="toggleMapLayer('rejected')">
+<span class="w-2.5 h-2.5 rounded-full bg-error animate-ping"></span> Rejected (1)
+            </button>
+</div>
+<!-- Zoom & Geo Actions Floating Node -->
+<div class="flex items-center gap-2 pointer-events-auto">
+<button class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface shadow-md hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center justify-center" onclick="recenterMap()" title="Center on Vehicle V-12">
+<span class="material-symbols-outlined text-[20px]">my_location</span>
+</button>
+<div class="flex flex-col bg-surface-container-lowest rounded-full shadow-md overflow-hidden p-0.5">
+<button class="w-9 h-9 rounded-full hover:bg-surface-container text-on-surface flex items-center justify-center transition-colors" onclick="zoomMap(1.15)">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+<button class="w-9 h-9 rounded-full hover:bg-surface-container text-on-surface flex items-center justify-center transition-colors" onclick="zoomMap(0.85)">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+</div>
+</div>
+</div>
+<!-- SVG Cartography Layer (San Francisco Road Canvas Grid) -->
+<div class="absolute inset-0 w-full h-full overflow-hidden select-none" id="canvas-container" style="background: #eef3fc;">
+<svg class="w-full h-full transition-transform duration-500 ease-out" id="sf-svg-map" viewbox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<!-- Glowing shadow for active route -->
+<filter height="140%" id="route-glow" width="140%" x="-20%" y="-20%">
+<fedropshadow dx="0" dy="2" flood-color="#00668a" flood-opacity="0.35" stddeviation="4"></fedropshadow>
+</filter>
+<filter height="140%" id="reject-glow" width="140%" x="-20%" y="-20%">
+<fedropshadow dx="0" dy="2" flood-color="#ba1a1a" flood-opacity="0.4" stddeviation="4"></fedropshadow>
+</filter>
+<!-- SF Coastline Pattern / Water -->
+<lineargradient id="bay-water" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#d0e2ff"></stop>
+<stop offset="100%" stop-color="#bdd7ff"></stop>
+</lineargradient>
+</defs>
+<!-- SF Bay / Embarcadero Water Body -->
+<path d="M 820,0 L 1200,0 L 1200,800 L 980,800 C 920,620 940,480 890,340 C 850,230 830,120 820,0 Z" fill="url(#bay-water)" opacity="0.6"></path>
+<!-- District Landmass Shading (Parks & Mission) -->
+<rect fill="#e2eddc" height="140" opacity="0.7" rx="20" width="160" x="180" y="580"></rect> <!-- Mission Dolores Park -->
+<text fill="#4d661c" font-family="Plus Jakarta Sans" font-size="11" font-weight="600" x="210" y="650">Dolores Park</text>
+<rect fill="#e2eddc" height="70" opacity="0.7" rx="12" width="90" x="420" y="440"></rect> <!-- SOMA Victoria Manalo -->
+<text fill="#4d661c" font-family="Plus Jakarta Sans" font-size="10" font-weight="600" x="430" y="480">Victoria Pk</text>
+<!-- Grid Street Network: Secondary Roads -->
+<g opacity="0.85" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="6">
+<!-- East-West Blocks -->
+<line x1="60" x2="850" y1="120" y2="120"></line>
+<line x1="60" x2="860" y1="190" y2="190"></line>
+<line x1="60" x2="880" y1="260" y2="260"></line>
+<line x1="60" x2="900" y1="330" y2="330"></line>
+<line x1="60" x2="920" y1="400" y2="400"></line>
+<line x1="60" x2="930" y1="470" y2="470"></line>
+<line x1="60" x2="950" y1="540" y2="540"></line>
+<line x1="60" x2="960" y1="610" y2="610"></line>
+<line x1="60" x2="970" y1="680" y2="680"></line>
+<!-- North-South Avenues -->
+<line x1="120" x2="120" y1="60" y2="760"></line>
+<line x1="210" x2="210" y1="60" y2="760"></line>
+<line x1="300" x2="300" y1="60" y2="760"></line>
+<line x1="390" x2="390" y1="60" y2="760"></line>
+<line x1="480" x2="480" y1="60" y2="760"></line>
+<line x1="570" x2="570" y1="60" y2="760"></line>
+<line x1="660" x2="660" y1="60" y2="760"></line>
+<line x1="750" x2="750" y1="60" y2="760"></line>
+<line x1="840" x2="840" y1="60" y2="760"></line>
+</g>
+<!-- Major Arterials (Market St Diagonal, Folsom, Mission) -->
+<g stroke="#dee8ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="14">
+<!-- Market St Diagonal -->
+<line x1="100" x2="880" y1="620" y2="120"></line>
+<!-- Mission St -->
+<line x1="80" x2="840" y1="680" y2="230"></line>
+<!-- Folsom St -->
+<line x1="140" x2="860" y1="740" y2="330"></line>
+</g>
+<g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="10">
+<line x1="100" x2="880" y1="620" y2="120"></line>
+<line x1="80" x2="840" y1="680" y2="230"></line>
+<line x1="140" x2="860" y1="740" y2="330"></line>
+</g>
+<!-- Street Name Annotations -->
+<g fill="#6e7980" font-family="Plus Jakarta Sans" font-size="11" font-weight="700" letter-spacing="1">
+<text transform="rotate(-33 380 405)" x="380" y="405">MARKET STREET</text>
+<text transform="rotate(-33 320 525)" x="320" y="525">MISSION STREET</text>
+<text transform="rotate(-33 360 605)" x="360" y="605">FOLSOM STREET</text>
+<text x="670" y="90">EMBARCADERO</text>
+<text x="760" y="270">FINANCIAL DISTRICT</text>
+<text x="340" y="690">MISSION DISTRICT</text>
+<text x="510" y="540">SOMA</text>
+</g>
+<!-- Landmark Markers -->
+<!-- Caltrain Station -->
+<g transform="translate(680, 560)">
+<rect fill="#cfdaf2" height="20" rx="6" width="20" x="-10" y="-10"></rect>
+<text fill="#3e484f" font-family="Plus Jakarta Sans" font-size="10" font-weight="600" x="18" y="4">SF Caltrain</text>
+</g>
+<!-- Ferry Building -->
+<g transform="translate(860, 160)">
+<rect fill="#cfdaf2" height="20" rx="6" width="20" x="-10" y="-10"></rect>
+<text fill="#3e484f" font-family="Plus Jakarta Sans" font-size="10" font-weight="600" x="18" y="4">Ferry Building</text>
+</g>
+<!-- Salesforce Tower -->
+<g transform="translate(790, 290)">
+<rect fill="#cfdaf2" height="20" rx="6" width="20" x="-10" y="-10"></rect>
+<text fill="#3e484f" font-family="Plus Jakarta Sans" font-size="10" font-weight="600" x="-95" y="4">Salesforce Tower</text>
+</g>
+<!-- COMPLETED PREVIOUS LEG: Muted Path -->
+<path d="M 210,610 L 250,560 L 300,530" fill="none" id="path-completed" opacity="0.6" stroke="#6e7980" stroke-dasharray="6,6" stroke-linecap="round" stroke-width="4"></path>
+<!-- ACTIVE POOL OPTIMAL ROUTE (V-12): Electric Sky Polyline -->
+<!-- Waypoints: [Current V-12: (300,530)] -> P1: (390,470) -> P3: (260,430) -> P2: (570,360) -> D1: (850,210) -> D3: (860,160) -> D2: (790,290) -->
+<path d="M 300,530 L 390,470 L 260,430 L 480,380 L 570,360 L 730,280 L 850,210 L 860,160 L 790,290" fill="none" filter="url(#route-glow)" id="path-active-v12" stroke="#00668a" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"></path>
+<path d="M 300,530 L 390,470 L 260,430 L 480,380 L 570,360 L 730,280 L 850,210 L 860,160 L 790,290" fill="none" id="path-active-v12-inner" stroke="#38bdf8" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path>
+<!-- REJECTED CANDIDATE ROUTE (REQ-8044 David Park): Glowing Red Dashed Detour -->
+<g id="layer-group-rejected">
+<!-- Deviation from optimal corridor to 24th & Mission, showing extreme detour back and forth -->
+<path d="M 260,430 L 170,510 L 150,680 L 260,680 L 480,380" fill="none" filter="url(#reject-glow)" stroke="#ba1a1a" stroke-dasharray="8,6" stroke-linecap="round" stroke-width="3.5"></path>
+</g>
+<!-- WAYPOINT NODES ON MAP -->
+<!-- P1 Stop: Elena Vance (390, 470) -->
+<g class="cursor-pointer marker-node" id="marker-p1" onclick="inspectRider('REQ-8041')" transform="translate(390, 470)">
+<circle fill="#bef264" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.15))" r="18" stroke="#ffffff" stroke-width="3"></circle>
+<text fill="#131f00" font-family="Plus Jakarta Sans" font-size="11" font-weight="800" text-anchor="middle" x="0" y="4">P1</text>
+<!-- Label tag -->
+<rect fill="#ffffff" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.1))" height="24" rx="12" width="130" x="22" y="-12"></rect>
+<circle cx="32" cy="0" fill="#4d661c" r="3.5"></circle>
+<text fill="#111c2d" font-family="Plus Jakarta Sans" font-size="10" font-weight="700" x="42" y="4">Elena V. • 2 min</text>
+</g>
+<!-- P2 Stop: Marcus Chen (570, 360) -->
+<g class="cursor-pointer marker-node" id="marker-p2" onclick="inspectRider('REQ-8042')" transform="translate(570, 360)">
+<circle fill="#bef264" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.15))" r="18" stroke="#ffffff" stroke-width="3"></circle>
+<text fill="#131f00" font-family="Plus Jakarta Sans" font-size="11" font-weight="800" text-anchor="middle" x="0" y="4">P2</text>
+<rect fill="#ffffff" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.1))" height="24" rx="12" width="136" x="22" y="-12"></rect>
+<circle cx="32" cy="0" fill="#4d661c" r="3.5"></circle>
+<text fill="#111c2d" font-family="Plus Jakarta Sans" font-size="10" font-weight="700" x="42" y="4">Marcus C. • 5 min</text>
+</g>
+<!-- P3 Stop: Sarah Kim (260, 430) -->
+<g class="cursor-pointer marker-node" id="marker-p3" onclick="inspectRider('REQ-8043')" transform="translate(260, 430)">
+<circle fill="#bef264" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.15))" r="18" stroke="#ffffff" stroke-width="3"></circle>
+<text fill="#131f00" font-family="Plus Jakarta Sans" font-size="11" font-weight="800" text-anchor="middle" x="0" y="4">P3</text>
+<rect fill="#ffffff" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.1))" height="24" rx="12" width="132" x="-145" y="-12"></rect>
+<circle cx="-135" cy="0" fill="#4d661c" r="3.5"></circle>
+<text fill="#111c2d" font-family="Plus Jakarta Sans" font-size="10" font-weight="700" x="-125" y="4">Sarah K. • 8 min</text>
+</g>
+<!-- D1 Dropoff Stop: Elena Vance (850, 210) -->
+<g class="cursor-pointer marker-node" id="marker-d1" onclick="inspectRider('REQ-8041')" transform="translate(850, 210)">
+<circle fill="#38bdf8" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.15))" r="17" stroke="#ffffff" stroke-width="3"></circle>
+<text fill="#004965" font-family="Plus Jakarta Sans" font-size="11" font-weight="800" text-anchor="middle" x="0" y="4">D1</text>
+<rect fill="#ffffff" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.1))" height="24" rx="12" width="140" x="22" y="-12"></rect>
+<circle cx="32" cy="0" fill="#00668a" r="3.5"></circle>
+<text fill="#111c2d" font-family="Plus Jakarta Sans" font-size="10" font-weight="700" x="42" y="4">Embarcadero (Elena)</text>
+</g>
+<!-- D3 Dropoff Stop: Sarah Kim (860, 160) -->
+<g class="cursor-pointer marker-node" id="marker-d3" onclick="inspectRider('REQ-8043')" transform="translate(860, 160)">
+<circle fill="#38bdf8" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.15))" r="17" stroke="#ffffff" stroke-width="3"></circle>
+<text fill="#004965" font-family="Plus Jakarta Sans" font-size="11" font-weight="800" text-anchor="middle" x="0" y="4">D3</text>
+<rect fill="#ffffff" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.1))" height="24" rx="12" width="130" x="-142" y="-12"></rect>
+<circle cx="-132" cy="0" fill="#00668a" r="3.5"></circle>
+<text fill="#111c2d" font-family="Plus Jakarta Sans" font-size="10" font-weight="700" x="-122" y="4">Ferry Bldg (Sarah)</text>
+</g>
+<!-- D2 Dropoff Stop: Marcus Chen (790, 290) -->
+<g class="cursor-pointer marker-node" id="marker-d2" onclick="inspectRider('REQ-8042')" transform="translate(790, 290)">
+<circle fill="#38bdf8" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.15))" r="17" stroke="#ffffff" stroke-width="3"></circle>
+<text fill="#004965" font-family="Plus Jakarta Sans" font-size="11" font-weight="800" text-anchor="middle" x="0" y="4">D2</text>
+<rect fill="#ffffff" filter="drop-shadow(0 2px 5px rgba(0,0,0,0.1))" height="24" rx="12" width="138" x="22" y="-12"></rect>
+<circle cx="32" cy="0" fill="#00668a" r="3.5"></circle>
+<text fill="#111c2d" font-family="Plus Jakarta Sans" font-size="10" font-weight="700" x="42" y="4">Salesforce (Marcus)</text>
+</g>
+<!-- REJECTED CANDIDATE PIN: David Park (150, 680) -->
+<g class="cursor-pointer marker-node" id="marker-rejected" onclick="inspectRider('REQ-8044')" transform="translate(150, 680)">
+<circle fill="#ba1a1a" filter="drop-shadow(0 4px 8px rgba(186,26,26,0.35))" r="18" stroke="#ffffff" stroke-width="3"></circle>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="12" font-weight="800" text-anchor="middle" x="0" y="4">×</text>
+<rect fill="#ffffff" filter="drop-shadow(0 4px 10px rgba(0,0,0,0.1))" height="34" rx="17" stroke="#ba1a1a" stroke-width="1.5" width="220" x="24" y="-18"></rect>
+<circle cx="36" cy="-1" fill="#ba1a1a" r="4"></circle>
+<text fill="#ba1a1a" font-family="Plus Jakarta Sans" font-size="10" font-weight="800" x="46" y="-5">David Park (REQ-8044)</text>
+<text fill="#3e484f" font-family="Plus Jakarta Sans" font-size="9" font-weight="600" x="46" y="9">+18.2% Detour &gt; 15% Cap</text>
+</g>
+<!-- VEHICLE V-12 PIN (Positioned at 300, 530) -->
+<g class="cursor-pointer marker-node" id="vehicle-pin-v12" onclick="selectVehicle('V-12')" transform="translate(300, 530)">
+<!-- Radar sweep pulse -->
+<circle class="animate-ping" fill="#38bdf8" opacity="0.2" r="36"></circle>
+<circle fill="#00668a" filter="drop-shadow(0 6px 12px rgba(0,102,138,0.4))" r="24" stroke="#ffffff" stroke-width="3"></circle>
+<!-- Compass Direction Chevron -->
+<path d="M 0,-14 L 6, -2 L -6, -2 Z" fill="#ffffff" transform="rotate(45 0 0)"></path>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="800" text-anchor="middle" x="0" y="8">V-12</text>
+<!-- Floating Occupancy Flag -->
+<rect fill="#111c2d" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.25))" height="22" rx="11" width="70" x="-35" y="-48"></rect>
+<text fill="#feef72" font-family="Plus Jakarta Sans" font-size="10" font-weight="700" text-anchor="middle" x="0" y="-33">3/6 SEATS</text>
+</g>
+<!-- VEHICLE V-08 PIN (Financial District - 710, 320) -->
+<g class="cursor-pointer marker-node" id="vehicle-pin-v08" onclick="selectVehicle('V-08')" transform="translate(710, 320)">
+<circle fill="#263143" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.2))" r="20" stroke="#ffffff" stroke-width="2.5"></circle>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="800" text-anchor="middle" x="0" y="4">V-08</text>
+<rect fill="#111c2d" height="18" rx="9" width="60" x="-30" y="-40"></rect>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="700" text-anchor="middle" x="0" y="-28">4/6</text>
+</g>
+<!-- VEHICLE V-03 PIN (Potrero Hill - 450, 640) -->
+<g class="cursor-pointer marker-node" id="vehicle-pin-v03" onclick="selectVehicle('V-03')" transform="translate(450, 640)">
+<circle fill="#263143" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.2))" r="20" stroke="#ffffff" stroke-width="2.5"></circle>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="800" text-anchor="middle" x="0" y="4">V-03</text>
+<rect fill="#111c2d" height="18" rx="9" width="60" x="-30" y="-40"></rect>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="700" text-anchor="middle" x="0" y="-28">2/4</text>
+</g>
+</svg>
+</div>
+<!-- FLOATING BOTTOM DIRECTION BANNER (Trek Kinetic Style Pill) -->
+<div class="absolute bottom-5 left-5 z-20 flex items-center gap-3 bg-surface-container-lowest/95 backdrop-blur-md px-4 py-2.5 rounded-full shadow-lg pointer-events-auto">
+<div class="w-9 h-9 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container shrink-0">
+<span class="material-symbols-outlined text-[20px]">turn_sharp_right</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-bold leading-tight">Turn right onto Folsom St</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">In 180 m • Proceed to Stop P1 (Elena Vance)</span>
+</div>
+</div>
+<!-- FLOATING BOTTOM RIGHT LEGEND OVERLAY -->
+<div class="absolute bottom-5 right-5 z-20 flex flex-col gap-1.5 bg-surface-container-lowest/95 backdrop-blur-md p-3.5 rounded-lg shadow-lg pointer-events-auto max-w-xs">
+<div class="flex items-center justify-between pb-1">
+<span class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wide">Map Legend</span>
+<span class="font-label-sm text-label-sm px-2 py-0.2 rounded-full bg-surface-container text-on-surface-variant font-semibold">Synthetic SF</span>
+</div>
+<div class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-label-sm font-label-sm text-on-surface-variant pt-1">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full bg-primary flex items-center justify-center text-white text-[8px] font-bold">V</span>
+<span>Vehicle Fleet</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full bg-[#bef264] flex items-center justify-center text-[#131f00] text-[8px] font-extrabold">P</span>
+<span>Pickup Stop</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full bg-primary-container flex items-center justify-center text-[#004965] text-[8px] font-extrabold">D</span>
+<span>Drop-off Stop</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full bg-error flex items-center justify-center text-white text-[8px] font-bold">×</span>
+<span>Pruned Candidate</span>
+</div>
+</div>
+<div class="mt-2 pt-2 flex flex-col gap-1">
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span class="w-6 h-1 rounded-full bg-primary"></span>
+<span>Validated Pool Route</span>
+</div>
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span class="w-6 h-1 rounded-full border-t border-dashed border-error"></span>
+<span>Rejected Detour (&gt;15%)</span>
+</div>
+</div>
+</div>
+<!-- EDGE CASE: OFFLINE BANNER (Hidden by default, triggered by scenario switch) -->
+<div class="hidden absolute inset-0 z-30 bg-surface/90 backdrop-blur-md flex flex-col items-center justify-center gap-4 text-center p-6" id="state-overlay-offline">
+<div class="w-16 h-16 rounded-full bg-error-container text-on-error-container flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-[36px]">signal_disconnected</span>
+</div>
+<div class="max-w-md">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">Telemetry Signal Lost</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">
+              Vehicles are currently buffering spatial GPS records locally. Cooperative Shapley solver is holding previous assignment assignments until ping recovers.
+            </p>
+</div>
+<button class="px-6 py-2.5 rounded-full bg-primary text-on-primary font-title-md text-title-md font-bold shadow-md hover:bg-on-primary-container transition-all" onclick="setScenario('active')">
+            Reconnect Spatial Socket
+          </button>
+</div>
+<!-- EDGE CASE: EMPTY STATE (Hidden by default) -->
+<div class="hidden absolute inset-0 z-30 bg-surface/90 backdrop-blur-md flex flex-col items-center justify-center gap-4 text-center p-6" id="state-overlay-empty">
+<div class="w-16 h-16 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-[36px]">directions_car_filled</span>
+</div>
+<div class="max-w-md">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">No Vehicles In Field</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">
+              All fleet shuttles are currently docked or charging at depot stations. Dispatch simulation batch #148 is awaiting queued passenger bookings.
+            </p>
+</div>
+<button class="px-6 py-2.5 rounded-full bg-primary text-on-primary font-title-md text-title-md font-bold shadow-md" onclick="setScenario('active')">
+            Deploy Synthetic Shuttles
+          </button>
+</div>
+</div>
+<!-- BOTTOM / SIDE DOCKED INSPECTOR: Dynamic Entity Inspector (Vehicle V-12 / Elena / David) -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-sm flex flex-col gap-5" id="inspector-panel">
+<!-- Tab Switches inside Inspector -->
+<div class="flex flex-wrap items-center justify-between gap-4 pb-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold" id="inspector-icon-container">
+<span class="material-symbols-outlined text-[22px]">route</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-title-lg text-title-lg text-on-surface font-extrabold" id="inspector-title">Vehicle V-12 Sequence &amp; Detour Inspection</h3>
+<span class="px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold" id="inspector-badge">Cooperative Optimized</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant" id="inspector-subtitle">Mission-SOMA Multi-Passenger Pool (3 Pickups, 3 Drop-offs)</p>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="flex items-center gap-2">
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high font-label-md text-label-md text-on-surface transition-colors font-semibold" onclick="inspectRider('REQ-8041')">
+              Inspect Rider Elena (P1)
+            </button>
+<button class="px-3.5 py-1.5 rounded-full bg-error-container/60 hover:bg-error-container font-label-md text-label-md text-on-error-container transition-colors font-bold" onclick="inspectRider('REQ-8044')">
+              Inspect Rejected (David)
+            </button>
+<button class="px-3.5 py-1.5 rounded-full bg-primary text-on-primary font-label-md text-label-md font-bold shadow-xs" onclick="selectVehicle('V-12')">
+              Reset to V-12 Stops
+            </button>
+</div>
+</div>
+<!-- DYNAMIC CONTENT AREA (Controlled via JS) -->
+<div id="inspector-dynamic-content">
+<!-- DEFAULT VIEW: Vehicle V-12 Ordered Stop Sequence -->
+<div class="flex flex-col gap-4" id="view-v12-sequence">
+<!-- Quick Vehicle Telemetry Strip -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 bg-surface-container-low p-4 rounded-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Vehicle Class</span>
+<span class="font-title-md text-title-md text-on-surface font-bold">Ford E-Transit (6-Seat)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Driver</span>
+<span class="font-title-md text-title-md text-on-surface font-bold">Carlos M. (#DRV-209)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Battery SoC / Range</span>
+<span class="font-title-md text-title-md text-tertiary font-bold">91% (148 mi remaining)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pooled Detour Average</span>
+<span class="font-title-md text-title-md text-primary font-bold">+8.4% (Cap 15.0%)</span>
+</div>
+</div>
+<!-- Ordered Stop Sequence Timeline -->
+<div class="flex flex-col gap-2.5">
+<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant font-bold">
+                Optimal Stop Sequencing (Next 6 Legs)
+              </span>
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
+<!-- Stop 1: Elena Vance Pickup -->
+<div class="cursor-pointer p-3 rounded-lg bg-surface-container-lowest ring-2 ring-primary/40 hover:ring-primary shadow-xs transition-all flex flex-col justify-between" onclick="inspectRider('REQ-8041')">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-[#bef264] text-[#131f00] font-label-sm text-label-sm font-extrabold">1. PU</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">ETA 2m</span>
+</div>
+<div class="mt-2">
+<div class="font-title-md text-title-md text-on-surface font-bold truncate">Elena Vance</div>
+<div class="font-body-md text-body-md text-on-surface-variant truncate">Folsom &amp; 7th St</div>
+</div>
+<span class="mt-2 text-label-sm font-label-sm text-tertiary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> On Schedule
+                  </span>
+</div>
+<!-- Stop 2: Marcus Chen Pickup -->
+<div class="cursor-pointer p-3 rounded-lg bg-surface-container-low hover:bg-surface-container shadow-xs transition-all flex flex-col justify-between" onclick="inspectRider('REQ-8042')">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-[#bef264] text-[#131f00] font-label-sm text-label-sm font-extrabold">2. PU</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">ETA 5m</span>
+</div>
+<div class="mt-2">
+<div class="font-title-md text-title-md text-on-surface font-bold truncate">Marcus Chen</div>
+<div class="font-body-md text-body-md text-on-surface-variant truncate">Howard &amp; 4th St</div>
+</div>
+<span class="mt-2 text-label-sm font-label-sm text-on-surface-variant font-medium">Seq +1 Pax</span>
+</div>
+<!-- Stop 3: Sarah Kim Pickup -->
+<div class="cursor-pointer p-3 rounded-lg bg-surface-container-low hover:bg-surface-container shadow-xs transition-all flex flex-col justify-between" onclick="inspectRider('REQ-8043')">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-[#bef264] text-[#131f00] font-label-sm text-label-sm font-extrabold">3. PU</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">ETA 8m</span>
+</div>
+<div class="mt-2">
+<div class="font-title-md text-title-md text-on-surface font-bold truncate">Sarah Kim</div>
+<div class="font-body-md text-body-md text-on-surface-variant truncate">Mission &amp; 11th St</div>
+</div>
+<span class="mt-2 text-label-sm font-label-sm text-on-surface-variant font-medium">Occupancy 3/6</span>
+</div>
+<!-- Stop 4: Elena Vance Dropoff -->
+<div class="cursor-pointer p-3 rounded-lg bg-surface-container-low hover:bg-surface-container shadow-xs transition-all flex flex-col justify-between" onclick="inspectRider('REQ-8041')">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm font-extrabold">4. DO</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">ETA 14m</span>
+</div>
+<div class="mt-2">
+<div class="font-title-md text-title-md text-on-surface font-bold truncate">Elena Vance</div>
+<div class="font-body-md text-body-md text-on-surface-variant truncate">Embarcadero Ctr</div>
+</div>
+<span class="mt-2 text-label-sm font-label-sm text-tertiary font-bold">-27.3% Fare</span>
+</div>
+<!-- Stop 5: Sarah Kim Dropoff -->
+<div class="cursor-pointer p-3 rounded-lg bg-surface-container-low hover:bg-surface-container shadow-xs transition-all flex flex-col justify-between" onclick="inspectRider('REQ-8043')">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm font-extrabold">5. DO</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">ETA 18m</span>
+</div>
+<div class="mt-2">
+<div class="font-title-md text-title-md text-on-surface font-bold truncate">Sarah Kim</div>
+<div class="font-body-md text-body-md text-on-surface-variant truncate">Ferry Building</div>
+</div>
+<span class="mt-2 text-label-sm font-label-sm text-tertiary font-bold">-24.1% Fare</span>
+</div>
+<!-- Stop 6: Marcus Chen Dropoff -->
+<div class="cursor-pointer p-3 rounded-lg bg-surface-container-low hover:bg-surface-container shadow-xs transition-all flex flex-col justify-between" onclick="inspectRider('REQ-8042')">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm font-extrabold">6. DO</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">ETA 22m</span>
+</div>
+<div class="mt-2">
+<div class="font-title-md text-title-md text-on-surface font-bold truncate">Marcus Chen</div>
+<div class="font-body-md text-body-md text-on-surface-variant truncate">Salesforce Tower</div>
+</div>
+<span class="mt-2 text-label-sm font-label-sm text-tertiary font-bold">-29.0% Fare</span>
+</div>
+</div>
+</div>
+</div>
+<!-- RIDER SPECIFIC INSPECTION VIEW: Elena Vance (Hidden by default, triggered by JS) -->
+<div class="hidden flex-col gap-4" id="view-rider-elena">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Solo vs Pooled Detour Calculation Card -->
+<div class="bg-surface-container-low p-4 rounded-lg flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold">Detour Strict Constraint Analysis</span>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md font-extrabold text-on-surface">+11.1%</span>
+<span class="font-label-md text-label-md text-tertiary font-bold">PASSED (≤15.0% Cap)</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                    Direct solo driving time would be 18.0 min. Pooled trip with stops will take 20.0 min. Detour margin to limit: <strong>0.7 min safety buffer</strong>.
+                  </p>
+</div>
+<!-- Mini Progress Visual -->
+<div class="mt-3">
+<div class="flex justify-between font-label-sm text-label-sm mb-1">
+<span>Current Detour (11.1%)</span>
+<span class="text-error font-bold">Max Hard Cap 15%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-tertiary rounded-full" style="width: 74%;"></div>
+</div>
+</div>
+</div>
+<!-- Shapley Value Fair Pricing Breakdown -->
+<div class="bg-surface-container-low p-4 rounded-lg flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold">Shapley Cooperative Fare Allocation</span>
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md font-extrabold text-tertiary">$17.80</span>
+<span class="font-label-md text-label-md text-outline line-through">$24.50 solo</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                    Net Fair Fare Savings: <strong class="text-tertiary">-$6.70 (27.3% discount)</strong>. Calculated via characteristic marginal contribution across Coalition {Elena, Marcus, Sarah}.
+                  </p>
+</div>
+<div class="flex items-center gap-2 mt-3 pt-2">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed font-label-sm text-label-sm text-on-tertiary-fixed font-bold">Axiom 3 Satisfied</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Core Stability Guaranteed</span>
+</div>
+</div>
+<!-- Pickup Waypoint Details -->
+<div class="bg-surface-container-low p-4 rounded-lg flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold">Pickup Live Telemetry</span>
+<div class="mt-2">
+<div class="font-title-lg text-title-lg font-bold text-on-surface">Folsom &amp; 7th St</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Rider REQ-8041 • En Route to Curb</div>
+</div>
+<div class="mt-3 flex items-center gap-3">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Walking to Curb</span>
+<span class="font-title-md text-title-md font-bold text-on-surface">45 m (1 min)</span>
+</div>
+<div class="w-px h-8 bg-outline-variant/40"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Vehicle V-12 ETA</span>
+<span class="font-title-md text-title-md font-bold text-primary">2 min</span>
+</div>
+</div>
+</div>
+<button class="mt-3 text-left font-label-md text-label-md text-primary font-bold hover:underline" onclick="selectVehicle('V-12')">
+                  ← Back to Vehicle Overview
+                </button>
+</div>
+</div>
+</div>
+<!-- REJECTED CANDIDATE VIEW: David Park (Hidden by default, triggered by JS) -->
+<div class="hidden flex-col gap-4" id="view-rider-rejected">
+<div class="p-4 rounded-lg bg-error-container/30 border-none flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[24px]">cancel</span>
+<span class="font-title-lg text-title-lg font-extrabold text-on-error-container">Pruned Candidate: REQ-8044 (David Park)</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-error text-on-error font-label-md text-label-md font-bold">
+                  Detour Cap Exceeded: +18.2% &gt; 15.0%
+                </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-1">
+<div class="bg-surface-container-lowest p-3.5 rounded-lg flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pickup Location</span>
+<span class="font-title-md text-title-md text-on-surface font-bold">24th &amp; Mission St</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">Southward excursion outside shared corridor</span>
+</div>
+<div class="bg-surface-container-lowest p-3.5 rounded-lg flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Detour Mathematical Excess</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-title-lg text-title-lg font-extrabold text-error">+3.2% Excess</span>
+<span class="font-body-md text-body-md text-on-surface-variant">(1.0 min past limit)</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">Solo 31.0m → Candidate 36.6m</span>
+</div>
+<div class="bg-surface-container-lowest p-3.5 rounded-lg flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Automatic Fallback</span>
+<span class="font-title-md text-title-md text-tertiary font-bold">Re-routed to Batch #149</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Paired with Shuttle V-03 in next rolling window</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Real-time Floating Diagnostic Bar (Sub-footer) -->
+<footer class="mx-6 mb-8 px-6 py-3.5 rounded-full bg-surface-container-lowest shadow-sm flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+<span class="font-label-md text-label-md text-on-surface font-bold">Kinetic Flow Optimization Engine v3.4</span>
+<span class="text-outline-variant font-label-sm text-label-sm">|</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Solver latency: <strong class="text-on-surface">14.2ms</strong> across 84 potential permutations</span>
+</div>
+<div class="flex items-center gap-4 text-label-sm font-label-sm text-on-surface-variant">
+<span>Active Polylines: <strong class="text-primary font-bold">1 Validated, 1 Pruned</strong></span>
+<span>SF Bounds: <strong class="text-on-surface font-semibold">37.7749° N, 122.4194° W</strong></span>
+<button class="text-primary font-bold hover:underline flex items-center gap-1" onclick="recenterMap()">
+<span class="material-symbols-outlined text-[16px]">refresh</span> Refresh Telemetry View
+      </button>
+</div>
+</footer>
+<!-- Micro-interaction Logic Script -->
+<script>
+    // State Tracker
+    let currentFocus = 'V-12';
+    let currentZoom = 1;
+
+    // Recenter map smoothly
+    function recenterMap() {
+      const svg = document.getElementById('sf-svg-map');
+      if (svg) {
+        currentZoom = 1;
+        svg.style.transform = 'scale(1) translate(0px, 0px)';
+      }
+      selectVehicle('V-12');
+    }
+
+    // Zoom Map Canvas
+    function zoomMap(factor) {
+      const svg = document.getElementById('sf-svg-map');
+      if (!svg) return;
+      currentZoom = Math.min(Math.max(currentZoom * factor, 0.75), 2.2);
+      svg.style.transform = `scale(${currentZoom})`;
+    }
+
+    // Select Vehicle and update Inspector
+    function selectVehicle(vehId) {
+      currentFocus = vehId;
+
+      // Update Card Visuals
+      document.querySelectorAll('.vehicle-card').forEach(c => {
+        c.classList.remove('ring-2', 'ring-primary');
+        const bar = c.querySelector('.absolute.left-0');
+        if (bar) bar.remove();
+      });
+
+      const selectedId = 'vcard-' + vehId.toLowerCase().replace('-', '');
+      const card = document.getElementById(selectedId);
+      if (card) {
+        card.classList.add('ring-2', 'ring-primary');
+        const indicator = document.createElement('div');
+        indicator.className = 'absolute left-0 top-0 bottom-0 w-1.5 bg-primary';
+        card.appendChild(indicator);
+      }
+
+      // Restore inspector to Vehicle Stop Sequence
+      document.getElementById('view-v12-sequence').classList.remove('hidden');
+      document.getElementById('view-rider-elena').classList.add('hidden');
+      document.getElementById('view-rider-rejected').classList.add('hidden');
+
+      const title = document.getElementById('inspector-title');
+      const subtitle = document.getElementById('inspector-subtitle');
+      const badge = document.getElementById('inspector-badge');
+      const icon = document.getElementById('inspector-icon-container');
+
+      if (vehId === 'V-12') {
+        title.innerText = 'Vehicle V-12 Sequence & Detour Inspection';
+        subtitle.innerText = 'Mission-SOMA Multi-Passenger Pool (3 Pickups, 3 Drop-offs)';
+        badge.innerText = 'Cooperative Optimized';
+        badge.className = 'px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold';
+        icon.innerHTML = '<span class="material-symbols-outlined text-[22px]">route</span>';
+      } else if (vehId === 'V-08') {
+        title.innerText = 'Vehicle V-08 Sequence (FiDi Express)';
+        subtitle.innerText = 'High Density Financial District Corridor (4 Active Pax)';
+        badge.innerText = 'Low Detour +6.1%';
+        badge.className = 'px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-bold';
+        icon.innerHTML = '<span class="material-symbols-outlined text-[22px]">airport_shuttle</span>';
+      } else {
+        title.innerText = `Vehicle ${vehId} Sequence`;
+        subtitle.innerText = 'Standby or Assigned to Alternate Dispatch Sector';
+        badge.innerText = 'Standby Ready';
+        badge.className = 'px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm font-bold';
+      }
+    }
+
+    // Inspect individual rider (Elena or Rejected David)
+    function inspectRider(riderId) {
+      document.getElementById('view-v12-sequence').classList.add('hidden');
+      
+      const title = document.getElementById('inspector-title');
+      const subtitle = document.getElementById('inspector-subtitle');
+      const badge = document.getElementById('inspector-badge');
+      const icon = document.getElementById('inspector-icon-container');
+
+      if (riderId === 'REQ-8041') {
+        document.getElementById('view-rider-elena').classList.remove('hidden');
+        document.getElementById('view-rider-rejected').classList.add('hidden');
+
+        title.innerText = 'Passenger Elena Vance (REQ-8041)';
+        subtitle.innerText = 'Route: Folsom & 7th St → Embarcadero Center';
+        badge.innerText = 'Detour +11.1% (PASSED)';
+        badge.className = 'px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold';
+        icon.innerHTML = '<span class="material-symbols-outlined text-[22px]">person_check</span>';
+      } else if (riderId === 'REQ-8044') {
+        document.getElementById('view-rider-elena').classList.add('hidden');
+        document.getElementById('view-rider-rejected').classList.remove('hidden');
+
+        title.innerText = 'Rejected Request REQ-8044 (David Park)';
+        subtitle.innerText = '24th & Mission St → SOMA Corridor';
+        badge.innerText = 'Detour +18.2% (EXCEEDED)';
+        badge.className = 'px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold';
+        icon.innerHTML = '<span class="material-symbols-outlined text-[22px]">warning</span>';
+      } else {
+        // Fallback for Marcus or Sarah
+        inspectRider('REQ-8041');
+      }
+    }
+
+    // Map Filter Layer Toggles
+    function toggleMapLayer(layer) {
+      document.querySelectorAll('.layer-pill').forEach(btn => {
+        btn.classList.remove('bg-on-surface', 'text-surface');
+        btn.classList.add('text-on-surface-variant');
+      });
+
+      const clicked = document.getElementById('layer-' + layer);
+      if (clicked) {
+        clicked.classList.remove('text-on-surface-variant');
+        clicked.classList.add('bg-on-surface', 'text-surface');
+      }
+
+      const p1 = document.getElementById('marker-p1');
+      const p2 = document.getElementById('marker-p2');
+      const p3 = document.getElementById('marker-p3');
+      const d1 = document.getElementById('marker-d1');
+      const d2 = document.getElementById('marker-d2');
+      const d3 = document.getElementById('marker-d3');
+      const rejected = document.getElementById('layer-group-rejected');
+      const rejectedPin = document.getElementById('marker-rejected');
+
+      if (layer === 'pickups') {
+        [p1, p2, p3].forEach(el => el.style.opacity = '1');
+        [d1, d2, d3, rejected, rejectedPin].forEach(el => el.style.opacity = '0.15');
+      } else if (layer === 'dropoffs') {
+        [d1, d2, d3].forEach(el => el.style.opacity = '1');
+        [p1, p2, p3, rejected, rejectedPin].forEach(el => el.style.opacity = '0.15');
+      } else if (layer === 'rejected') {
+        [rejected, rejectedPin].forEach(el => el.style.opacity = '1');
+        [p1, p2, p3, d1, d2, d3].forEach(el => el.style.opacity = '0.15');
+        inspectRider('REQ-8044');
+      } else {
+        // All elements visible
+        [p1, p2, p3, d1, d2, d3, rejected, rejectedPin].forEach(el => el.style.opacity = '1');
+      }
+    }
+
+    // Edge-case Scenario Switcher
+    function setScenario(scenario) {
+      document.querySelectorAll('.scenario-btn').forEach(btn => {
+        btn.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'shadow-xs', 'font-semibold');
+        btn.classList.add('text-on-surface-variant');
+      });
+      const targetBtn = document.getElementById('scenario-' + scenario);
+      if (targetBtn) {
+        targetBtn.classList.add('bg-surface-container-lowest', 'text-on-surface', 'shadow-xs', 'font-semibold');
+        targetBtn.classList.remove('text-on-surface-variant');
+      }
+
+      const overlayOffline = document.getElementById('state-overlay-offline');
+      const overlayEmpty = document.getElementById('state-overlay-empty');
+
+      overlayOffline.classList.add('hidden');
+      overlayEmpty.classList.add('hidden');
+
+      if (scenario === 'offline') {
+        overlayOffline.classList.remove('hidden');
+      } else if (scenario === 'empty') {
+        overlayEmpty.classList.remove('hidden');
+      } else if (scenario === 'standby') {
+        selectVehicle('V-15');
+      } else {
+        selectVehicle('V-12');
+      }
+    }
+
+    // Side Roster Fleet Filter
+    function filterFleet(type) {
+      document.querySelectorAll('.roster-filter').forEach(b => {
+        b.classList.remove('bg-primary', 'text-on-primary', 'font-bold');
+        b.classList.add('bg-surface-container', 'text-on-surface-variant', 'font-medium');
+      });
+
+      const btn = document.querySelector(`.roster-filter[data-filter="${type}"]`);
+      if (btn) {
+        btn.classList.add('bg-primary', 'text-on-primary', 'font-bold');
+        btn.classList.remove('bg-surface-container', 'text-on-surface-variant', 'font-medium');
+      }
+
+      const v12 = document.getElementById('vcard-v12');
+      const v08 = document.getElementById('vcard-v08');
+      const v03 = document.getElementById('vcard-v03');
+      const v15 = document.getElementById('vcard-v15');
+
+      if (type === 'standby') {
+        [v12, v08, v03].forEach(c => c.classList.add('hidden'));
+        v15.classList.remove('hidden');
+      } else if (type === 'in-route') {
+        [v12, v08, v03].forEach(c => c.classList.remove('hidden'));
+        v15.classList.add('hidden');
+      } else {
+        [v12, v08, v03, v15].forEach(c => c.classList.remove('hidden'));
+      }
+    }
+  </script>
+</div></main></div></body></html>

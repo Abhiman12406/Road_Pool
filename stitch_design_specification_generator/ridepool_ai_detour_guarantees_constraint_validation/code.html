@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"on-tertiary":"#ffffff","background":"#f9f9ff","surface-container-high":"#dee8ff","on-primary-container":"#004965","inverse-surface":"#263143","outline-variant":"#bdc8d1","on-background":"#111c2d","secondary-fixed-dim":"#eec200","on-error-container":"#93000a","on-secondary-fixed-variant":"#574500","on-tertiary-container":"#344b00","outline":"#6e7980","surface":"#f9f9ff","primary-container":"#38bdf8","surface-container-lowest":"#ffffff","on-primary":"#ffffff","tertiary-container":"#9ebc67","on-tertiary-fixed-variant":"#364e03","tertiary-fixed":"#ceee93","surface-bright":"#f9f9ff","on-surface":"#111c2d","surface-dim":"#cfdaf2","surface-container":"#e7eeff","on-secondary":"#ffffff","surface-container-highest":"#d8e3fb","error":"#ba1a1a","primary-fixed":"#c4e7ff","primary":"#00668a","on-primary-fixed":"#001e2c","on-primary-fixed-variant":"#004c69","on-tertiary-fixed":"#131f00","secondary":"#735c00","inverse-primary":"#7bd0ff","error-container":"#ffdad6","on-secondary-container":"#6f5900","on-secondary-fixed":"#231b00","secondary-fixed":"#ffe083","secondary-container":"#fed01b","tertiary-fixed-dim":"#b3d17a","primary-fixed-dim":"#7bd0ff","on-error":"#ffffff","on-surface-variant":"#3e484f","surface-container-low":"#f0f3ff","surface-tint":"#00668a","inverse-on-surface":"#ecf1ff","tertiary":"#4d661c","surface-variant":"#d8e3fb"},"borderRadius":{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"},"spacing":{"gutter":"1.5rem","space-md":"1rem","space-xs":"0.375rem","space-lg":"1.5rem","margin":"2rem","space-sm":"0.75rem","space-xl":"2.25rem"},"fontFamily":{"body-lg":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"headline-xl-mobile":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"title-lg":["Plus Jakarta Sans"],"title-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"]},"fontSize":{"body-lg":["15px",{"lineHeight":"22px","fontWeight":"500"}],"headline-lg":["36px",{"lineHeight":"44px","fontWeight":"700"}],"headline-xl-mobile":["32px",{"lineHeight":"40px","fontWeight":"800"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"500"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"700"}],"headline-xl":["44px",{"lineHeight":"52px","fontWeight":"800"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"700"}],"title-lg":["20px",{"lineHeight":"28px","fontWeight":"600"}],"title-md":["16px",{"lineHeight":"24px","fontWeight":"600"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-lg text-body-lg text-on-surface min-h-screen"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low/95 backdrop-blur-xl z-50 flex flex-col justify-between py-space-md shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)]"><div class="flex flex-col gap-space-md"><div class="px-space-md flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shadow-[0_4px_12px_rgba(56,189,248,0.35)]"><span class="material-symbols-outlined text-on-primary-container text-[22px]">hub</span></div><div class="flex flex-col"><span class="font-title-md text-title-md text-on-surface tracking-tight">RidePool<span class="text-primary">.AI</span></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Cooperative Dispatch</span></div></div></div><div class="px-space-md"><div class="bg-surface-container-high p-space-xs rounded-full flex items-center gap-1 shadow-inner"><a class="flex-1 text-center py-1 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-on-surface shadow-sm" data-path="live-dispatch-console" href="#">Dispatch</a><a class="flex-1 text-center py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface" data-path="passenger-flow-simulator" href="#">Rider App</a></div></div><div class="px-space-md"><div class="px-space-sm py-space-xs bg-tertiary-fixed/30 rounded-full flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span class="font-label-sm text-label-sm text-on-tertiary-container font-semibold truncate">Window #148 • 30s rolling</span></div></div><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-primary-container text-on-primary-container font-semibold shadow-sm"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="live-dispatch-console" href="#"><span class="material-symbols-outlined text-[20px]">radar</span><span class="font-title-md text-title-md">Live Dispatch Console</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="shapley-pricing-matrix" href="#"><span class="material-symbols-outlined text-[20px]">pie_chart</span><span class="font-title-md text-title-md">Shapley Cost Matrix</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="fleet-telemetry-map" href="#"><span class="material-symbols-outlined text-[20px]">directions_car</span><span class="font-title-md text-title-md">Fleet Telemetry Map</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="passenger-flow-simulator" href="#"><span class="material-symbols-outlined text-[20px]">person_pin_circle</span><span class="font-title-md text-title-md">Passenger Simulator</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="algorithm-benchmarks" href="#"><span class="material-symbols-outlined text-[20px]">query_stats</span><span class="font-title-md text-title-md">Algorithm Benchmarks</span></a></nav></div><div class="px-space-md flex flex-col gap-space-sm"><div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,23,42,0.04)] flex flex-col gap-space-xs"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sim Engine</span><span class="font-label-sm text-label-sm text-primary font-bold">1x Active</span></div><div class="flex items-center justify-between gap-1"><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-primary-container text-on-surface hover:text-on-primary-container flex items-center justify-center transition-colors" title="Run Simulation" type="button"><span class="material-symbols-outlined text-[16px]">play_arrow</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Pause" type="button"><span class="material-symbols-outlined text-[16px]">pause</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Step 10s" type="button"><span class="material-symbols-outlined text-[16px]">forward_10</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Reset Data" type="button"><span class="material-symbols-outlined text-[16px]">replay</span></button></div></div><div class="pt-space-xs flex items-center justify-between px-space-xs"><div class="flex items-center gap-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-title-md text-title-md leading-tight text-on-surface">Dr. L. Moreau</span><span class="font-label-sm text-label-sm text-on-surface-variant">Lead Dispatcher</span></div></div><button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">tune</span></button></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-8 flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-1"><div class="hidden xl:flex items-center gap-space-sm px-space-md py-1.5 rounded-full bg-surface-container-lowest shadow-sm"><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Active Pools</span><span class="font-title-md text-title-md text-primary font-bold">184 Trips</span></div><div class="w-1 h-3.5 bg-outline-variant/60 rounded-full"></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Avg Detour</span><span class="font-title-md text-title-md text-on-surface font-semibold">+8.4%</span><span class="font-label-sm text-label-sm text-on-surface-variant">(Cap 15%)</span></div><div class="w-1 h-3.5 bg-outline-variant/60 rounded-full"></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Shapley Savings</span><span class="font-title-md text-title-md text-tertiary font-bold">-28.6%</span></div></div></div><div class="flex items-center gap-space-sm"><div class="relative flex items-center"><input class="w-64 h-9 pl-9 pr-3 rounded-full bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner" placeholder="Search trip ID, rider, or vehicle..." type="text"/><span class="material-symbols-outlined absolute left-2.5 text-[18px] text-on-surface-variant">search</span></div><button class="w-9 h-9 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container shadow-sm relative transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Outer Floating Canvas Enclosure matching Kinetic Glow aesthetic -->
+<div class="px-6 py-6 lg:px-10 lg:py-8 max-w-[1720px] mx-auto w-full flex flex-col gap-8">
+<!-- Top Navigation Context & Demo State Switcher -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md">
+<span>Operations Dashboard</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>Algorithmic Verification</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Detour Guarantees &amp; Constraint Audit</span>
+</div>
+<div class="flex items-center gap-3 flex-wrap">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Detour Ceiling Guarantee &amp; Hard Constraint Engine</h1>
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm font-bold flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            STRICT AUDIT ACTIVE
+          </span>
+</div>
+<div class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md pt-0.5">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container font-medium">Batch #148 • 30s Window</span>
+<span class="text-outline-variant">•</span>
+<span class="font-semibold text-on-surface">Rule: Strict Max Detour Cap Δ ≤ 15.0%</span>
+<span class="text-outline-variant">•</span>
+<span>Engine: <strong class="text-primary">Dijkstra Geodesic Solver v3.4</strong></span>
+</div>
+</div>
+<!-- Demo State Switcher Pill Bar for Hackathon / Audit Inspection -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 self-start lg:self-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider pl-1">Audit States:</span>
+<div class="p-1 rounded-full bg-surface-container-high/80 backdrop-blur-md flex items-center gap-1 shadow-sm overflow-x-auto max-w-full" id="state-switcher">
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md font-bold shadow-sm transition-all state-btn active" data-state="normal">
+            Normal: Valid (3/3)
+          </button>
+<button class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all state-btn" data-state="pruned">
+            Pruned: REQ-8044
+          </button>
+<button class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all state-btn" data-state="edge">
+            Edge: Baseline Zero
+          </button>
+<button class="px-3.5 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all state-btn" data-state="fallback">
+            OSRM 503 Fallback
+          </button>
+</div>
+</div>
+</div>
+<!-- Executive Constraint Audit Summary Cards (Top Metric Cluster) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+<!-- Card 1 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)] flex flex-col justify-between relative overflow-hidden group hover:translate-y-[-2px] transition-all">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Total Passengers Audited</span>
+<div class="w-10 h-10 rounded-full bg-primary-container/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">group</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-xl text-headline-xl font-bold text-on-surface" id="stat-audited">4</span>
+<span class="font-title-md text-title-md text-on-surface-variant">Requests</span>
+</div>
+<span class="font-body-md text-body-md text-primary font-medium">3 Dispatched • 1 Pruned to #149</span>
+</div>
+<div class="mt-4 pt-3 border-none flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm bg-surface-container-low px-3 py-1.5 rounded-full">
+<span>Solver Batch ID</span>
+<span class="font-semibold text-on-surface">#148-ALPHA</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)] flex flex-col justify-between relative overflow-hidden group hover:translate-y-[-2px] transition-all">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Cap Compliant (≤ 15.0%)</span>
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed/60 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-xl text-headline-xl font-bold text-tertiary" id="stat-compliant">3</span>
+<span class="font-title-md text-title-md text-on-surface-variant">Passengers</span>
+</div>
+<span class="font-body-md text-body-md text-tertiary font-semibold">100% of Dispatched Fleet</span>
+</div>
+<div class="mt-4 pt-3 border-none flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm bg-surface-container-low px-3 py-1.5 rounded-full">
+<span>Observed Fleet Mean</span>
+<span class="font-semibold text-tertiary">+8.4% (Margin 6.6%)</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)] flex flex-col justify-between relative overflow-hidden group hover:translate-y-[-2px] transition-all">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Rejected / Pruned Candidates</span>
+<div class="w-10 h-10 rounded-full bg-error-container/60 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[20px]">block</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-xl text-headline-xl font-bold text-error" id="stat-pruned">1</span>
+<span class="font-title-md text-title-md text-on-surface-variant">Candidate</span>
+</div>
+<span class="font-body-md text-body-md text-error font-medium">David Park (REQ-8044) at +18.2%</span>
+</div>
+<div class="mt-4 pt-3 border-none flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm bg-surface-container-low px-3 py-1.5 rounded-full">
+<span>Tolerance Cap</span>
+<span class="font-semibold text-error">Strict 0% Fatigue Spillage</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)] flex flex-col justify-between relative overflow-hidden group hover:translate-y-[-2px] transition-all">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Active Route Breaches</span>
+<div class="w-10 h-10 rounded-full bg-secondary-container/40 flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[20px]">shield</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-xl text-headline-xl font-bold text-on-surface" id="stat-breaches">0</span>
+<span class="font-title-md text-title-md text-on-surface-variant">Violations</span>
+</div>
+<span class="font-body-md text-body-md text-tertiary font-medium">Hard Gatekeeper Integrity Intact</span>
+</div>
+<div class="mt-4 pt-3 border-none flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm bg-surface-container-low px-3 py-1.5 rounded-full">
+<span>Auto-Kill Switch</span>
+<span class="font-semibold text-tertiary">Armed &amp; Enforcing</span>
+</div>
+</div>
+</div>
+<!-- Mathematical Definition & Proof Gatekeeper Banner -->
+<div class="p-6 lg:p-8 rounded-3xl bg-surface-container-lowest shadow-[0_12px_32px_-4px_rgba(15,23,42,0.06)] flex flex-col lg:flex-row gap-8 items-start lg:items-center justify-between relative overflow-hidden">
+<!-- Glow ambient background -->
+<div class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-primary-container/15 blur-3xl pointer-events-none"></div>
+<div class="absolute -left-20 -top-20 w-80 h-80 rounded-full bg-secondary-fixed/20 blur-3xl pointer-events-none"></div>
+<div class="flex flex-col gap-3 max-w-2xl z-10">
+<div class="flex items-center gap-2">
+<span class="px-3 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm font-bold text-primary uppercase">Mathematical Contract</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Formal Proof Protocol C-3</span>
+</div>
+<h2 class="font-title-lg text-title-lg text-on-surface font-bold tracking-tight">
+          Hard Detour Ceiling Formula &amp; Non-Dispatchability Invariant
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+          Every rider added to vehicle coalition <code class="font-semibold text-primary">C</code> is evaluated against their unshared Dijkstra geodesic travel time. If any single passenger's detour exceeds the strict threshold of 15.0%, the solver triggers an immediate rejection branch, preventing combinatorial dispatch from compromising passenger trust.
+        </p>
+<!-- Division-by-zero & missing baseline guard note -->
+<div class="flex items-center gap-2.5 p-3 rounded-2xl bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[18px] text-primary">gavel</span>
+<span>
+<strong>Singularity Guard:</strong> Baseline <code class="text-on-surface font-mono">T_solo ≤ 0</code> triggers <code class="text-error font-mono font-bold">UNDEFINED_BASELINE_ERR</code>, blocking fallback to zero-cost assumptions.
+          </span>
+</div>
+</div>
+<!-- LaTeX-style Formula Display Box -->
+<div class="w-full lg:w-auto flex flex-col gap-3 z-10 shrink-0">
+<div class="p-6 rounded-2xl bg-surface-container-high/60 backdrop-blur-md flex flex-col gap-3 min-w-[320px] shadow-inner">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold">Detour Relative Vector</span>
+<div class="font-mono text-title-lg text-on-surface font-extrabold flex items-center justify-center p-3 rounded-xl bg-surface-container-lowest shadow-sm">
+            Δ<sub>i</sub> = <span class="mx-2 text-primary">( ( T<sub>pooled</sub>(i) - T<sub>solo</sub>(i) ) / T<sub>solo</sub>(i) )</span> × 100%
+          </div>
+<div class="p-3 rounded-xl bg-primary/5 flex flex-col gap-1 font-mono text-label-sm text-on-primary-container">
+<span class="font-bold">∀ i ∈ Coalition C: Δ<sub>i</sub> ≤ 15.0% ∧ T<sub>solo</sub>(i) &gt; 0</span>
+<span class="text-on-surface-variant text-[11px]">If ∃ i with Δ<sub>i</sub> &gt; 15.0% ➔ Status: PRUNED_NON_DISPATCHABLE</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Master Two-Column Split Architecture (As specified in inspiration & style) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT COLUMN: Verification Ledger & Deep-Dive Inspection (7 Cols) -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<!-- Per-Passenger Verification Ledger Card -->
+<div class="p-6 rounded-3xl bg-surface-container-lowest shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)] flex flex-col gap-5">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-primary-container/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">fact_check</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Passenger Verification Ledger</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Batch #148 candidate passengers audited against Dijkstra baseline</span>
+</div>
+</div>
+<!-- Filter Chips -->
+<div class="flex items-center gap-1.5 p-1 rounded-full bg-surface-container-low self-start">
+<button class="px-3 py-1 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md font-semibold shadow-xs table-filter-btn" data-filter="all">All (4)</button>
+<button class="px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md table-filter-btn" data-filter="compliant">Valid (3)</button>
+<button class="px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md table-filter-btn" data-filter="rejected">Rejected (1)</button>
+</div>
+</div>
+<!-- Table Container -->
+<div class="overflow-x-auto -mx-6 px-6">
+<table class="w-full text-left border-collapse min-w-[620px]">
+<thead>
+<tr class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider bg-surface-container-low/50">
+<th class="py-3 px-3 rounded-l-xl">Rider &amp; Path</th>
+<th class="py-3 px-3">T<sub>solo</sub> Direct</th>
+<th class="py-3 px-3">T<sub>pooled</sub> Route</th>
+<th class="py-3 px-3">Added</th>
+<th class="py-3 px-3">Detour (Δ)</th>
+<th class="py-3 px-3">Audit Status</th>
+<th class="py-3 px-3 rounded-r-xl text-right">Inspect</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-body-md" id="ledger-rows">
+<!-- Row 1: Elena Vance -->
+<tr class="hover:bg-surface-container-low/40 transition-colors ledger-row group cursor-pointer" data-id="REQ-8041" onclick="selectPassenger('REQ-8041')">
+<td class="py-4 px-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-label-sm">EV</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface flex items-center gap-1.5">
+                          Elena Vance
+                          <span class="font-label-sm text-label-sm text-on-surface-variant font-normal">REQ-8041</span>
+</span>
+<span class="text-on-surface-variant text-[11px]">SOMA ➔ Ferry Terminal • 1 Pax</span>
+</div>
+</div>
+</td>
+<td class="py-4 px-3 font-mono font-medium">18.0 m <span class="text-on-surface-variant text-[11px] block">2.84 mi</span></td>
+<td class="py-4 px-3 font-mono font-medium text-primary">20.0 m <span class="text-on-surface-variant text-[11px] block">2.95 mi</span></td>
+<td class="py-4 px-3 font-mono text-tertiary font-bold">+2.0 m</td>
+<td class="py-4 px-3">
+<div class="flex flex-col gap-1">
+<span class="font-mono font-bold text-tertiary">+11.1%</span>
+<div class="w-16 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full" style="width: 74%;"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-mono">Margin: +0.7m</span>
+</div>
+</td>
+<td class="py-4 px-3">
+<span class="px-2.5 py-1 rounded-full bg-tertiary-fixed/60 text-on-tertiary-container font-label-sm text-label-sm font-bold inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                      PASS
+                    </span>
+</td>
+<td class="py-4 px-3 text-right">
+<button class="w-8 h-8 rounded-full bg-surface-container hover:bg-primary-container text-on-surface flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Marcus Chen -->
+<tr class="hover:bg-surface-container-low/40 transition-colors ledger-row group cursor-pointer" data-id="REQ-8042" onclick="selectPassenger('REQ-8042')">
+<td class="py-4 px-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-label-sm">MC</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface flex items-center gap-1.5">
+                          Marcus Chen
+                          <span class="font-label-sm text-label-sm text-on-surface-variant font-normal">REQ-8042</span>
+</span>
+<span class="text-on-surface-variant text-[11px]">SOMA ➔ Salesforce Tower • 1 Pax</span>
+</div>
+</div>
+</td>
+<td class="py-4 px-3 font-mono font-medium">22.0 m <span class="text-on-surface-variant text-[11px] block">3.40 mi</span></td>
+<td class="py-4 px-3 font-mono font-medium text-primary">24.0 m <span class="text-on-surface-variant text-[11px] block">3.82 mi</span></td>
+<td class="py-4 px-3 font-mono text-tertiary font-bold">+2.0 m</td>
+<td class="py-4 px-3">
+<div class="flex flex-col gap-1">
+<span class="font-mono font-bold text-tertiary">+9.1%</span>
+<div class="w-16 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full" style="width: 60%;"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-mono">Margin: +1.3m</span>
+</div>
+</td>
+<td class="py-4 px-3">
+<span class="px-2.5 py-1 rounded-full bg-tertiary-fixed/60 text-on-tertiary-container font-label-sm text-label-sm font-bold inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                      PASS
+                    </span>
+</td>
+<td class="py-4 px-3 text-right">
+<button class="w-8 h-8 rounded-full bg-surface-container hover:bg-primary-container text-on-surface flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Sarah Kim -->
+<tr class="hover:bg-surface-container-low/40 transition-colors ledger-row group cursor-pointer" data-id="REQ-8043" onclick="selectPassenger('REQ-8043')">
+<td class="py-4 px-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-label-sm">SK</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface flex items-center gap-1.5">
+                          Sarah Kim
+                          <span class="font-label-sm text-label-sm text-on-surface-variant font-normal">REQ-8043</span>
+</span>
+<span class="text-on-surface-variant text-[11px]">Mission ➔ Ferry Building • 1 Pax</span>
+</div>
+</div>
+</td>
+<td class="py-4 px-3 font-mono font-medium">14.0 m <span class="text-on-surface-variant text-[11px] block">2.10 mi</span></td>
+<td class="py-4 px-3 font-mono font-medium text-primary">15.0 m <span class="text-on-surface-variant text-[11px] block">2.28 mi</span></td>
+<td class="py-4 px-3 font-mono text-tertiary font-bold">+1.0 m</td>
+<td class="py-4 px-3">
+<div class="flex flex-col gap-1">
+<span class="font-mono font-bold text-tertiary">+7.1%</span>
+<div class="w-16 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full" style="width: 47%;"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant font-mono">Margin: +1.1m</span>
+</div>
+</td>
+<td class="py-4 px-3">
+<span class="px-2.5 py-1 rounded-full bg-tertiary-fixed/60 text-on-tertiary-container font-label-sm text-label-sm font-bold inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                      PASS
+                    </span>
+</td>
+<td class="py-4 px-3 text-right">
+<button class="w-8 h-8 rounded-full bg-surface-container hover:bg-primary-container text-on-surface flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: David Park (REJECTED CANDIDATE) -->
+<tr class="bg-error-container/20 hover:bg-error-container/30 transition-colors ledger-row group cursor-pointer" data-id="REQ-8044" onclick="selectPassenger('REQ-8044')">
+<td class="py-4 px-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-error/15 text-error flex items-center justify-center font-bold text-label-sm">DP</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface flex items-center gap-1.5">
+                          David Park
+                          <span class="font-label-sm text-label-sm text-error font-semibold">REQ-8044</span>
+</span>
+<span class="text-on-surface-variant text-[11px]">Dolores Park ➔ Potrero • 2 Pax</span>
+</div>
+</div>
+</td>
+<td class="py-4 px-3 font-mono font-medium">31.0 m <span class="text-on-surface-variant text-[11px] block">4.65 mi</span></td>
+<td class="py-4 px-3 font-mono font-medium text-error">36.6 m <span class="text-on-surface-variant text-[11px] block">5.90 mi (V-12)</span></td>
+<td class="py-4 px-3 font-mono text-error font-bold">+5.6 m</td>
+<td class="py-4 px-3">
+<div class="flex flex-col gap-1">
+<span class="font-mono font-bold text-error">+18.2%</span>
+<div class="w-16 h-1.5 bg-error-container rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full" style="width: 100%;"></div>
+</div>
+<span class="text-[10px] text-error font-mono font-bold">BREACH (+3.2%)</span>
+</div>
+</td>
+<td class="py-4 px-3">
+<span class="px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                      PRUNED
+                    </span>
+</td>
+<td class="py-4 px-3 text-right">
+<button class="w-8 h-8 rounded-full bg-error-container hover:bg-error hover:text-on-error text-error flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-[16px]">crisis_alert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Deep-Dive Passenger Inspection & Route Comparison Drawer Card -->
+<div class="p-6 rounded-3xl bg-surface-container-lowest shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)] flex flex-col gap-6" id="inspection-card">
+<div class="flex items-center justify-between pb-3 border-none">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[22px]">compare_arrows</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold">Deep-Dive Inspection</span>
+<h3 class="font-title-lg text-title-lg text-on-surface font-bold" id="inspect-title">Elena Vance (REQ-8041) vs Vehicle V-12</h3>
+</div>
+</div>
+<!-- Inspect Passenger Toggle -->
+<div class="flex items-center gap-1.5 bg-surface-container-low p-1 rounded-full">
+<button class="px-3 py-1 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md font-bold shadow-xs transition-all inspect-toggle-btn active" onclick="selectPassenger('REQ-8041')">Elena (Valid)</button>
+<button class="px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface font-label-md text-label-md font-semibold transition-all inspect-toggle-btn" onclick="selectPassenger('REQ-8044')">David (Pruned)</button>
+</div>
+</div>
+<!-- Dual Route Vector Comparison -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Left: Solo Baseline Route -->
+<div class="p-5 rounded-2xl bg-surface-container-low flex flex-col justify-between gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
+<span class="font-title-md text-title-md font-bold text-on-surface">Solo Baseline Route</span>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm">Dijkstra Shortest</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-baseline justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Baseline Duration:</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface" id="inspect-solo-time">18.0 min</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant text-label-sm">
+<span>Geodesic Distance:</span>
+<span class="font-mono text-on-surface font-semibold" id="inspect-solo-dist">2.84 mi direct</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant text-label-sm">
+<span>Baseline Unshared Fare:</span>
+<span class="font-mono text-on-surface font-semibold" id="inspect-solo-fare">$24.50</span>
+</div>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary">alt_route</span>
+<span class="truncate">Straight corridor via 4th St &amp; Embarcadero</span>
+</div>
+</div>
+<!-- Right: Pooled Itinerary Manifest -->
+<div class="p-5 rounded-2xl bg-primary-fixed/20 flex flex-col justify-between gap-4 relative overflow-hidden">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-title-md text-title-md font-bold text-on-surface">Vehicle V-12 Pooled Manifest</span>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm font-bold">6 Stops</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-baseline justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pooled Actual:</span>
+<span class="font-headline-md text-headline-md font-bold text-primary" id="inspect-pooled-time">20.0 min</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant text-label-sm">
+<span>Effective Added Time:</span>
+<span class="font-mono font-bold text-tertiary" id="inspect-delta">+2.0 min (+11.1%)</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant text-label-sm">
+<span>Shapley Discounted Fare:</span>
+<span class="font-mono text-tertiary font-bold" id="inspect-pooled-fare">$17.15 (-30.0%)</span>
+</div>
+</div>
+<!-- Sequence Chips -->
+<div class="p-2.5 rounded-xl bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1.5 overflow-x-auto">
+<span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">P1 Elena</span>
+<span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container">P2 Marcus</span>
+<span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary font-bold">D1 Elena</span>
+</div>
+</div>
+</div>
+<!-- Headroom Gauge & Verification Explanation -->
+<div class="p-5 rounded-2xl bg-surface-container-low flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-title-md font-bold text-on-surface">Constraint Headroom Visualizer</span>
+<span class="font-mono text-label-md font-bold text-on-surface" id="gauge-label">11.1% / 15.0% Max Cap (Safety Margin: 3.9%)</span>
+</div>
+<!-- Dynamic Gauge Bar -->
+<div class="w-full h-4 rounded-full bg-surface-container-high relative overflow-hidden flex items-center">
+<div class="h-full bg-tertiary rounded-full transition-all duration-500" id="gauge-bar" style="width: 74%;"></div>
+<!-- 15% Cap Marker Line at 100% scale reference -->
+<div class="absolute right-0 top-0 bottom-0 w-1 bg-error z-10" title="15% Hard Cap"></div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-on-surface-variant font-mono">
+<span>0% (Direct)</span>
+<span>5%</span>
+<span>10%</span>
+<span class="text-error font-bold">15.0% HARD CEILING</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed" id="inspect-explanation">
+<strong>Audit Decision:</strong> Candidate Elena Vance is fully compliant with the 15.0% detour threshold. The added detour is 2.0 minutes, well within the permitted +2.7 minute headroom buffer. Route dispatched to Toyota Sienna (V-12).
+            </p>
+</div>
+</div>
+<!-- Candidate Route Evaluation History (Solver Decision Stream) -->
+<div class="p-6 rounded-3xl bg-surface-container-lowest shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)] flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-full bg-primary-container/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">timeline</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Candidate Coalition Stream (Solver Decision History)</h3>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Batch Window: 30s rolling</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Coalition Alpha -->
+<div class="p-4 rounded-2xl bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-none hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed/60 text-tertiary flex items-center justify-center font-bold text-label-sm">α</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface">Coalition α: V-12 + [Elena, Marcus, Sarah]</span>
+<span class="text-on-surface-variant font-body-md text-body-md">Max Detour: +11.1% ≤ 15.0% • 3 Pax • Efficiency Factor: 1.84x</span>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold shrink-0 self-start sm:self-center">
+                ACCEPTED &amp; DISPATCHED
+              </span>
+</div>
+<!-- Coalition Beta (Pruned) -->
+<div class="p-4 rounded-2xl bg-error-container/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-none hover:bg-error-container/30 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-error-container text-error flex items-center justify-center font-bold text-label-sm">β</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface">Coalition β: V-12 + [Elena, Marcus, Sarah, David]</span>
+<span class="text-error font-body-md text-body-md font-medium">Max Detour: +18.2% &gt; 15.0% • Violates Constraint C-3 for David Park</span>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold shrink-0 self-start sm:self-center">
+                PRUNED (NON-DISPATCHABLE)
+              </span>
+</div>
+<!-- Coalition Gamma -->
+<div class="p-4 rounded-2xl bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-none hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-label-sm">γ</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface">Coalition γ: V-08 + [David Park] (Pending Batch #149)</span>
+<span class="text-on-surface-variant font-body-md text-body-md">Projected Detour: +8.9% ≤ 15.0% • Feasible candidate for next re-match</span>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold shrink-0 self-start sm:self-center">
+                QUEUED IN BATCH #149
+              </span>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Cartographic Telemetry & Interactive Visual Route Canvas (5 Cols) -->
+<div class="lg:col-span-5 flex flex-col gap-6 sticky top-20">
+<!-- Dedicated Interactive Map Canvas Container matching Inspiration Glass Pill Aesthetic -->
+<div class="relative w-full h-[620px] rounded-3xl bg-surface-container-lowest shadow-[0_16px_36px_-6px_rgba(15,23,42,0.08)] overflow-hidden flex flex-col">
+<!-- Static Map Canvas Layer via data-location -->
+<div class="absolute inset-0 w-full h-full bg-cover bg-center" data-location="San Francisco, Financial District, California" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCDqNOim-rMKckU1I6NVtByAWxklnIc0vjU2MqfU6UNJQHj9VJc1FkB56an9pOrUoTgvZNIIPbdAJT2bfggV_LMyFPvkMiwPXe-g93qKHAwGvGbMWzdpHqasaGJNOAffj_ZAmLJoRndjUN71RWYvvQvZHu_8u-hvYhmHWf0V-Xi427Yn_qFz5Co5unrlyEoA-9UUbqMf0Z2wgZB--puW_asW94IsHdWHXanQTQvUNCNpthtWLcj4cFcyw')"></div>
+<!-- Frosted Ambient Map Vignette Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-background/30 pointer-events-none"></div>
+<!-- Floating Map Top Search / Filter Capsule (matching style guidance) -->
+<div class="absolute top-4 left-4 right-4 z-20 flex items-center gap-2">
+<div class="flex-1 h-12 px-4 rounded-full bg-surface-container-lowest/95 backdrop-blur-md shadow-[0_8px_24px_-4px_rgba(15,23,42,0.08)] flex items-center gap-3">
+<div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined text-[16px]">search</span>
+</div>
+<input class="w-full bg-transparent border-none text-body-md font-body-md text-on-surface focus:outline-none placeholder:text-on-surface-variant" placeholder="Search waypoint, corridor, or route leg..." type="text"/>
+</div>
+<button class="h-12 w-12 rounded-full bg-surface-container-lowest/95 backdrop-blur-md shadow-md flex items-center justify-center text-on-surface hover:text-primary transition-colors" title="Layer toggles">
+<span class="material-symbols-outlined text-[20px]">layers</span>
+</button>
+</div>
+<!-- Top Metric Pill on Map -->
+<div class="absolute top-20 left-4 z-20 flex items-center gap-2">
+<div class="px-4 py-2 rounded-full bg-surface-container-lowest/95 backdrop-blur-md shadow-md flex items-center gap-3">
+<span class="font-headline-md text-headline-md font-extrabold text-on-surface">36</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold leading-tight">Total Fleet</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold leading-tight">32 Active in SF</span>
+</div>
+</div>
+<div class="px-3.5 py-2 rounded-full bg-tertiary-fixed/90 backdrop-blur-md shadow-md flex items-center gap-2 text-on-tertiary-fixed font-label-md text-label-md font-bold">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-ping"></span>
+<span>GPS Precision ±1.2m</span>
+</div>
+</div>
+<!-- SVG Visual Polyline Overlay (Simulating GIS Route Paths & Headroom) -->
+<div class="absolute inset-0 pointer-events-none z-10 flex items-center justify-center">
+<svg class="w-full h-full" fill="none" viewbox="0 0 500 600" xmlns="http://www.w3.org/2000/svg">
+<!-- Solo Direct Route Polyline (Dashed Line) -->
+<path d="M120 480 L180 340 L340 180" opacity="0.75" stroke="#64748B" stroke-dasharray="6 6" stroke-linecap="round" stroke-width="3"></path>
+<!-- Vehicle V-12 Actual Dispatched Polyline (Electric Cyan High-Contrast) -->
+<path d="M120 480 Q 140 430 180 390 T 260 310 T 290 230 T 340 180" stroke="#38BDF8" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"></path>
+<!-- Glow polyline -->
+<path d="M120 480 Q 140 430 180 390 T 260 310 T 290 230 T 340 180" opacity="0.3" stroke="#38BDF8" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"></path>
+<!-- Waypoint Origin P1 (Elena Vance) -->
+<circle cx="120" cy="480" fill="#00668A" r="8" stroke="#FFFFFF" stroke-width="3"></circle>
+<!-- Waypoint Pickup P2 (Marcus Chen) -->
+<circle cx="180" cy="390" fill="#38BDF8" r="7" stroke="#FFFFFF" stroke-width="2"></circle>
+<!-- Destination D1 Ferry Terminal -->
+<circle cx="340" cy="180" fill="#16A34A" r="9" stroke="#FFFFFF" stroke-width="3"></circle>
+<!-- Rejection Vector Branch (David Park - Red Prohibited Path) -->
+<g class="opacity-90" id="rejected-path-svg">
+<path d="M260 310 Q 320 370 380 430" stroke="#EF4444" stroke-dasharray="4 4" stroke-linecap="round" stroke-width="4"></path>
+<circle cx="380" cy="430" fill="#EF4444" r="7" stroke="#FFFFFF" stroke-width="2"></circle>
+</g>
+</svg>
+</div>
+<!-- Interactive Map Pins & Floating Overlays (matching inspiration layout) -->
+<!-- Pin 1: Current Vehicle V-12 -->
+<div class="absolute top-[42%] left-[45%] z-20 -translate-x-1/2 -translate-y-1/2">
+<div class="p-2 rounded-full bg-surface-container-lowest shadow-lg flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-label-sm">
+                V-12
+              </div>
+<div class="flex flex-col pr-2">
+<span class="font-title-md text-title-md font-bold text-on-surface leading-none">Toyota Sienna</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">3 Pax • On Route</span>
+</div>
+</div>
+</div>
+<!-- Pin 2: Detour Distance Callout (like '320 m' in the inspiration image) -->
+<div class="absolute top-[26%] right-[22%] z-20">
+<div class="flex flex-col items-center">
+<div class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md font-bold shadow-md flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+<span>Ferry Terminal (+2.0m)</span>
+</div>
+<div class="w-2 h-2 bg-secondary-fixed rotate-45 -mt-1 shadow-xs"></div>
+</div>
+</div>
+<!-- Pin 3: Rejected Candidate Pin (David Park) -->
+<div class="absolute bottom-[22%] right-[14%] z-20">
+<div class="px-3 py-1 rounded-full bg-error text-on-error font-label-md text-label-md font-bold shadow-md flex items-center gap-1.5 animate-bounce">
+<span class="material-symbols-outlined text-[14px]">cancel</span>
+<span>Pruned Candidate (+18.2%)</span>
+</div>
+</div>
+<!-- Map Controls (Zoom buttons matching inspiration) -->
+<div class="absolute bottom-20 right-4 z-20 flex flex-col gap-2">
+<button class="w-11 h-11 rounded-full bg-surface-container-lowest/95 backdrop-blur-md shadow-md flex items-center justify-center text-on-surface hover:text-primary transition-colors" title="Zoom in">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+<button class="w-11 h-11 rounded-full bg-surface-container-lowest/95 backdrop-blur-md shadow-md flex items-center justify-center text-on-surface hover:text-primary transition-colors" title="Zoom out">
+<span class="material-symbols-outlined text-[20px]">remove</span>
+</button>
+<button class="w-11 h-11 rounded-full bg-surface-container-lowest/95 backdrop-blur-md shadow-md flex items-center justify-center text-on-surface hover:text-primary transition-colors" title="Center route">
+<span class="material-symbols-outlined text-[20px]">my_location</span>
+</button>
+</div>
+<!-- Bottom Turn-by-Turn Wayfinding Banner Pill (matching inspiration image) -->
+<div class="absolute bottom-4 left-4 right-4 z-20">
+<div class="p-3 rounded-full bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_12px_28px_-6px_rgba(0,0,0,0.12)] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined text-[22px]">turn_right</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-md text-title-md font-bold text-on-surface">Turn right on Embarcadero in 140 m</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">D1 Dropoff Elena Vance • ETA 20.0m total</span>
+</div>
+</div>
+<div class="px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-label-md font-bold mr-1">
+                +11.1% Valid
+              </div>
+</div>
+</div>
+</div>
+<!-- Interactive Actions & Solver Controls Capsule -->
+<div class="p-5 rounded-3xl bg-surface-container-lowest shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)] flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold">Solver Directives</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">API Gateway: v3-live</span>
+</div>
+<div class="grid grid-cols-2 gap-2.5">
+<button class="px-4 py-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-bold transition-all flex items-center justify-center gap-1.5" onclick="filterTable('rejected')">
+<span class="material-symbols-outlined text-[16px] text-error">filter_alt</span>
+              Filter Rejected
+            </button>
+<button class="px-4 py-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-bold transition-all flex items-center justify-center gap-1.5" onclick="triggerRecalc()">
+<span class="material-symbols-outlined text-[16px] text-primary">autorenew</span>
+              Recalculate Batch
+            </button>
+<button class="px-4 py-2.5 rounded-full bg-primary text-on-primary hover:bg-primary/90 font-label-md text-label-md font-bold transition-all flex items-center justify-center gap-1.5 col-span-2 shadow-sm" onclick="exportProof()">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+              Export Formal Audit Proof (PDF / JSON)
+            </button>
+</div>
+<div class="pt-2 border-none flex items-center justify-between text-on-surface-variant text-[11px]">
+<span>SHA-256 Hash:</span>
+<span class="font-mono text-on-surface">d7f8...93e1</span>
+<span>Signed by Solver Worker #04</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Logic for State Switching and Route Inspection -->
+<script>
+    const auditData = {
+      'REQ-8041': {
+        name: 'Elena Vance',
+        code: 'REQ-8041',
+        soloTime: '18.0 min',
+        soloDist: '2.84 mi direct',
+        soloFare: '$24.50',
+        pooledTime: '20.0 min',
+        delta: '+2.0 min (+11.1%)',
+        pooledFare: '$17.15 (-30.0%)',
+        gaugeWidth: '74%',
+        gaugeLabel: '11.1% / 15.0% Max Cap (Safety Margin: 3.9%)',
+        isPruned: false,
+        explanation: '<strong>Audit Decision:</strong> Candidate Elena Vance is fully compliant with the 15.0% detour threshold. The added detour is 2.0 minutes, well within the permitted +2.7 minute headroom buffer. Route dispatched to Toyota Sienna (V-12).'
+      },
+      'REQ-8042': {
+        name: 'Marcus Chen',
+        code: 'REQ-8042',
+        soloTime: '22.0 min',
+        soloDist: '3.40 mi direct',
+        soloFare: '$28.00',
+        pooledTime: '24.0 min',
+        delta: '+2.0 min (+9.1%)',
+        pooledFare: '$19.60 (-30.0%)',
+        gaugeWidth: '60%',
+        gaugeLabel: '9.1% / 15.0% Max Cap (Safety Margin: 5.9%)',
+        isPruned: false,
+        explanation: '<strong>Audit Decision:</strong> Marcus Chen detour is 9.1% against 15.0% ceiling. SOMA to Salesforce Tower trajectory aligns perfectly with existing corridor.'
+      },
+      'REQ-8043': {
+        name: 'Sarah Kim',
+        code: 'REQ-8043',
+        soloTime: '14.0 min',
+        soloDist: '2.10 mi direct',
+        soloFare: '$21.00',
+        pooledTime: '15.0 min',
+        delta: '+1.0 min (+7.1%)',
+        pooledFare: '$14.70 (-30.0%)',
+        gaugeWidth: '47%',
+        gaugeLabel: '7.1% / 15.0% Max Cap (Safety Margin: 7.9%)',
+        isPruned: false,
+        explanation: '<strong>Audit Decision:</strong> Sarah Kim experiences only +1.0 min added travel time (+7.1%). Highest efficiency candidate in Batch #148.'
+      },
+      'REQ-8044': {
+        name: 'David Park',
+        code: 'REQ-8044',
+        soloTime: '31.0 min',
+        soloDist: '4.65 mi direct',
+        soloFare: '$39.20',
+        pooledTime: '36.6 min',
+        delta: '+5.6 min (+18.2%)',
+        pooledFare: 'N/A (Pruned from V-12)',
+        gaugeWidth: '100%',
+        gaugeLabel: '18.2% / 15.0% HARD BREACH (+3.2% Over Cap)',
+        isPruned: true,
+        explanation: '<strong>Hard Constraint Rejection:</strong> Adding REQ-8044 to vehicle V-12 pushes David\'s travel time from 31.0 min to 36.6 min (+18.2% detour). To protect passenger quality, the solver auto-prunes this candidate and routes David to Batch #149 for Vehicle V-08.'
+      }
+    };
+
+    function selectPassenger(id) {
+      const data = auditData[id];
+      if (!data) return;
+
+      document.getElementById('inspect-title').innerText = `${data.name} (${data.code}) vs Vehicle V-12`;
+      document.getElementById('inspect-solo-time').innerText = data.soloTime;
+      document.getElementById('inspect-solo-dist').innerText = data.soloDist;
+      document.getElementById('inspect-solo-fare').innerText = data.soloFare;
+      document.getElementById('inspect-pooled-time').innerText = data.pooledTime;
+      document.getElementById('inspect-delta').innerText = data.delta;
+      document.getElementById('inspect-pooled-fare').innerText = data.pooledFare;
+      document.getElementById('gauge-label').innerText = data.gaugeLabel;
+      document.getElementById('inspect-explanation').innerHTML = data.explanation;
+
+      const bar = document.getElementById('gauge-bar');
+      bar.style.width = data.gaugeWidth;
+      if (data.isPruned) {
+        bar.className = 'h-full bg-error rounded-full transition-all duration-500';
+      } else {
+        bar.className = 'h-full bg-tertiary rounded-full transition-all duration-500';
+      }
+
+      // Update active toggle state
+      const toggleBtns = document.querySelectorAll('.inspect-toggle-btn');
+      toggleBtns.forEach(btn => {
+        if ((id === 'REQ-8041' && btn.innerText.includes('Elena')) ||
+            (id === 'REQ-8044' && btn.innerText.includes('David'))) {
+          btn.classList.add('bg-surface-container-lowest', 'text-on-surface', 'active');
+          btn.classList.remove('text-on-surface-variant');
+        } else {
+          btn.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'active');
+          btn.classList.add('text-on-surface-variant');
+        }
+      });
+    }
+
+    // Filter table rows
+    function filterTable(filter) {
+      const rows = document.querySelectorAll('.ledger-row');
+      rows.forEach(row => {
+        const id = row.getAttribute('data-id');
+        if (filter === 'all') {
+          row.style.display = '';
+        } else if (filter === 'compliant') {
+          row.style.display = id === 'REQ-8044' ? 'none' : '';
+        } else if (filter === 'rejected') {
+          row.style.display = id === 'REQ-8044' ? '' : 'none';
+        }
+      });
+
+      document.querySelectorAll('.table-filter-btn').forEach(btn => {
+        if (btn.getAttribute('data-filter') === filter) {
+          btn.classList.add('bg-surface-container-lowest', 'text-on-surface', 'shadow-xs');
+          btn.classList.remove('text-on-surface-variant');
+        } else {
+          btn.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'shadow-xs');
+          btn.classList.add('text-on-surface-variant');
+        }
+      });
+    }
+
+    document.querySelectorAll('.table-filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        filterTable(e.target.getAttribute('data-filter'));
+      });
+    });
+
+    // Demo State Switcher
+    document.querySelectorAll('.state-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.state-btn').forEach(b => {
+          b.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'font-bold', 'shadow-sm');
+          b.classList.add('text-on-surface-variant');
+        });
+        const target = e.currentTarget;
+        target.classList.add('bg-surface-container-lowest', 'text-on-surface', 'font-bold', 'shadow-sm');
+        target.classList.remove('text-on-surface-variant');
+
+        const state = target.getAttribute('data-state');
+        if (state === 'normal') {
+          filterTable('compliant');
+          selectPassenger('REQ-8041');
+        } else if (state === 'pruned') {
+          filterTable('rejected');
+          selectPassenger('REQ-8044');
+        } else if (state === 'edge') {
+          alert("Demonstrating Guardrail: Baseline T_solo = 0 detected. Auto-raising UNDEFINED_BASELINE_ERR. Silent dispatch blocked.");
+        } else if (state === 'fallback') {
+          alert("Demonstrating OSRM 503 Fallback: Switched to Haversine-Manhattan conservative bounds. Cap strictly retained at 15.0%.");
+        }
+      });
+    });
+
+    function triggerRecalc() {
+      const btn = event.currentTarget;
+      btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">sync</span> Solving...';
+      setTimeout(() => {
+        btn.innerHTML = '<span class="material-symbols-outlined text-[16px] text-tertiary">check</span> Cap Verified';
+        setTimeout(() => {
+          btn.innerHTML = '<span class="material-symbols-outlined text-[16px] text-primary">autorenew</span> Recalculate Batch';
+        }, 1800);
+      }, 700);
+    }
+
+    function exportProof() {
+      alert("Exporting Cryptographic Audit Certificate for Batch #148 (Proof of Invariant C-3: Detour <= 15.0%)");
+    }
+  </script>
+</div></main></div></body></html>

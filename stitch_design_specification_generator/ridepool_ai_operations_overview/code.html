@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"on-tertiary":"#ffffff","background":"#f9f9ff","surface-container-high":"#dee8ff","on-primary-container":"#004965","inverse-surface":"#263143","outline-variant":"#bdc8d1","on-background":"#111c2d","secondary-fixed-dim":"#eec200","on-error-container":"#93000a","on-secondary-fixed-variant":"#574500","on-tertiary-container":"#344b00","outline":"#6e7980","surface":"#f9f9ff","primary-container":"#38bdf8","surface-container-lowest":"#ffffff","on-primary":"#ffffff","tertiary-container":"#9ebc67","on-tertiary-fixed-variant":"#364e03","tertiary-fixed":"#ceee93","surface-bright":"#f9f9ff","on-surface":"#111c2d","surface-dim":"#cfdaf2","surface-container":"#e7eeff","on-secondary":"#ffffff","surface-container-highest":"#d8e3fb","error":"#ba1a1a","primary-fixed":"#c4e7ff","primary":"#00668a","on-primary-fixed":"#001e2c","on-primary-fixed-variant":"#004c69","on-tertiary-fixed":"#131f00","secondary":"#735c00","inverse-primary":"#7bd0ff","error-container":"#ffdad6","on-secondary-container":"#6f5900","on-secondary-fixed":"#231b00","secondary-fixed":"#ffe083","secondary-container":"#fed01b","tertiary-fixed-dim":"#b3d17a","primary-fixed-dim":"#7bd0ff","on-error":"#ffffff","on-surface-variant":"#3e484f","surface-container-low":"#f0f3ff","surface-tint":"#00668a","inverse-on-surface":"#ecf1ff","tertiary":"#4d661c","surface-variant":"#d8e3fb"},"borderRadius":{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"},"spacing":{"gutter":"1.5rem","space-md":"1rem","space-xs":"0.375rem","space-lg":"1.5rem","margin":"2rem","space-sm":"0.75rem","space-xl":"2.25rem"},"fontFamily":{"body-lg":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"headline-xl-mobile":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"title-lg":["Plus Jakarta Sans"],"title-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"]},"fontSize":{"body-lg":["15px",{"lineHeight":"22px","fontWeight":"500"}],"headline-lg":["36px",{"lineHeight":"44px","fontWeight":"700"}],"headline-xl-mobile":["32px",{"lineHeight":"40px","fontWeight":"800"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"500"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"700"}],"headline-xl":["44px",{"lineHeight":"52px","fontWeight":"800"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"700"}],"title-lg":["20px",{"lineHeight":"28px","fontWeight":"600"}],"title-md":["16px",{"lineHeight":"24px","fontWeight":"600"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-lg text-body-lg text-on-surface min-h-screen"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low/95 backdrop-blur-xl z-50 flex flex-col justify-between py-space-md shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)]"><div class="flex flex-col gap-space-md"><div class="px-space-md flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shadow-[0_4px_12px_rgba(56,189,248,0.35)]"><span class="material-symbols-outlined text-on-primary-container text-[22px]">hub</span></div><div class="flex flex-col"><span class="font-title-md text-title-md text-on-surface tracking-tight">RidePool<span class="text-primary">.AI</span></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Cooperative Dispatch</span></div></div></div><div class="px-space-md"><div class="bg-surface-container-high p-space-xs rounded-full flex items-center gap-1 shadow-inner"><a class="flex-1 text-center py-1 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-on-surface shadow-sm" data-path="live-dispatch-console" href="#">Dispatch</a><a class="flex-1 text-center py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface" data-path="passenger-flow-simulator" href="#">Rider App</a></div></div><div class="px-space-md"><div class="px-space-sm py-space-xs bg-tertiary-fixed/30 rounded-full flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span class="font-label-sm text-label-sm text-on-tertiary-container font-semibold truncate">Window #148 • 30s rolling</span></div></div><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-primary-container text-on-primary-container font-semibold shadow-sm"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="live-dispatch-console" href="#"><span class="material-symbols-outlined text-[20px]">radar</span><span class="font-title-md text-title-md">Live Dispatch Console</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="shapley-pricing-matrix" href="#"><span class="material-symbols-outlined text-[20px]">pie_chart</span><span class="font-title-md text-title-md">Shapley Cost Matrix</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="fleet-telemetry-map" href="#"><span class="material-symbols-outlined text-[20px]">directions_car</span><span class="font-title-md text-title-md">Fleet Telemetry Map</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="passenger-flow-simulator" href="#"><span class="material-symbols-outlined text-[20px]">person_pin_circle</span><span class="font-title-md text-title-md">Passenger Simulator</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="algorithm-benchmarks" href="#"><span class="material-symbols-outlined text-[20px]">query_stats</span><span class="font-title-md text-title-md">Algorithm Benchmarks</span></a></nav></div><div class="px-space-md flex flex-col gap-space-sm"><div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,23,42,0.04)] flex flex-col gap-space-xs"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sim Engine</span><span class="font-label-sm text-label-sm text-primary font-bold">1x Active</span></div><div class="flex items-center justify-between gap-1"><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-primary-container text-on-surface hover:text-on-primary-container flex items-center justify-center transition-colors" title="Run Simulation" type="button"><span class="material-symbols-outlined text-[16px]">play_arrow</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Pause" type="button"><span class="material-symbols-outlined text-[16px]">pause</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Step 10s" type="button"><span class="material-symbols-outlined text-[16px]">forward_10</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Reset Data" type="button"><span class="material-symbols-outlined text-[16px]">replay</span></button></div></div><div class="pt-space-xs flex items-center justify-between px-space-xs"><div class="flex items-center gap-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-title-md text-title-md leading-tight text-on-surface">Dr. L. Moreau</span><span class="font-label-sm text-label-sm text-on-surface-variant">Lead Dispatcher</span></div></div><button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">tune</span></button></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-8 flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-1"><div class="hidden xl:flex items-center gap-space-sm px-space-md py-1.5 rounded-full bg-surface-container-lowest shadow-sm"><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Active Pools</span><span class="font-title-md text-title-md text-primary font-bold">184 Trips</span></div><div class="w-1 h-3.5 bg-outline-variant/60 rounded-full"></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Avg Detour</span><span class="font-title-md text-title-md text-on-surface font-semibold">+8.4%</span><span class="font-label-sm text-label-sm text-on-surface-variant">(Cap 15%)</span></div><div class="w-1 h-3.5 bg-outline-variant/60 rounded-full"></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Shapley Savings</span><span class="font-title-md text-title-md text-tertiary font-bold">-28.6%</span></div></div></div><div class="flex items-center gap-space-sm"><div class="relative flex items-center"><input class="w-64 h-9 pl-9 pr-3 rounded-full bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner" placeholder="Search trip ID, rider, or vehicle..." type="text"/><span class="material-symbols-outlined absolute left-2.5 text-[18px] text-on-surface-variant">search</span></div><button class="w-9 h-9 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container shadow-sm relative transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Ambient Glow / Header Extension Decorator -->
+<div class="relative w-full px-6 lg:px-8 py-6 flex flex-col gap-6">
+<!-- Active State Alert Banners (Dynamically controlled via JavaScript) -->
+<div class="hidden p-4 rounded-xl bg-secondary-fixed/50 backdrop-blur-md shadow-sm flex items-center justify-between transition-all animate-fadeIn" id="state-banner-paused">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-on-secondary shadow-sm">
+<span class="material-symbols-outlined text-[18px]">pause</span>
+</span>
+<div>
+<span class="font-title-md text-title-md text-on-secondary-fixed font-bold">Simulation Paused</span>
+<p class="font-body-md text-body-md text-on-secondary-fixed-variant">Rolling window timer frozen at 10.4s remaining. Optimization worker threads suspended in memory.</p>
+</div>
+</div>
+<button class="px-4 py-1.5 rounded-full bg-secondary text-on-secondary font-label-md text-label-md shadow-sm hover:opacity-90 transition-all flex items-center gap-1.5 cursor-pointer" onclick="setSimState('running')">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span> Resume Dispatch
+      </button>
+</div>
+<div class="hidden p-4 rounded-xl bg-error-container backdrop-blur-md shadow-sm flex items-center justify-between transition-all animate-fadeIn" id="state-banner-error">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-full bg-error flex items-center justify-center text-on-error shadow-sm">
+<span class="material-symbols-outlined text-[18px]">signal_disconnected</span>
+</span>
+<div>
+<span class="font-title-md text-title-md text-on-error-container font-bold">Telemetry WebSocket Disconnected</span>
+<p class="font-body-md text-body-md text-on-error-container">Showing cached state at 14:31:58 (Stale buffer). Automatic exponential reconnect attempt in 4s...</p>
+</div>
+</div>
+<button class="px-4 py-1.5 rounded-full bg-error text-on-error font-label-md text-label-md shadow-sm hover:opacity-90 transition-all flex items-center gap-1.5 cursor-pointer" onclick="setSimState('running')">
+<span class="material-symbols-outlined text-[16px]">refresh</span> Force Reconnect
+      </button>
+</div>
+<!-- 1. SIMULATION MASTER CONTROL BAR & MULTI-STATE SWITCHER -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_8px_32px_rgba(15,23,42,0.04)] flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-6">
+<!-- Left side: Scenario Info & Status Pill -->
+<div class="flex flex-col sm:flex-row sm:items-center gap-4">
+<div class="flex items-center gap-3">
+<div class="relative flex items-center justify-center" id="status-pulse-dot">
+<span class="absolute w-4 h-4 rounded-full bg-tertiary/40 animate-ping"></span>
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-lg text-title-lg font-bold text-on-surface" id="current-state-badge">Running</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-semibold">Live Engine</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="material-symbols-outlined text-primary text-[15px]">scatter_plot</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Synthetic SF Mission/SOMA • Seed #42 (1.2k pings/sec)</span>
+</div>
+</div>
+</div>
+<div class="hidden sm:block h-8 w-px bg-outline-variant/40"></div>
+<!-- Quick Demo Switcher Strip (Judges / Ops QA) -->
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Judge Demo State Selector:</span>
+<div class="flex flex-wrap items-center gap-1 bg-surface-container-low p-1 rounded-full">
+<button class="px-3 py-1 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-primary font-bold shadow-sm cursor-pointer" id="tab-running" onclick="setSimState('running')">Running</button>
+<button class="px-3 py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface cursor-pointer" id="tab-idle" onclick="setSimState('idle')">Initial Idle</button>
+<button class="px-3 py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface cursor-pointer" id="tab-paused" onclick="setSimState('paused')">Paused</button>
+<button class="px-3 py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface cursor-pointer" id="tab-norequests" onclick="setSimState('norequests')">No Requests</button>
+<button class="px-3 py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface cursor-pointer" id="tab-error" onclick="setSimState('error')">WS Error</button>
+<button class="px-3 py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface cursor-pointer" id="tab-completed" onclick="setSimState('completed')">Completed</button>
+</div>
+</div>
+</div>
+<!-- Right side: Control Buttons -->
+<div class="flex items-center flex-wrap gap-2.5">
+<button class="px-4 py-2 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md font-bold shadow-[0_4px_16px_rgba(56,189,248,0.25)] hover:bg-primary-container/80 transition-all flex items-center gap-1.5 cursor-pointer" id="btn-start" onclick="startSimulation()">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span> Start Sim
+        </button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface font-label-md text-label-md font-semibold hover:bg-surface-container-high transition-all flex items-center gap-1.5 cursor-pointer" id="btn-pause" onclick="togglePauseSimulation()">
+<span class="material-symbols-outlined text-[18px]">pause</span> Pause
+        </button>
+<button class="px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md font-bold hover:brightness-105 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer" id="btn-batch" onclick="triggerNextBatchManual()">
+<span class="material-symbols-outlined text-[18px]">bolt</span> Run Next Batch
+        </button>
+<button class="px-4 py-2 rounded-full bg-surface-container-low text-error hover:bg-error-container hover:text-on-error-container font-label-md text-label-md font-semibold transition-all flex items-center gap-1.5 cursor-pointer" id="btn-reset" onclick="openResetModal()">
+<span class="material-symbols-outlined text-[18px]">replay</span> Reset
+        </button>
+</div>
+</div>
+<!-- 2. INTERACTIVE 7-KPI METRICS MATRIX -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-7 gap-3.5">
+<!-- KPI 1: Incoming Requests -->
+<div class="group relative p-4 rounded-xl bg-surface-container-lowest shadow-[0_4px_18px_rgba(15,23,42,0.03)] hover:shadow-[0_8px_24px_rgba(56,189,248,0.12)] cursor-pointer transition-all" id="kpi-card-incoming" onclick="selectKpi('incoming')">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Incoming</span>
+<span class="material-symbols-outlined text-primary text-[18px]">call_received</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md font-extrabold text-on-surface tracking-tight" id="metric-incoming-val">248</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">+12/m</span>
+</div>
+<div class="mt-2 flex items-center gap-1">
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[82%]"></div>
+</div>
+</div>
+<span class="mt-1.5 block font-label-sm text-label-sm text-on-surface-variant truncate">Aggregated demand</span>
+</div>
+<!-- KPI 2: Requests in Current Batch -->
+<div class="group relative p-4 rounded-xl bg-surface-container-lowest shadow-[0_4px_18px_rgba(15,23,42,0.03)] hover:shadow-[0_8px_24px_rgba(56,189,248,0.12)] cursor-pointer transition-all" id="kpi-card-waiting" onclick="selectKpi('waiting')">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Current Batch</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">hourglass_top</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md font-extrabold text-on-surface tracking-tight" id="metric-waiting-val">4</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">Pending</span>
+</div>
+<div class="mt-2 flex items-center gap-1">
+<span class="px-1.5 py-0.5 rounded-full bg-secondary-fixed/50 font-label-sm text-label-sm text-on-secondary-fixed-variant truncate">REQ-8041..8044</span>
+</div>
+<span class="mt-1.5 block font-label-sm text-label-sm text-on-surface-variant truncate">Window #148 Buffer</span>
+</div>
+<!-- KPI 3: Active Vehicles -->
+<div class="group relative p-4 rounded-xl bg-surface-container-lowest shadow-[0_4px_18px_rgba(15,23,42,0.03)] hover:shadow-[0_8px_24px_rgba(56,189,248,0.12)] cursor-pointer transition-all" id="kpi-card-vehicles" onclick="selectKpi('vehicles')">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Active Fleet</span>
+<span class="material-symbols-outlined text-primary text-[18px]">directions_car</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md font-extrabold text-on-surface tracking-tight" id="metric-vehicles-val">6</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Units</span>
+</div>
+<div class="mt-2 flex items-center gap-1">
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[83%]"></div>
+</div>
+</div>
+<span class="mt-1.5 block font-label-sm text-label-sm text-on-surface-variant truncate">83.3% Occupied Seats</span>
+</div>
+<!-- KPI 4: Active Coalitions -->
+<div class="group relative p-4 rounded-xl bg-surface-container-lowest shadow-[0_4px_18px_rgba(15,23,42,0.03)] hover:shadow-[0_8px_24px_rgba(56,189,248,0.12)] cursor-pointer transition-all" id="kpi-card-coalitions" onclick="selectKpi('coalitions')">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Active Pools</span>
+<span class="material-symbols-outlined text-tertiary text-[18px]">groups</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md font-extrabold text-on-surface tracking-tight" id="metric-coalitions-val">18</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">Coalitions</span>
+</div>
+<div class="mt-2 flex items-center gap-1">
+<span class="px-1.5 py-0.5 rounded-full bg-tertiary-fixed/40 font-label-sm text-label-sm text-on-tertiary-container font-semibold">2.8 pax/van</span>
+</div>
+<span class="mt-1.5 block font-label-sm text-label-sm text-on-surface-variant truncate">Fair Shapley share</span>
+</div>
+<!-- KPI 5: Served Requests -->
+<div class="group relative p-4 rounded-xl bg-surface-container-lowest shadow-[0_4px_18px_rgba(15,23,42,0.03)] hover:shadow-[0_8px_24px_rgba(56,189,248,0.12)] cursor-pointer transition-all" id="kpi-card-served" onclick="selectKpi('served')">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Served Riders</span>
+<span class="material-symbols-outlined text-tertiary text-[18px]">check_circle</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md font-extrabold text-tertiary tracking-tight" id="metric-served-val">184</span>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold">100% Ok</span>
+</div>
+<div class="mt-2 flex items-center gap-1">
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-[98%]"></div>
+</div>
+</div>
+<span class="mt-1.5 block font-label-sm text-label-sm text-on-surface-variant truncate">0 cancellations</span>
+</div>
+<!-- KPI 6: Unmatched / Held -->
+<div class="group relative p-4 rounded-xl bg-surface-container-lowest shadow-[0_4px_18px_rgba(15,23,42,0.03)] hover:shadow-[0_8px_24px_rgba(56,189,248,0.12)] cursor-pointer transition-all" id="kpi-card-unmatched" onclick="selectKpi('unmatched')">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Deferred</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">schedule</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md font-extrabold text-on-surface tracking-tight" id="metric-unmatched-val">3</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Held</span>
+</div>
+<div class="mt-2 flex items-center gap-1">
+<span class="px-1.5 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Rolling to #149</span>
+</div>
+<span class="mt-1.5 block font-label-sm text-label-sm text-on-surface-variant truncate">No detour match</span>
+</div>
+<!-- KPI 7: Detour Violations -->
+<div class="group relative p-4 rounded-xl bg-surface-container-lowest shadow-[0_4px_18px_rgba(15,23,42,0.03)] hover:shadow-[0_8px_24px_rgba(56,189,248,0.12)] cursor-pointer transition-all" id="kpi-card-detour" onclick="selectKpi('detour')">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Violations</span>
+<span class="material-symbols-outlined text-primary text-[18px]">verified_user</span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md font-extrabold text-primary tracking-tight" id="metric-detour-val">0</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">Protected</span>
+</div>
+<div class="mt-2 flex items-center gap-1">
+<span class="px-1.5 py-0.5 rounded-full bg-surface-container-high font-label-sm text-label-sm text-primary font-bold truncate">1 Rej: +18.2%</span>
+</div>
+<span class="mt-1.5 block font-label-sm text-label-sm text-on-surface-variant truncate">Strict 15.0% cap</span>
+</div>
+</div>
+<!-- Active KPI Focus Inspector Drawer (Appears when clicking a card) -->
+<div class="hidden p-4 rounded-xl bg-surface-container-low shadow-inner flex items-center justify-between animate-fadeIn" id="kpi-detail-drawer">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-label-md">i</span>
+<span class="font-body-md text-body-md text-on-surface" id="kpi-detail-text">Inspection details loaded for metric.</span>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface font-label-md text-label-md px-2 py-1 rounded-full cursor-pointer" onclick="dismissKpiDetail()">Dismiss</button>
+</div>
+<!-- 3. MIDDLE SECTION: BATCH STATUS & SOLVER PANEL + LIVE GIS PREVIEW -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- LEFT: BATCH STATUS & MATHEMATICAL SOLVER PANEL (5 Cols) -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- Rolling Batch Solver Card -->
+<div class="p-6 rounded-lg bg-surface-container-lowest shadow-[0_8px_32px_rgba(15,23,42,0.04)] flex flex-col gap-5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">timelapse</span>
+</span>
+<div>
+<span class="font-title-md text-title-md font-bold text-on-surface">Batch Window #148</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant">Rolling 30-Second Cooperative Intake</span>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-tertiary-fixed/40 text-on-tertiary-container font-label-sm text-label-sm font-bold flex items-center gap-1" id="batch-trigger-pill">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Auto Timer
+            </span>
+</div>
+<!-- Circular Countdown & Timing Stats -->
+<div class="p-4 rounded-xl bg-surface-container-low flex items-center justify-between gap-4">
+<!-- SVG Circular Gauge -->
+<div class="relative w-28 h-28 flex items-center justify-center shrink-0">
+<svg class="w-28 h-28 transform -rotate-90" viewbox="0 0 100 100">
+<circle class="text-surface-container" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary-container transition-all duration-1000" cx="50" cy="50" fill="transparent" id="countdown-circle" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="83.7" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="font-title-lg text-title-lg font-extrabold text-on-surface leading-none" id="countdown-number">10s</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase text-[10px]">remaining</span>
+</div>
+</div>
+<!-- Detailed Window Stats -->
+<div class="flex-1 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface-variant">Elapsed Window:</span>
+<span class="font-title-md text-title-md font-bold text-on-surface" id="batch-elapsed">20.0s / 30.0s</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface-variant">Incoming Intake:</span>
+<span class="font-title-md text-title-md text-primary font-semibold">4 Trips queued</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md text-on-surface-variant">Solver Status:</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed/40 text-on-tertiary-container font-label-sm text-label-sm font-bold">Optimal Feasible</span>
+</div>
+</div>
+</div>
+<!-- 4-Stage Optimization Pipeline -->
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Dispatch Pipeline Execution</span>
+<div class="space-y-2">
+<div class="p-2.5 rounded-lg bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-label-sm text-[10px] font-bold">✓</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">1. Request Clustering &amp; Spatial Filtering</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">42ms</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-lowest shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-label-sm text-[10px] font-bold">✓</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">2. Candidate Vehicle Detour Pruning (≤15%)</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">38ms</span>
+</div>
+<div class="p-2.5 rounded-lg bg-primary-container/20 shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-[10px] font-bold animate-spin">⟳</span>
+<span class="font-body-md text-body-md font-bold text-primary">3. Exact Stop Sequencing &amp; Shapley Proration</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold">In progress</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container/50 opacity-60 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-sm text-[10px] font-bold">4</span>
+<span class="font-body-md text-body-md text-on-surface-variant">4. Lock Manifests &amp; Publish to Vehicles</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Queued</span>
+</div>
+</div>
+</div>
+<!-- Quick Actions inside Solver -->
+<div class="pt-2 flex items-center justify-between gap-3">
+<button class="flex-1 py-2 px-3 rounded-full bg-surface-container hover:bg-surface-container-high font-label-md text-label-md text-on-surface font-semibold text-center transition-all cursor-pointer" id="btn-trigger-toggle" onclick="toggleTriggerMode()">
+              Toggle Manual Trigger
+            </button>
+<a class="py-2 px-4 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md font-bold flex items-center justify-center gap-1 hover:bg-primary-container/90 transition-all" data-path="algorithm-benchmarks" href="#">
+              Inspect ILP Logs <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- System & Engine Telemetry Health Card -->
+<div class="p-5 rounded-lg bg-surface-container-lowest shadow-[0_8px_32px_rgba(15,23,42,0.04)] flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-title-md font-bold text-on-surface">Subsystem Health</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span> All Systems Nominal
+            </span>
+</div>
+<div class="grid grid-cols-2 gap-2.5">
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Routing Engine (OSRM)</span>
+<span class="font-title-md text-title-md font-bold text-on-surface">12ms Latency</span>
+<span class="font-label-sm text-label-sm text-tertiary">99.98% up</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ILP Optimizer Worker</span>
+<span class="font-title-md text-title-md font-bold text-on-surface">184ms Solve</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">4 Cores active</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Telemetry WebSocket</span>
+<span class="font-title-md text-title-md font-bold text-tertiary" id="subsystem-ws">Connected</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">wss://api.ridepool.ai</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Memory / Heap</span>
+<span class="font-title-md text-title-md font-bold text-on-surface">142 MB</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Stable GC cycle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT: LIVE GIS MAP PREVIEW & ACTIVE FLEET VISUALIZATION (7 Cols) -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<div class="p-6 rounded-lg bg-surface-container-lowest shadow-[0_8px_32px_rgba(15,23,42,0.04)] flex flex-col gap-4 relative">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold">
+<span class="material-symbols-outlined text-[20px]">map</span>
+</span>
+<div>
+<span class="font-title-md text-title-md font-bold text-on-surface">Live GIS Dispatch Preview</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant">San Francisco SOMA &amp; Mission Core • Active Routing Layer</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-all" onclick="centerMapOnVan()" title="Recenter on V-12">
+<span class="material-symbols-outlined text-[18px]">my_location</span>
+</button>
+<a class="px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold transition-all flex items-center gap-1" data-path="fleet-telemetry-map" href="#">
+                Expand Full Map <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Interactive GIS Canvas Container -->
+<div class="relative w-full h-[400px] rounded-xl overflow-hidden bg-surface-container-low shadow-inner">
+<!-- Map Vector Overlay Graphics (Streets, Parks, Water, Grids) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-85" preserveaspectratio="xMidYMid slice" viewbox="0 0 700 400">
+<!-- Water/Bay Area -->
+<path d="M 600,0 L 700,0 L 700,400 L 580,400 Q 560,250 620,160 Z" fill="#dee8ff"></path>
+<!-- Green Park Spaces -->
+<rect fill="#ceee93" height="70" opacity="0.3" rx="8" width="90" x="70" y="240"></rect>
+<rect fill="#ceee93" height="50" opacity="0.25" rx="8" width="70" x="420" y="60"></rect>
+<!-- Mission / Market Street Grid -->
+<path d="M 0,90 L 700,90 M 0,160 L 700,160 M 0,230 L 700,230 M 0,300 L 700,300 M 0,360 L 700,360" stroke="#d8e3fb" stroke-width="3"></path>
+<path d="M 110,0 L 110,400 M 210,0 L 210,400 M 310,0 L 310,400 M 410,0 L 410,400 M 510,0 L 510,400" stroke="#d8e3fb" stroke-width="3"></path>
+<!-- Market St Diagonal -->
+<line stroke="#bdc8d1" stroke-linecap="round" stroke-width="7" x1="20" x2="620" y1="380" y2="40"></line>
+<line stroke="#ffffff" stroke-linecap="round" stroke-width="4" x1="20" x2="620" y1="380" y2="40"></line>
+<!-- Polyline Tour Route for V-12: P1 -> P2 -> P3 -> D1 -> D3 -> D2 -->
+<!-- Halos -->
+<path d="M 120,290 L 210,230 L 310,230 L 410,160 L 480,160 L 540,90" fill="none" opacity="0.4" stroke="#38bdf8" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"></path>
+<!-- Solid Primary Line -->
+<path d="M 120,290 L 210,230 L 310,230 L 410,160 L 480,160 L 540,90" fill="none" id="route-path-line" stroke="#00668a" stroke-dasharray="8 4" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"></path>
+</svg>
+<!-- Interactive Clickable Vehicle V-12 Node -->
+<div class="absolute top-[220px] left-[295px] transform -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group" onclick="openEntityModal('v12')">
+<div class="relative flex items-center justify-center">
+<span class="absolute w-10 h-10 rounded-full bg-primary-container/40 animate-ping"></span>
+<div class="w-9 h-9 rounded-full bg-primary text-on-primary shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[18px]">directions_car</span>
+</div>
+<div class="absolute -top-7 px-2 py-0.5 rounded-full bg-surface-container-lowest text-on-surface shadow-md font-label-md text-label-md font-bold whitespace-nowrap">
+                  V-12 • 3/6 Pax
+                </div>
+</div>
+</div>
+<!-- Pickup Waypoint Markers (P1, P2, P3) -->
+<div class="absolute top-[290px] left-[120px] transform -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group" onclick="openEntityModal('p1')">
+<div class="flex flex-col items-center">
+<div class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant shadow font-label-sm text-label-sm font-bold">
+                  P1 • Elena R.
+                </div>
+<div class="w-5 h-5 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-label-sm text-[10px] font-bold shadow">
+                  1
+                </div>
+</div>
+</div>
+<div class="absolute top-[230px] left-[210px] transform -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group" onclick="openEntityModal('p2')">
+<div class="flex flex-col items-center">
+<div class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant shadow font-label-sm text-label-sm font-bold">
+                  P2 • Marcus K.
+                </div>
+<div class="w-5 h-5 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-label-sm text-[10px] font-bold shadow">
+                  2
+                </div>
+</div>
+</div>
+<div class="absolute top-[160px] left-[410px] transform -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group" onclick="openEntityModal('p3')">
+<div class="flex flex-col items-center">
+<div class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant shadow font-label-sm text-label-sm font-bold">
+                  P3 • Sarah L.
+                </div>
+<div class="w-5 h-5 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-sm text-[10px] font-bold shadow">
+                  3
+                </div>
+</div>
+</div>
+<!-- Dropoff Waypoint Markers (D1, D3, D2) -->
+<div class="absolute top-[160px] left-[480px] transform -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group" onclick="openEntityModal('d1')">
+<div class="flex flex-col items-center">
+<div class="px-2 py-0.5 rounded-full bg-surface-container-lowest text-on-surface shadow font-label-sm text-label-sm font-semibold">
+                  D1 • Salesforce Tower
+                </div>
+<span class="material-symbols-outlined text-primary text-[18px]">location_on</span>
+</div>
+</div>
+<div class="absolute top-[90px] left-[540px] transform -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group" onclick="openEntityModal('d2')">
+<div class="flex flex-col items-center">
+<div class="px-2 py-0.5 rounded-full bg-surface-container-lowest text-on-surface shadow font-label-sm text-label-sm font-semibold">
+                  D2 • Ferry Building
+                </div>
+<span class="material-symbols-outlined text-primary text-[18px]">location_on</span>
+</div>
+</div>
+<!-- Rejected Candidate Pin (Violating Detour Cap) -->
+<div class="absolute top-[320px] left-[490px] transform -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer group" onclick="openEntityModal('rejected')">
+<div class="flex flex-col items-center">
+<div class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container shadow font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">block</span> REQ-8044 (+18.2%)
+                </div>
+<div class="w-4 h-4 rounded-full bg-error text-on-error flex items-center justify-center font-label-sm text-[9px] font-bold shadow">
+                  ✕
+                </div>
+</div>
+</div>
+<!-- Floating Map HUD Pill (Bottom Left) -->
+<div class="absolute bottom-3 left-3 px-3 py-2 rounded-full bg-surface-container-lowest/95 backdrop-blur-md shadow-md flex items-center gap-3">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">V-12 Optimized Coalition</span>
+</div>
+<span class="text-outline-variant font-body-md text-body-md">•</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">Detour: +7.8% (Allowed: 15%)</span>
+</div>
+<!-- Map Zoom / Layer Tools (Top Right) -->
+<div class="absolute top-3 right-3 flex flex-col gap-1.5">
+<button class="w-8 h-8 rounded-full bg-surface-container-lowest shadow-md flex items-center justify-center text-on-surface hover:bg-surface-container transition-all cursor-pointer" onclick="mapZoomIn()">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-lowest shadow-md flex items-center justify-center text-on-surface hover:bg-surface-container transition-all cursor-pointer" onclick="mapZoomOut()">
+<span class="material-symbols-outlined text-[16px]">remove</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-lowest shadow-md flex items-center justify-center text-on-surface hover:bg-surface-container transition-all cursor-pointer" id="btn-heatmap" onclick="toggleMapHeatmap()" title="Toggle Demand Density Heatmap">
+<span class="material-symbols-outlined text-[16px]">layers</span>
+</button>
+</div>
+</div>
+<!-- Bottom Micro Tour Sequence Breakdown -->
+<div class="p-3.5 rounded-xl bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md font-bold text-on-surface">Tour Itinerary:</span>
+<div class="flex items-center gap-1 font-label-sm text-label-sm">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-bold">P1</span>
+<span class="text-on-surface-variant">→</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-bold">P2</span>
+<span class="text-on-surface-variant">→</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-bold">P3</span>
+<span class="text-on-surface-variant">→</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest text-on-surface font-semibold">D1</span>
+<span class="text-on-surface-variant">→</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest text-on-surface font-semibold">D3</span>
+<span class="text-on-surface-variant">→</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest text-on-surface font-semibold">D2</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Total Pooled Distance:</span>
+<span class="font-title-md text-title-md font-bold text-primary">8.4 km</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">(-34% vs Solo)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. RECENT OPERATIONAL EVENTS STREAM (LIVE AUDIT LOG) -->
+<div class="p-6 rounded-lg bg-surface-container-lowest shadow-[0_8px_32px_rgba(15,23,42,0.04)] flex flex-col gap-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-full bg-primary-container/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+</span>
+<div>
+<span class="font-title-md text-title-md font-bold text-on-surface">Operational Audit &amp; Event Stream</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant">Real-time dispatcher decision log and mathematical proration trace</span>
+</div>
+</div>
+<!-- Filter & Search toolbar -->
+<div class="flex items-center gap-2.5 flex-wrap">
+<div class="relative">
+<input class="w-48 sm:w-56 h-8 pl-8 pr-3 rounded-full bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-1 focus:ring-primary shadow-inner" id="event-search" oninput="filterEvents()" placeholder="Filter log keyword..." type="text"/>
+<span class="material-symbols-outlined absolute left-2 top-2 text-[16px] text-on-surface-variant">filter_list</span>
+</div>
+<select class="h-8 px-3 rounded-full bg-surface-container font-label-md text-label-md text-on-surface focus:outline-none cursor-pointer" id="event-type-filter" onchange="filterEvents()">
+<option value="ALL">All Categories</option>
+<option value="SOLVER">Solver &amp; Tours</option>
+<option value="CONSTRAINT">Constraint Checks</option>
+<option value="SHAPLEY">Shapley Pricing</option>
+<option value="TRIP">Trips &amp; Fleet</option>
+</select>
+<button class="h-8 px-3 rounded-full bg-surface-container-low hover:bg-surface-container font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all cursor-pointer" onclick="clearEventLogs()">
+            Clear Logs
+          </button>
+</div>
+</div>
+<!-- Event Rows Table / Container -->
+<div class="overflow-x-auto">
+<div class="min-w-[700px] flex flex-col gap-2" id="event-stream-list">
+<!-- Row 1: BATCH_START -->
+<div class="event-item p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-4 transition-all hover:bg-surface-container" data-cat="SOLVER">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">14:32:10.142</span>
+<span class="px-2.5 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm font-bold">BATCH_START</span>
+<span class="font-body-md text-body-md text-on-surface">Batch window <strong>#148</strong> intake sealed with 4 active requests (REQ-8041, REQ-8042, REQ-8043, REQ-8044).</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant shrink-0">Engine Dispatch</span>
+</div>
+<!-- Row 2: SOLVER -->
+<div class="event-item p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-4 transition-all hover:bg-surface-container" data-cat="SOLVER">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">14:32:11.008</span>
+<span class="px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-bold">SOLVER</span>
+<span class="font-body-md text-body-md text-on-surface">Stop sequence optimized for vehicle <strong>V-12</strong>: P1 → P2 → P3 → D1 → D3 → D2. Max wait 4.2 min.</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary font-bold shrink-0">Δ = +7.8% detour</span>
+</div>
+<!-- Row 3: CONSTRAINT_CHECK -->
+<div class="event-item p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-4 transition-all hover:bg-surface-container" data-cat="CONSTRAINT">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">14:32:11.450</span>
+<span class="px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">CONSTRAINT_CHECK</span>
+<span class="font-body-md text-body-md text-on-surface">Candidate assignment <strong>REQ-8044</strong> to V-12 rejected: detour <strong>+18.2%</strong> exceeds strict <strong>15.0%</strong> maximum detour guarantee.</span>
+</div>
+<span class="font-label-sm text-label-sm text-error font-semibold shrink-0">Rejected to Pool #149</span>
+</div>
+<!-- Row 4: SHAPLEY_PRICED -->
+<div class="event-item p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-4 transition-all hover:bg-surface-container" data-cat="SHAPLEY">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">14:32:12.180</span>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-sm text-label-sm font-bold">SHAPLEY_PRICED</span>
+<span class="font-body-md text-body-md text-on-surface">Axiomatic cost allocation verified for 3-rider coalition. Distributed <strong>$20.20</strong> grand savings: P1 (-$6.40), P2 (-$7.10), P3 (-$6.70).</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary font-bold shrink-0">Pareto Optimal</span>
+</div>
+<!-- Row 5: TRIP_COMPLETED -->
+<div class="event-item p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-4 transition-all hover:bg-surface-container" data-cat="TRIP">
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">14:32:15.890</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm font-semibold">TRIP_COMPLETED</span>
+<span class="font-body-md text-body-md text-on-surface">Vehicle <strong>V-08</strong> completed drop-off for REQ-8038 at 4th &amp; King Caltrain Depot. Seat freed.</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant shrink-0">On Schedule</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- INTERACTIVE MODAL: ENTITY DETAIL INSPECTOR (Driver / Rider / Detour Breakdown) -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/40 backdrop-blur-sm animate-fadeIn" id="entity-modal">
+<div class="bg-surface-container-lowest w-full max-w-lg p-6 rounded-lg shadow-2xl flex flex-col gap-4 relative">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="w-9 h-9 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold" id="modal-icon-bg">
+<span class="material-symbols-outlined text-[20px]" id="modal-icon">directions_car</span>
+</span>
+<div>
+<span class="font-title-lg text-title-lg font-bold text-on-surface" id="modal-title">Vehicle V-12 Detail</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant" id="modal-subtitle">Live Dispatch Telemetry</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface cursor-pointer" onclick="closeEntityModal()">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-3 py-2" id="modal-body-content">
+<!-- Injected via openEntityModal() -->
+</div>
+<div class="flex items-center justify-end gap-2 pt-2">
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface font-label-md text-label-md font-semibold cursor-pointer" onclick="closeEntityModal()">Close</button>
+<button class="px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md font-bold shadow-sm hover:opacity-90 transition-all cursor-pointer" onclick="viewDetailedManifest()">Inspect Manifest</button>
+</div>
+</div>
+</div>
+<!-- INTERACTIVE MODAL: SIMULATION RESET CONFIRMATION -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/40 backdrop-blur-sm animate-fadeIn" id="reset-confirm-modal">
+<div class="bg-surface-container-lowest w-full max-w-md p-6 rounded-lg shadow-2xl flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<span class="w-10 h-10 rounded-full bg-error-container text-on-error-container flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[22px]">warning</span>
+</span>
+<div>
+<span class="font-title-lg text-title-lg font-bold text-on-surface">Reset Simulation?</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant">Initial state restoration</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        This will terminate batch #148, reset all cumulative Shapley pricing calculations, return the 6 fleet vehicles to depot start positions, and clear the active dispatch window.
+      </p>
+<div class="flex items-center justify-end gap-2 pt-2">
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface font-label-md text-label-md font-semibold cursor-pointer" onclick="closeResetModal()">Cancel</button>
+<button class="px-4 py-2 rounded-full bg-error text-on-error font-label-md text-label-md font-bold hover:opacity-90 transition-all cursor-pointer" onclick="confirmResetSimulation()">Yes, Reset to Idle</button>
+</div>
+</div>
+</div>
+<!-- INTERACTIVE MODAL: SIMULATION COMPLETED REPORT -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/40 backdrop-blur-sm animate-fadeIn" id="completed-report-modal">
+<div class="bg-surface-container-lowest w-full max-w-lg p-6 rounded-lg shadow-2xl flex flex-col gap-5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="w-10 h-10 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[22px]">military_tech</span>
+</span>
+<div>
+<span class="font-title-lg text-title-lg font-bold text-on-surface">Scenario Run Complete</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant">All 250 requests dispatched &amp; fulfilled</span>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface cursor-pointer" onclick="closeCompletedModal()">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="p-3 rounded-xl bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Total Served</span>
+<span class="font-title-lg text-title-lg font-extrabold text-tertiary">248 Riders</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">99.2% match efficiency</span>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Coalition Cost Savings</span>
+<span class="font-title-lg text-title-lg font-extrabold text-primary">$1,842.50</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Avg -$7.43/passenger</span>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Avg Detour Overhead</span>
+<span class="font-title-lg text-title-lg font-extrabold text-on-surface">+8.1%</span>
+<span class="font-label-sm text-label-sm text-tertiary">Strict cap (15%) respected</span>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">CO2 Emission Reduction</span>
+<span class="font-title-lg text-title-lg font-extrabold text-tertiary">418 kg CO₂</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">38.4% fleet miles saved</span>
+</div>
+</div>
+<div class="flex items-center justify-end gap-2 pt-2">
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface font-label-md text-label-md font-semibold cursor-pointer" onclick="closeCompletedModal()">Close</button>
+<button class="px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md font-bold hover:opacity-90 transition-all cursor-pointer" onclick="exportAuditReport()">Download CSV Audit</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Client-side Interactive State Machine & Countdown Engine -->
+<script>
+  // State definition
+  let simState = 'running'; // 'running', 'idle', 'paused', 'norequests', 'error', 'completed'
+  let remainingSeconds = 10;
+  let timerInterval = null;
+  let isManualTrigger = false;
+
+  function initSimulationTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      if (simState === 'running') {
+        remainingSeconds -= 1;
+        if (remainingSeconds < 0) {
+          remainingSeconds = 30; // reset rolling window
+          triggerBatchCompleteEvent();
+        }
+        updateTimerDisplay();
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const countdownNumber = document.getElementById('countdown-number');
+    const elapsedEl = document.getElementById('batch-elapsed');
+    const circle = document.getElementById('countdown-circle');
+
+    if (countdownNumber) {
+      countdownNumber.textContent = remainingSeconds + 's';
+    }
+    if (elapsedEl) {
+      const elapsed = 30 - remainingSeconds;
+      elapsedEl.textContent = elapsed.toFixed(1) + 's / 30.0s';
+    }
+    if (circle) {
+      // circumference = 2 * PI * 40 ~= 251.2
+      const totalCircumference = 251.2;
+      const progress = (30 - remainingSeconds) / 30;
+      const offset = totalCircumference * (1 - progress);
+      circle.style.strokeDashoffset = offset;
+    }
+  }
+
+  function triggerBatchCompleteEvent() {
+    const list = document.getElementById('event-stream-list');
+    if (!list) return;
+
+    const now = new Date();
+    const timeStr = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+    
+    const newRow = document.createElement('div');
+    newRow.className = 'event-item p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-4 transition-all hover:bg-surface-container animate-fadeIn';
+    newRow.setAttribute('data-cat', 'SOLVER');
+    newRow.innerHTML = `
+      <div class="flex items-center gap-3">
+        <span class="font-label-sm text-label-sm text-on-surface-variant font-mono">${timeStr}</span>
+        <span class="px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-bold">BATCH_DISPATCH</span>
+        <span class="font-body-md text-body-md text-on-surface">Auto-window complete. 3 assignments dispatched to fleet. Objective value: <strong>94.2 Pareto</strong>.</span>
+      </div>
+      <span class="font-label-sm text-label-sm text-tertiary font-bold shrink-0">Rolling Window</span>
+    `;
+    list.prepend(newRow);
+  }
+
+  function setSimState(newState) {
+    simState = newState;
+
+    // Reset active tabs style
+    const tabs = ['running', 'idle', 'paused', 'norequests', 'error', 'completed'];
+    tabs.forEach(t => {
+      const el = document.getElementById('tab-' + t);
+      if (el) {
+        el.className = 'px-3 py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface cursor-pointer';
+      }
+    });
+
+    const activeTab = document.getElementById('tab-' + newState);
+    if (activeTab) {
+      activeTab.className = 'px-3 py-1 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-primary font-bold shadow-sm cursor-pointer';
+    }
+
+    // Toggle banners
+    const pausedBanner = document.getElementById('state-banner-paused');
+    const errorBanner = document.getElementById('state-banner-error');
+    if (pausedBanner) pausedBanner.classList.add('hidden');
+    if (errorBanner) errorBanner.classList.add('hidden');
+
+    const badge = document.getElementById('current-state-badge');
+    const pulseDot = document.getElementById('status-pulse-dot');
+    const wsStatus = document.getElementById('subsystem-ws');
+
+    if (newState === 'running') {
+      if (badge) badge.textContent = 'Running';
+      if (pulseDot) pulseDot.className = 'relative flex items-center justify-center';
+      if (wsStatus) {
+        wsStatus.textContent = 'Connected';
+        wsStatus.className = 'font-title-md text-title-md font-bold text-tertiary';
+      }
+      setMetricsValues(248, 4, 6, 18, 184, 3, 0);
+    } 
+    else if (newState === 'paused') {
+      if (badge) badge.textContent = 'Paused';
+      if (pausedBanner) pausedBanner.classList.remove('hidden');
+      if (pulseDot) pulseDot.className = 'opacity-50';
+    } 
+    else if (newState === 'idle') {
+      if (badge) badge.textContent = 'Initial Idle';
+      remainingSeconds = 30;
+      updateTimerDisplay();
+      setMetricsValues(0, 0, 6, 0, 0, 0, 0);
+    } 
+    else if (newState === 'norequests') {
+      if (badge) badge.textContent = 'Low/No Demand';
+      setMetricsValues(42, 0, 6, 2, 40, 0, 0);
+    } 
+    else if (newState === 'error') {
+      if (badge) badge.textContent = 'WS Error (Stale)';
+      if (errorBanner) errorBanner.classList.remove('hidden');
+      if (wsStatus) {
+        wsStatus.textContent = 'Disconnected';
+        wsStatus.className = 'font-title-md text-title-md font-bold text-error';
+      }
+    } 
+    else if (newState === 'completed') {
+      if (badge) badge.textContent = 'Completed';
+      setMetricsValues(250, 0, 6, 0, 248, 0, 0);
+      openCompletedModal();
+    }
+  }
+
+  function setMetricsValues(incoming, waiting, vehicles, coalitions, served, unmatched, detour) {
+    const elInc = document.getElementById('metric-incoming-val');
+    const elWait = document.getElementById('metric-waiting-val');
+    const elVeh = document.getElementById('metric-vehicles-val');
+    const elCoal = document.getElementById('metric-coalitions-val');
+    const elServ = document.getElementById('metric-served-val');
+    const elUnm = document.getElementById('metric-unmatched-val');
+    const elDet = document.getElementById('metric-detour-val');
+
+    if (elInc) elInc.textContent = incoming;
+    if (elWait) elWait.textContent = waiting;
+    if (elVeh) elVeh.textContent = vehicles;
+    if (elCoal) elCoal.textContent = coalitions;
+    if (elServ) elServ.textContent = served;
+    if (elUnm) elUnm.textContent = unmatched;
+    if (elDet) elDet.textContent = detour;
+  }
+
+  function startSimulation() {
+    setSimState('running');
+  }
+
+  function togglePauseSimulation() {
+    if (simState === 'paused') {
+      setSimState('running');
+    } else {
+      setSimState('paused');
+    }
+  }
+
+  function triggerNextBatchManual() {
+    remainingSeconds = 1;
+    updateTimerDisplay();
+    const pill = document.getElementById('batch-trigger-pill');
+    if (pill) {
+      pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Manual Demo Trigger';
+      pill.className = 'px-3 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed-variant font-label-sm text-label-sm font-bold flex items-center gap-1';
+    }
+  }
+
+  function toggleTriggerMode() {
+    isManualTrigger = !isManualTrigger;
+    const pill = document.getElementById('batch-trigger-pill');
+    const btn = document.getElementById('btn-trigger-toggle');
+    if (isManualTrigger) {
+      if (pill) {
+        pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Manual Demo Trigger';
+        pill.className = 'px-3 py-1 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed-variant font-label-sm text-label-sm font-bold flex items-center gap-1';
+      }
+      if (btn) btn.textContent = 'Revert to Auto Timer';
+    } else {
+      if (pill) {
+        pill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Auto Timer';
+        pill.className = 'px-3 py-1 rounded-full bg-tertiary-fixed/40 text-on-tertiary-container font-label-sm text-label-sm font-bold flex items-center gap-1';
+      }
+      if (btn) btn.textContent = 'Toggle Manual Trigger';
+    }
+  }
+
+  function selectKpi(type) {
+    const drawer = document.getElementById('kpi-detail-drawer');
+    const text = document.getElementById('kpi-detail-text');
+    if (!drawer || !text) return;
+
+    drawer.classList.remove('hidden');
+
+    const descriptions = {
+      incoming: 'Incoming Requests: 248 total recorded in current scenario session. Real-time arrival velocity is averaging 12 requests per minute.',
+      waiting: 'Batch Intake: 4 requests currently pending buffer closure. Requests REQ-8041, REQ-8042, REQ-8043, REQ-8044 will solve in next rolling cycle.',
+      vehicles: 'Fleet Utilization: 6 electric vans in service across SF SOMA/Mission. 15 of 18 total seats currently scheduled with minimal overlap.',
+      coalitions: 'Active Coalitions: 18 active multi-passenger ridepools running simultaneously. Average vehicle occupancy is 2.8 passengers.',
+      served: 'Served Riders: 184 drop-offs completed successfully without driver cancellations or unacceptable passenger wait violations.',
+      unmatched: 'Deferred Queue: 3 requests held for Batch #149 due to spatial incompatibility with active clusters. None have exceeded timeout threshold.',
+      detour: 'Detour Violation Guard: 0 customer routes breached the 15.0% maximum detour constraint. Candidate REQ-8044 rejected at +18.2% and re-routed.'
+    };
+
+    text.textContent = descriptions[type] || 'Detailed inspection for metric selected.';
+  }
+
+  function dismissKpiDetail() {
+    const drawer = document.getElementById('kpi-detail-drawer');
+    if (drawer) drawer.classList.add('hidden');
+  }
+
+  // Entity Modal Inspection
+  function openEntityModal(entityId) {
+    const modal = document.getElementById('entity-modal');
+    const title = document.getElementById('modal-title');
+    const subtitle = document.getElementById('modal-subtitle');
+    const body = document.getElementById('modal-body-content');
+    if (!modal || !title || !body) return;
+
+    modal.classList.remove('hidden');
+
+    if (entityId === 'v12') {
+      title.textContent = 'Vehicle V-12 (Ford E-Transit)';
+      subtitle.textContent = 'Driver: David Chen • Battery: 78% • Active Coalition';
+      body.innerHTML = `
+        <div class="grid grid-cols-2 gap-3">
+          <div class="p-3 rounded-lg bg-surface-container-low flex flex-col">
+            <span class="font-label-sm text-label-sm text-on-surface-variant">Capacity Status</span>
+            <span class="font-title-md text-title-md font-bold text-on-surface">3 of 6 Seats Filled</span>
+          </div>
+          <div class="p-3 rounded-lg bg-surface-container-low flex flex-col">
+            <span class="font-label-sm text-label-sm text-on-surface-variant">Detour Overhead</span>
+            <span class="font-title-md text-title-md font-bold text-tertiary">+7.8% (Allowed 15%)</span>
+          </div>
+          <div class="p-3 rounded-lg bg-surface-container-low flex flex-col">
+            <span class="font-label-sm text-label-sm text-on-surface-variant">Active Passengers</span>
+            <span class="font-title-md text-title-md font-bold text-on-surface">Elena, Marcus, Sarah</span>
+          </div>
+          <div class="p-3 rounded-lg bg-surface-container-low flex flex-col">
+            <span class="font-label-sm text-label-sm text-on-surface-variant">Next Waypoint</span>
+            <span class="font-title-md text-title-md font-bold text-primary">P3: Sarah L. (1.2m away)</span>
+          </div>
+        </div>
+      `;
+    } else if (entityId === 'p1' || entityId === 'p2' || entityId === 'p3') {
+      title.textContent = 'Rider Pickup Manifest';
+      subtitle.textContent = 'Assigned to Vehicle V-12';
+      body.innerHTML = `
+        <div class="p-3 rounded-lg bg-surface-container-low flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="font-label-md text-label-md text-on-surface font-bold">Trip ID: REQ-8041</span>
+            <span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-bold">Pick-up In Route</span>
+          </div>
+          <span class="font-body-md text-body-md text-on-surface-variant">Direct Fare: $24.50 • Shapley Pooled Fare: <strong>$18.10</strong> (Saved $6.40)</span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant">Pickup Window: 14:34:00 (On-time, +1.2 min vs solo direct)</span>
+        </div>
+      `;
+    } else if (entityId === 'rejected') {
+      title.textContent = 'Constraint Violation: REQ-8044';
+      subtitle.textContent = 'Automatic Rejection from Vehicle V-12';
+      body.innerHTML = `
+        <div class="p-3 rounded-lg bg-error-container text-on-error-container flex flex-col gap-2">
+          <span class="font-title-md text-title-md font-bold">Detour Constraint Triggered (+18.2%)</span>
+          <p class="font-body-md text-body-md">Adding REQ-8044 would force passenger Elena R. to exceed her guaranteed 15% maximum detour tolerance (+18.2% calculated). Solver deferred request to Batch #149.</p>
+        </div>
+      `;
+    } else {
+      title.textContent = 'Drop-off Waypoint';
+      subtitle.textContent = 'Commercial Core SF';
+      body.innerHTML = `
+        <div class="p-3 rounded-lg bg-surface-container-low">
+          <span class="font-title-md text-title-md text-on-surface font-semibold">Scheduled Drop-off</span>
+          <p class="font-body-md text-body-md text-on-surface-variant">Expected arrival in 6.4 minutes. Curb loading zone reserved via SFMTA digital API.</p>
+        </div>
+      `;
+    }
+  }
+
+  function closeEntityModal() {
+    const modal = document.getElementById('entity-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function viewDetailedManifest() {
+    closeEntityModal();
+    selectKpi('coalitions');
+  }
+
+  function openResetModal() {
+    const modal = document.getElementById('reset-confirm-modal');
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeResetModal() {
+    const modal = document.getElementById('reset-confirm-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function confirmResetSimulation() {
+    closeResetModal();
+    setSimState('idle');
+  }
+
+  function openCompletedModal() {
+    const modal = document.getElementById('completed-report-modal');
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeCompletedModal() {
+    const modal = document.getElementById('completed-report-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function exportAuditReport() {
+    alert('Exporting verified Shapley CSV log to local machine...');
+    closeCompletedModal();
+  }
+
+  // Filter Event Audit Stream
+  function filterEvents() {
+    const searchVal = document.getElementById('event-search').value.toLowerCase();
+    const catVal = document.getElementById('event-type-filter').value;
+    const items = document.querySelectorAll('.event-item');
+
+    items.forEach(item => {
+      const cat = item.getAttribute('data-cat') || '';
+      const text = item.textContent.toLowerCase();
+
+      const matchesCat = (catVal === 'ALL' || cat === catVal);
+      const matchesSearch = text.includes(searchVal);
+
+      if (matchesCat && matchesSearch) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  }
+
+  function clearEventLogs() {
+    const list = document.getElementById('event-stream-list');
+    if (list) {
+      list.innerHTML = `
+        <div class="p-4 rounded-xl bg-surface-container-low text-center font-body-md text-body-md text-on-surface-variant">
+          Audit stream cleared. New events will populate on next rolling interval.
+        </div>
+      `;
+    }
+  }
+
+  // Map Controls
+  function mapZoomIn() {
+    const path = document.getElementById('route-path-line');
+    if (path) path.setAttribute('stroke-width', '5');
+  }
+
+  function mapZoomOut() {
+    const path = document.getElementById('route-path-line');
+    if (path) path.setAttribute('stroke-width', '3');
+  }
+
+  function centerMapOnVan() {
+    openEntityModal('v12');
+  }
+
+  function toggleMapHeatmap() {
+    const btn = document.getElementById('btn-heatmap');
+    if (btn) {
+      btn.classList.toggle('bg-primary-container');
+    }
+  }
+
+  // Run on load
+  initSimulationTimer();
+</script></main></div></body></html>

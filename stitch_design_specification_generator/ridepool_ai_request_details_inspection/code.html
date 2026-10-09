@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"on-tertiary":"#ffffff","background":"#f9f9ff","surface-container-high":"#dee8ff","on-primary-container":"#004965","inverse-surface":"#263143","outline-variant":"#bdc8d1","on-background":"#111c2d","secondary-fixed-dim":"#eec200","on-error-container":"#93000a","on-secondary-fixed-variant":"#574500","on-tertiary-container":"#344b00","outline":"#6e7980","surface":"#f9f9ff","primary-container":"#38bdf8","surface-container-lowest":"#ffffff","on-primary":"#ffffff","tertiary-container":"#9ebc67","on-tertiary-fixed-variant":"#364e03","tertiary-fixed":"#ceee93","surface-bright":"#f9f9ff","on-surface":"#111c2d","surface-dim":"#cfdaf2","surface-container":"#e7eeff","on-secondary":"#ffffff","surface-container-highest":"#d8e3fb","error":"#ba1a1a","primary-fixed":"#c4e7ff","primary":"#00668a","on-primary-fixed":"#001e2c","on-primary-fixed-variant":"#004c69","on-tertiary-fixed":"#131f00","secondary":"#735c00","inverse-primary":"#7bd0ff","error-container":"#ffdad6","on-secondary-container":"#6f5900","on-secondary-fixed":"#231b00","secondary-fixed":"#ffe083","secondary-container":"#fed01b","tertiary-fixed-dim":"#b3d17a","primary-fixed-dim":"#7bd0ff","on-error":"#ffffff","on-surface-variant":"#3e484f","surface-container-low":"#f0f3ff","surface-tint":"#00668a","inverse-on-surface":"#ecf1ff","tertiary":"#4d661c","surface-variant":"#d8e3fb"},"borderRadius":{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"},"spacing":{"gutter":"1.5rem","space-md":"1rem","space-xs":"0.375rem","space-lg":"1.5rem","margin":"2rem","space-sm":"0.75rem","space-xl":"2.25rem"},"fontFamily":{"body-lg":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"headline-xl-mobile":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"title-lg":["Plus Jakarta Sans"],"title-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"]},"fontSize":{"body-lg":["15px",{"lineHeight":"22px","fontWeight":"500"}],"headline-lg":["36px",{"lineHeight":"44px","fontWeight":"700"}],"headline-xl-mobile":["32px",{"lineHeight":"40px","fontWeight":"800"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"500"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"700"}],"headline-xl":["44px",{"lineHeight":"52px","fontWeight":"800"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"700"}],"title-lg":["20px",{"lineHeight":"28px","fontWeight":"600"}],"title-md":["16px",{"lineHeight":"24px","fontWeight":"600"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-lg text-body-lg text-on-surface min-h-screen"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low/95 backdrop-blur-xl z-50 flex flex-col justify-between py-space-md shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)]"><div class="flex flex-col gap-space-md"><div class="px-space-md flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shadow-[0_4px_12px_rgba(56,189,248,0.35)]"><span class="material-symbols-outlined text-on-primary-container text-[22px]">hub</span></div><div class="flex flex-col"><span class="font-title-md text-title-md text-on-surface tracking-tight">RidePool<span class="text-primary">.AI</span></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Cooperative Dispatch</span></div></div></div><div class="px-space-md"><div class="bg-surface-container-high p-space-xs rounded-full flex items-center gap-1 shadow-inner"><a class="flex-1 text-center py-1 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-on-surface shadow-sm" data-path="live-dispatch-console" href="#">Dispatch</a><a class="flex-1 text-center py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface" data-path="passenger-flow-simulator" href="#">Rider App</a></div></div><div class="px-space-md"><div class="px-space-sm py-space-xs bg-tertiary-fixed/30 rounded-full flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span class="font-label-sm text-label-sm text-on-tertiary-container font-semibold truncate">Window #148 • 30s rolling</span></div></div><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-primary-container text-on-primary-container font-semibold shadow-sm"><a class="flex items-center px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-title-md text-title-md" data-path="live-dispatch-console" href="#">Live Dispatch Console</a><a class="flex items-center px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-title-md text-title-md" data-path="request-details-inspection" href="#">Request Inspection</a><a class="flex items-center px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-title-md text-title-md" data-path="shapley-pricing-matrix" href="#">Shapley Cost Matrix</a><a class="flex items-center px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-title-md text-title-md" data-path="fleet-telemetry-map" href="#">Fleet Telemetry Map</a><a class="flex items-center px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-title-md text-title-md" data-path="passenger-flow-simulator" href="#">Passenger Simulator</a><a class="flex items-center px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all font-title-md text-title-md" data-path="algorithm-benchmarks" href="#">Algorithm Benchmarks</a></nav></div><div class="px-space-md flex flex-col gap-space-sm"><div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,23,42,0.04)] flex flex-col gap-space-xs"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sim Engine</span><span class="font-label-sm text-label-sm text-primary font-bold">1x Active</span></div><div class="flex items-center justify-between gap-1"><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-primary-container text-on-surface hover:text-on-primary-container flex items-center justify-center transition-colors" title="Run Simulation" type="button"><span class="material-symbols-outlined text-[16px]">play_arrow</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Pause" type="button"><span class="material-symbols-outlined text-[16px]">pause</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Step 10s" type="button"><span class="material-symbols-outlined text-[16px]">forward_10</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Reset Data" type="button"><span class="material-symbols-outlined text-[16px]">replay</span></button></div></div><div class="pt-space-xs flex items-center justify-between px-space-xs"><div class="flex items-center gap-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-title-md text-title-md leading-tight text-on-surface">Dr. L. Moreau</span><span class="font-label-sm text-label-sm text-on-surface-variant">Lead Dispatcher</span></div></div><button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">tune</span></button></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-8 flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-1"><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1.5 rounded-full shadow-inner"><button class="h-7 px-2.5 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md flex items-center gap-1 shadow-sm hover:opacity-90 transition-opacity" type="button"><span class="material-symbols-outlined text-[15px]">play_arrow</span><span>Start</span></button><button class="h-7 px-2 rounded-full bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[15px]">pause</span><span>Pause</span></button><button class="h-7 px-2 rounded-full bg-surface-container text-on-surface font-label-md text-label-md flex items-center gap-1 hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[15px]">replay</span><span>Reset</span></button><div class="w-0.5 h-4 bg-outline-variant/50 mx-0.5"></div><button class="h-7 px-2.5 rounded-full bg-secondary-container text-on-secondary-container font-label-md text-label-md flex items-center gap-1 font-semibold shadow-sm hover:opacity-95 transition-opacity" type="button"><span class="material-symbols-outlined text-[15px]">skip_next</span><span>Run Batch #148</span></button><div class="flex items-center gap-1 px-1.5 font-label-sm text-label-sm text-on-surface-variant"><span class="material-symbols-outlined text-[14px] text-primary">timer</span><span class="font-mono font-semibold text-on-surface">00:23s</span></div><div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary-fixed/40 font-label-sm text-label-sm text-on-tertiary-container font-medium"><span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span><span>Synthetic SF-Metro (v2.4)</span></div></div><div class="hidden 2xl:flex items-center gap-space-sm px-space-md py-1.5 rounded-full bg-surface-container-lowest shadow-sm"><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Active Pools</span><span class="font-title-md text-title-md text-primary font-bold">184</span></div><div class="w-1 h-3.5 bg-outline-variant/60 rounded-full"></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Detour Avg</span><span class="font-title-md text-title-md text-on-surface font-semibold">+8.4%</span></div><div class="w-1 h-3.5 bg-outline-variant/60 rounded-full"></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Shapley Avg</span><span class="font-title-md text-title-md text-tertiary font-bold">-28.6%</span></div></div></div><div class="flex items-center gap-space-sm"><div class="relative flex items-center"><input class="w-60 h-9 pl-9 pr-3 rounded-full bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner" placeholder="Inspect Request ID, trip, rider..." type="text"/><span class="material-symbols-outlined absolute left-2.5 text-[18px] text-on-surface-variant">search</span></div><button class="w-9 h-9 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container shadow-sm relative transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive Scenario Bar & Breadcrumbs -->
+<section class="px-8 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-surface-container-high/60 bg-surface/50 backdrop-blur-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span>Operations Dashboard</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>Request &amp; Batch Manager</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-semibold" id="breadcrumb-id">REQ-8041</span>
+</div>
+<div class="flex items-center gap-3">
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight" id="req-title-display">
+          REQ-8041 — <span class="font-normal text-on-surface-variant">Elena Vance</span>
+</h1>
+<div class="px-3 py-1 rounded-full bg-tertiary-fixed/40 flex items-center gap-2" id="status-pill-badge">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-on-tertiary-container font-semibold uppercase tracking-wider">En Route to Pickup</span>
+</div>
+</div>
+</div>
+<!-- Quick Switcher Pills -->
+<div class="flex items-center flex-wrap gap-2 bg-surface-container-lowest p-1.5 rounded-full shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase px-2 font-bold tracking-wider">Inspect Scenario:</span>
+<button class="req-selector-btn px-3 py-1 rounded-full font-label-md text-label-md transition-all bg-primary-container text-on-primary-container font-semibold shadow-sm flex items-center gap-1.5" id="btn-REQ-8041" onclick="switchRequest('REQ-8041')">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span>REQ-8041 (Elena V.)</span>
+<span class="text-[10px] opacity-75 font-mono">Matched</span>
+</button>
+<button class="req-selector-btn px-3 py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:bg-surface-container flex items-center gap-1.5" id="btn-REQ-8044" onclick="switchRequest('REQ-8044')">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span>REQ-8044 (David P.)</span>
+<span class="text-[10px] text-error font-mono font-bold">Detour Pruned</span>
+</button>
+<button class="req-selector-btn px-3 py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:bg-surface-container flex items-center gap-1.5" id="btn-REQ-8042" onclick="switchRequest('REQ-8042')">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span>REQ-8042 (Marcus C.)</span>
+<span class="text-[10px] opacity-75 font-mono">Matched</span>
+</button>
+<button class="req-selector-btn px-3 py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:bg-surface-container flex items-center gap-1.5" id="btn-REQ-8045" onclick="switchRequest('REQ-8045')">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>REQ-8045 (Sim In-Intake)</span>
+<span class="text-[10px] opacity-75 font-mono">Pending</span>
+</button>
+</div>
+</section>
+<div class="px-8 py-6 flex flex-col gap-6">
+<!-- Timeline Stepper -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)]">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">alt_route</span>
+<span class="font-title-md text-title-md text-on-surface">Lifecycle Progress Stepper</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant" id="batch-badge">Batch #148 • 30s Window</span>
+</div>
+<div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-tertiary">verified</span>
+<span>ILP Primal Solver: Convergence within 14ms</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-6 gap-3 relative" id="lifecycle-stepper-container">
+<!-- Step 1 -->
+<div class="step-card flex flex-col p-3 rounded-lg bg-surface-container-low transition-all">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-primary">01. Intake</span>
+<span class="material-symbols-outlined text-primary text-[16px]">check_circle</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface leading-tight">Pending Intake</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1" id="step-1-time">14:31:08 PST</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-0.5 line-clamp-1">Ingestion SOMA Area</span>
+</div>
+<!-- Step 2 -->
+<div class="step-card flex flex-col p-3 rounded-lg bg-surface-container-low transition-all">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-primary">02. Spatial</span>
+<span class="material-symbols-outlined text-primary text-[16px]">check_circle</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface leading-tight">Batch Cluster</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1" id="step-2-time">14:31:18 PST</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-0.5 line-clamp-1" id="step-2-note">Admitted to Alpha</span>
+</div>
+<!-- Step 3 -->
+<div class="step-card flex flex-col p-3 rounded-lg bg-surface-container-low transition-all" id="step-card-3">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-primary" id="step-3-tag">03. Audit</span>
+<span class="material-symbols-outlined text-primary text-[16px]" id="step-3-icon">check_circle</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface leading-tight" id="step-3-title">Detour Audit</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1" id="step-3-time">14:31:30 PST</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-0.5 line-clamp-1" id="step-3-note">Verified +11.1% ≤ 15%</span>
+</div>
+<!-- Step 4 -->
+<div class="step-card flex flex-col p-3 rounded-lg bg-surface-container-low transition-all" id="step-card-4">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-primary" id="step-4-tag">04. Cost</span>
+<span class="material-symbols-outlined text-primary text-[16px]" id="step-4-icon">check_circle</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface leading-tight" id="step-4-title">Shapley Offer</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1" id="step-4-time">14:31:30 PST</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-0.5 line-clamp-1" id="step-4-note">Fare $17.80 (-27.3%)</span>
+</div>
+<!-- Step 5 -->
+<div class="step-card flex flex-col p-3 rounded-lg bg-primary/10 transition-all" id="step-card-5">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-primary" id="step-5-tag">05. Fleet</span>
+<span class="material-symbols-outlined text-primary text-[16px]" id="step-5-icon">near_me</span>
+</div>
+<span class="font-title-md text-title-md text-primary leading-tight" id="step-5-title">Dispatched</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1" id="step-5-time">14:31:32 PST</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-0.5 line-clamp-1" id="step-5-note">Assigned: Shuttle V-12</span>
+</div>
+<!-- Step 6 -->
+<div class="step-card flex flex-col p-3 rounded-lg bg-surface-container-low transition-all opacity-60" id="step-card-6">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-on-surface-variant" id="step-6-tag">06. Settle</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]" id="step-6-icon">schedule</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface leading-tight" id="step-6-title">Drop-Off</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1" id="step-6-time">ETA 14:45 PST</span>
+<span class="font-body-md text-body-md text-on-surface-variant mt-0.5 line-clamp-1" id="step-6-note">Target: Ferry Pier 1</span>
+</div>
+</div>
+</div>
+<!-- Main Grid Workspace -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Left Column: Core Request & Solo Benchmark Metadata (5 cols) -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- Core Request Data Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-col gap-5">
+<div class="flex items-center justify-between pb-3 border-b border-surface-container">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">badge</span>
+<span class="font-title-lg text-title-lg text-on-surface">Request Metadata</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono" id="req-id-badge">ID: REQ-8041</span>
+</div>
+<!-- Waypoints Visualization -->
+<div class="relative pl-6 flex flex-col gap-5">
+<!-- Connecting Dotted Track -->
+<div class="absolute left-2.5 top-2.5 bottom-3 w-0.5 bg-dashed bg-gradient-to-b from-primary via-primary-container to-tertiary"></div>
+<!-- Origin Pickup -->
+<div class="flex items-start gap-3 relative">
+<div class="absolute -left-6 top-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-sm">
+<span class="material-symbols-outlined text-[13px]">trip_origin</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Origin Pickup (Scheduled)</span>
+<span class="font-title-md text-title-md text-on-surface" id="req-pickup-loc">Folsom &amp; 11th St, SOMA</span>
+<span class="font-body-md text-body-md text-on-surface-variant font-mono text-xs" id="req-pickup-coords">37.7725° N, 122.4112° W</span>
+</div>
+</div>
+<!-- Destination Dropoff -->
+<div class="flex items-start gap-3 relative">
+<div class="absolute -left-6 top-1 w-5 h-5 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary shadow-sm">
+<span class="material-symbols-outlined text-[13px]">location_on</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Target Dropoff</span>
+<span class="font-title-md text-title-md text-on-surface" id="req-dropoff-loc">Embarcadero Ferry Terminal</span>
+<span class="font-body-md text-body-md text-on-surface-variant font-mono text-xs" id="req-dropoff-coords">37.7955° N, 122.3937° W</span>
+</div>
+</div>
+</div>
+<!-- Rider & Intake Parameters Pill Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2">
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Party Size</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold" id="req-party-size">1 Passenger</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Elena Vance (Solo)</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Luggage Load</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold" id="req-luggage">Standard Carry</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">0 Checked Bags</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Max Walk Tol.</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">150 meters</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">≤ 2.1 min walking</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Mobility</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Standard</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">No WAV ramp req.</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Batch Ingestion</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Window #148</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">22s elapsed / 30s</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Priority Rank</span>
+<span class="font-title-md text-title-md text-primary font-semibold">Tier 1 Regular</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Zero wait penalties</span>
+</div>
+</div>
+</div>
+<!-- Solo Direct Benchmark (Ground Truth baseline) -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-col gap-4">
+<div class="flex items-center justify-between pb-3 border-b border-surface-container">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">straighten</span>
+<span class="font-title-lg text-title-lg text-on-surface">Solo Direct Benchmark</span>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-fixed/50 font-label-sm text-label-sm text-on-secondary-fixed-variant font-bold">Ground Truth Base</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Synthetic uncontested shortest-path Dijkstra baseline used for measuring pooling efficiency, detour ratios, and cooperative game-theoretic fare discounts.
+          </p>
+<div class="grid grid-cols-3 gap-3">
+<div class="p-3 rounded-lg bg-surface-container flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Direct Distance</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold" id="solo-dist">2.84 mi</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Vector: 045° NE</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Solo Duration (T_direct)</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold" id="solo-time">18.0 min</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Howard St corridor</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-container flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Unshared Fare</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold" id="solo-fare">$24.50</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Base tariff baseline</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]">info</span>
+<span class="font-body-md text-body-md text-on-surface-variant">
+              Direct routing traversed through Howard corridor with 4 automated traffic signals before joining The Embarcadero.
+            </span>
+</div>
+</div>
+<!-- Mini Visual Map Preview of Route -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-title-md text-on-surface">Spatial Path Simulation</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">SF SOMA / Downtown</span>
+</div>
+<!-- Google Maps static pipeline container -->
+<div class="w-full h-48 bg-cover bg-center rounded-lg relative overflow-hidden flex items-end p-3 shadow-inner" data-location="San Francisco SOMA Folsom Street" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCdWDztrMQUswe4nYOFHeRrZmx64EXztE5v4QEBVAfg_IakW58c2q5HEICaUjt9YzRvzpV-wKI-MSe61VpHAwA5vCRXukARanV6m7OX8n-Opfu2qX-0SWP6N4L3yLB3iCOE1doc8Q7_FogU7vA5-fCq2ueNBPgaIXWfALsg9cTezAJDxnjOg6dWyoSyN6jNigGa--m9yG-tvQgRur3KwKhRx0PPGFKWOnH-h-CJBY53CbCdcKBTn2YcHA')">
+<!-- Simulated HUD Over Map -->
+<div class="w-full bg-surface-container-lowest/90 backdrop-blur-md p-2.5 rounded-lg flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary-container border-2 border-primary animate-ping"></span>
+<span class="font-label-md text-label-md text-on-surface font-semibold" id="map-hud-text">Live Vehicle V-12: 450m away</span>
+</div>
+<span class="font-label-sm text-label-sm font-mono text-tertiary font-bold" id="map-hud-eta">ETA: 2m 14s</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Solver Decisions, Detour Guarantee, Shapley & Manifest (7 cols) -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<!-- Active Assignment or Pruning Notice -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-col gap-5 border-l-4 border-primary" id="assignment-container">
+<div class="flex items-center justify-between pb-3 border-b border-surface-container">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[20px]">directions_car</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-lg text-title-lg text-on-surface" id="vehicle-id-title">Assigned: Vehicle V-12</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant" id="vehicle-meta-subtitle">Ford E-Transit 6-Seat Shuttle • Carlos M. (DRV-209)</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="h-8 px-3 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors flex items-center gap-1">
+<span>View On Map</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Manifest Schedule Progression -->
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Active Manifest Stop Sequence</span>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary font-bold">STOP 1 of 6</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm">NEXT</span>
+</div>
+<div class="mt-2">
+<span class="font-title-md text-title-md text-on-surface block" id="manifest-stop1-title">Pickup: Elena V.</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono" id="manifest-stop1-time">14:33:00 (ETA 2m)</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col justify-between opacity-80">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">STOP 2 of 6</span>
+<span class="px-1.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">EN ROUTE</span>
+</div>
+<div class="mt-2">
+<span class="font-title-md text-title-md text-on-surface block">Pickup: Marcus C.</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">14:35:40 (ETA 4m)</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-tertiary font-bold">STOP 4 of 6</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed/40 text-on-tertiary-container font-label-sm text-label-sm">DROPOFF</span>
+</div>
+<div class="mt-2">
+<span class="font-title-md text-title-md text-on-surface block" id="manifest-stop4-title">Dropoff: Elena V.</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono" id="manifest-stop4-time">14:51:00 (ETA 18m)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Vehicle Telemetry Quick Row -->
+<div class="flex flex-wrap items-center gap-4 pt-2 text-on-surface-variant font-label-md text-label-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-tertiary">battery_charging_full</span>
+<span>Battery: <strong class="text-on-surface" id="veh-battery">91% SoC</strong></span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">groups</span>
+<span>Occupancy: <strong class="text-on-surface" id="veh-occ">3/6 Pax</strong></span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary">speed</span>
+<span>Current Speed: <strong class="text-on-surface">22 mph</strong></span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-outline">sync</span>
+<span>Telemetry: <strong class="text-on-surface">0.4s ping latency</strong></span>
+</div>
+</div>
+</div>
+<!-- Multi-Vehicle Candidate Coalition Evaluation -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-col gap-4">
+<div class="flex items-center justify-between pb-3 border-b border-surface-container">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">schema</span>
+<span class="font-title-lg text-title-lg text-on-surface">Candidate Pooling Coalitions</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">ILP Solver Batch #148</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Cooperative dispatch evaluated 3 prospective vehicle insertion permutations against detour bounds and passenger objective cost functions.
+          </p>
+<div class="flex flex-col gap-3" id="coalition-list">
+<!-- Coalition 1 (Alpha - Accepted) -->
+<div class="p-4 rounded-lg bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center font-bold text-xs shrink-0">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface">Candidate Pool Alpha (Vehicle V-12)</span>
+<span class="px-2 py-0.2 rounded-full bg-tertiary-fixed/60 text-on-tertiary-container font-label-sm text-label-sm font-bold">ACCEPTED (Optimal)</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">
+                    Elena (PU1) + Marcus (PU2) + Sarah (PU3). Joint VMT reduction: <strong>-34.2%</strong>. Detour: <strong>+11.1%</strong>. Solver Score: <strong>0.94</strong>.
+                  </span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase block">Objective Gain</span>
+<span class="font-title-lg text-title-lg text-tertiary font-bold">+28.4 Pts</span>
+</div>
+</div>
+<!-- Coalition 2 (Beta - Rejected) -->
+<div class="p-4 rounded-lg bg-surface-container-low/60 flex flex-col md:flex-row md:items-center justify-between gap-4 opacity-75">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center font-bold text-xs shrink-0">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface">Candidate Pool Beta (Vehicle V-08)</span>
+<span class="px-2 py-0.2 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">REJECTED (Detour Overflow)</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">
+                    FiDi Express route required backward detour <strong>+22.4%</strong> (strictly exceeded mandatory 15.0% cap).
+                  </span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase block">Detour Test</span>
+<span class="font-title-md text-title-md text-error font-bold">FAIL (+22.4%)</span>
+</div>
+</div>
+<!-- Coalition 3 (Gamma - Rejected) -->
+<div class="p-4 rounded-lg bg-surface-container-low/60 flex flex-col md:flex-row md:items-center justify-between gap-4 opacity-75">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center font-bold text-xs shrink-0">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface">Candidate Pool Gamma (Vehicle V-03)</span>
+<span class="px-2 py-0.2 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">REJECTED (Capacity Bound)</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">
+                    Potrero transit route had capacity clash (3 pending requests competing for only 2 remaining physical seats).
+                  </span>
+</div>
+</div>
+<div class="text-right shrink-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase block">Physical Seats</span>
+<span class="font-title-md text-title-md text-error font-bold">DEFICIT (-1)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Mathematical Detour Guarantee & Shapley Game Theory Split -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Detour Verification Formula Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-col gap-4">
+<div class="flex items-center justify-between pb-3 border-b border-surface-container">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">verified_user</span>
+<span class="font-title-md text-title-md text-on-surface">Detour Ceiling Guarantee</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold" id="detour-badge-tag">PASS</span>
+</div>
+<!-- Math Equation Box -->
+<div class="p-3.5 rounded-lg bg-surface-container-high/40 font-mono text-xs flex flex-col gap-1.5 text-on-surface">
+<span class="text-on-surface-variant text-[11px] font-sans">Formula: Δ = (T_pooled - T_direct) / T_direct</span>
+<div class="font-bold text-primary text-sm py-1" id="detour-formula-calc">
+                (20.0m - 18.0m) / 18.0m = +11.11%
+              </div>
+<div class="flex items-center justify-between text-on-surface-variant pt-1 border-t border-outline-variant/30">
+<span>Maximum Allowed Cap:</span>
+<span class="font-semibold text-on-surface">≤ 15.0%</span>
+</div>
+</div>
+<!-- Detour Progress Gauge -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Detour Ratio</span>
+<span class="font-bold text-on-surface" id="detour-ratio-text">11.1% of 15.0% Cap</span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden relative">
+<!-- 15% cap marker is at 100% of the bar -->
+<div class="h-full bg-primary-container rounded-full transition-all duration-500" id="detour-gauge-bar" style="width: 74%;"></div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-on-surface-variant">
+<span>0.0% (Zero Detour)</span>
+<span class="text-error font-semibold">15.0% Max Cap Limit</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Scheduled Pooled Time:</span>
+<span class="font-bold text-on-surface" id="detour-pooled-time">20.0 minutes</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Max Allowed Time:</span>
+<span class="font-bold text-on-surface" id="detour-max-allowed">20.7 minutes (18.0m × 1.15)</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-tertiary font-semibold pt-1 border-t border-surface-container">
+<span>Safety Buffer Headroom:</span>
+<span id="detour-headroom">+0.7 min (42 seconds)</span>
+</div>
+</div>
+</div>
+<!-- Shapley Value Game-Theoretic Cost Breakdown -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-col gap-4">
+<div class="flex items-center justify-between pb-3 border-b border-surface-container">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[22px]">payments</span>
+<span class="font-title-md text-title-md text-on-surface">Shapley Fair Pricing</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold" id="shapley-savings-badge">-27.3% Discount</span>
+</div>
+<div class="flex items-baseline justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Pooled Shapley Fare</span>
+<span class="font-headline-lg text-headline-lg text-primary font-bold" id="shapley-final-fare">$17.80</span>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-on-surface-variant line-through block" id="shapley-solo-strike">$24.50 Solo</span>
+<span class="font-title-md text-title-md text-tertiary font-bold" id="shapley-dollar-savings">Saved $6.70</span>
+</div>
+</div>
+<!-- Axiom Verification List -->
+<div class="flex flex-col gap-2 pt-1">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">done_all</span>
+<span class="font-body-md text-body-md text-on-surface">
+<strong>Subadditivity:</strong> Rider pays strictly less than solo trip cost ($17.80 &lt; $24.50).
+                </span>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">done_all</span>
+<span class="font-body-md text-body-md text-on-surface">
+<strong>Marginal Contribution:</strong> Fairly distributes +0.8mi route elongation across 3 active pool co-riders.
+                </span>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">done_all</span>
+<span class="font-body-md text-body-md text-on-surface">
+<strong>Core Stability:</strong> No rider has incentive to defect to a separate solo cab.
+                </span>
+</div>
+</div>
+<button class="w-full mt-auto py-2 px-3 rounded-full bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md font-semibold transition-colors flex items-center justify-center gap-1.5">
+<span>Open Full Shapley Cost Matrix</span>
+<span class="material-symbols-outlined text-[16px]">launch</span>
+</button>
+</div>
+</div>
+<!-- Timestamped Event Audit Ledger -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-col gap-4">
+<div class="flex items-center justify-between pb-3 border-b border-surface-container">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">history</span>
+<span class="font-title-lg text-title-lg text-on-surface">Timestamped Audit Ledger</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">Precision: Milliseconds (PST)</span>
+</div>
+<div class="flex flex-col gap-2.5 font-mono text-xs" id="audit-log-container">
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant font-bold">14:31:08.120</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-primary font-semibold">[REQUEST_INGESTED]</span>
+<span class="text-on-surface font-sans">Geo-fenced SOMA pickup registered via Rider App v4.2.</span>
+</div>
+<span class="text-on-surface-variant text-[11px] shrink-0 font-sans">Source: API Gateway</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant font-bold">14:31:15.430</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-primary font-semibold">[SPATIAL_CLUSTER]</span>
+<span class="text-on-surface font-sans">Added to Spatial Cluster Alpha (k-d tree partition #19).</span>
+</div>
+<span class="text-on-surface-variant text-[11px] shrink-0 font-sans">Engine: GeoKD-SF</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant font-bold">14:31:22.890</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-primary font-semibold">[SOLVER_EVAL]</span>
+<span class="text-on-surface font-sans">Dijkstra route permutation simulated across V-12, V-08.</span>
+</div>
+<span class="text-on-surface-variant text-[11px] shrink-0 font-sans">Latency: 11.2ms</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant font-bold">14:31:30.005</span>
+<span class="px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-container font-semibold">[DETOUR_AUDIT]</span>
+<span class="text-on-surface font-sans">Detour computed at +11.1% (≤ 15.0% hard constraint verified).</span>
+</div>
+<span class="text-tertiary font-semibold text-[11px] shrink-0 font-sans">Rule: PASSED</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant font-bold">14:31:30.124</span>
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-on-primary-container font-semibold">[SHAPLEY_PRORATION]</span>
+<span class="text-on-surface font-sans">Marginal cost evaluated; Shapley fare finalized at $17.80.</span>
+</div>
+<span class="text-on-surface-variant text-[11px] shrink-0 font-sans">Coalition: 3 Pax</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="text-on-surface-variant font-bold">14:31:32.500</span>
+<span class="px-1.5 py-0.5 rounded bg-primary text-on-primary font-semibold">[MANIFEST_LOCKED]</span>
+<span class="text-on-surface font-sans">Dispatched to Vehicle V-12 stop sequence P1 (Carlos M.).</span>
+</div>
+<span class="text-primary font-semibold text-[11px] shrink-0 font-sans">ACK: Confirmed</span>
+</div>
+</div>
+</div>
+<!-- Ops Operator Action Footer Bar -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-2">
+<button class="h-10 px-4 rounded-full bg-primary-container hover:opacity-90 text-on-primary-container font-label-md text-label-md font-semibold transition-all flex items-center gap-1.5 shadow-sm" onclick="triggerDemoRerun()">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+<span>Re-Run Matching Solver</span>
+</button>
+<button class="h-10 px-4 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span>Override Constraints</span>
+</button>
+<button class="h-10 px-4 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">swap_horiz</span>
+<span>Reassign Shuttle</span>
+</button>
+</div>
+<div class="flex items-center gap-2">
+<button class="h-10 px-4 rounded-full bg-error-container hover:opacity-90 text-on-error-container font-label-md text-label-md font-semibold transition-all flex items-center gap-1.5" onclick="openCancelModal()">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+<span>Cancel Request</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Cancel Confirmation Modal (Hidden by default) -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-sm hidden items-center justify-center p-4" id="cancel-modal">
+<div class="bg-surface-container-lowest max-w-md w-full rounded-2xl p-6 shadow-2xl flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-150">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px]">warning</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-title-lg text-title-lg text-on-surface">Cancel Trip Request?</h2>
+<span class="font-body-md text-body-md text-on-surface-variant">Simulated Ops Intervention</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Cancelling <strong class="text-on-surface" id="modal-req-id">REQ-8041</strong> will immediately remove the passenger from Vehicle V-12's active manifest. Downstream Shapley fares for Marcus C. and Sarah P. will be re-computed automatically.
+      </p>
+<div class="flex items-center justify-end gap-3 pt-3 border-t border-surface-container">
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors" onclick="closeCancelModal()">
+          Keep Active
+        </button>
+<button class="px-4 py-2 rounded-full bg-error text-on-error font-label-md text-label-md font-semibold shadow-sm hover:opacity-95 transition-opacity" onclick="confirmCancellation()">
+          Confirm Cancellation
+        </button>
+</div>
+</div>
+</div>
+<!-- Script for Interactive Scenario Switching & Demonstrations -->
+<script>
+    const requestData = {
+      'REQ-8041': {
+        name: 'Elena Vance',
+        statusPill: { text: 'En Route to Pickup', bg: 'bg-tertiary-fixed/40', textCol: 'text-on-tertiary-container', dotCol: 'bg-tertiary' },
+        pickup: 'Folsom & 11th St, SOMA',
+        pickupCoords: '37.7725° N, 122.4112° W',
+        dropoff: 'Embarcadero Ferry Terminal',
+        dropoffCoords: '37.7955° N, 122.3937° W',
+        party: '1 Passenger',
+        luggage: 'Standard Carry',
+        soloDist: '2.84 mi',
+        soloTime: '18.0 min',
+        soloFare: '$24.50',
+        detourCalc: '(20.0m - 18.0m) / 18.0m = +11.11%',
+        detourRatio: '11.1% of 15.0% Cap',
+        detourBarWidth: '74%',
+        detourPassed: true,
+        pooledTime: '20.0 minutes',
+        maxAllowed: '20.7 minutes (18.0m × 1.15)',
+        headroom: '+0.7 min (42 seconds)',
+        shapleyFare: '$17.80',
+        shapleySavingsText: '-27.3% Discount',
+        savingsDollars: 'Saved $6.70',
+        vehicleAssigned: 'Assigned: Vehicle V-12',
+        vehicleSub: 'Ford E-Transit 6-Seat Shuttle • Carlos M. (DRV-209)',
+        vehBattery: '91% SoC',
+        vehOcc: '3/6 Pax',
+        mapHud: 'Live Vehicle V-12: 450m away',
+        mapEta: 'ETA: 2m 14s',
+        isPruned: false
+      },
+      'REQ-8044': {
+        name: 'David Park',
+        statusPill: { text: 'Pruned / Deferred', bg: 'bg-error-container', textCol: 'text-on-error-container', dotCol: 'bg-error' },
+        pickup: 'Mission & 24th St, Mission District',
+        pickupCoords: '37.7522° N, 122.4184° W',
+        dropoff: 'Pier 39, Fisherman\'s Wharf',
+        dropoffCoords: '37.8086° N, 122.4098° W',
+        party: '1 Passenger',
+        luggage: '1 Heavy Bag',
+        soloDist: '4.92 mi',
+        soloTime: '31.0 min',
+        soloFare: '$36.00',
+        detourCalc: '(36.6m - 31.0m) / 31.0m = +18.2% (Violation)',
+        detourRatio: '18.2% (Exceeds 15.0% Cap)',
+        detourBarWidth: '100%',
+        detourPassed: false,
+        pooledTime: '36.6 minutes',
+        maxAllowed: '35.65 minutes (31.0m × 1.15)',
+        headroom: '-0.95 min (Deficit / Constraint Breached)',
+        shapleyFare: '$36.00 (Solo)',
+        shapleySavingsText: 'Detour Ineligible',
+        savingsDollars: 'No Discount ($0.00)',
+        vehicleAssigned: 'Unmatched in Batch #148 (Deferred)',
+        vehicleSub: 'No vehicle satisfies strict <= 15% Detour Ceiling',
+        vehBattery: 'N/A',
+        vehOcc: 'Waiting Batch #149',
+        mapHud: 'Deferred: Offer Direct Solo at $36.00',
+        mapEta: 'Batch #149 in 8s',
+        isPruned: true
+      },
+      'REQ-8042': {
+        name: 'Marcus Chen',
+        statusPill: { text: 'Matched & Admitted', bg: 'bg-tertiary-fixed/40', textCol: 'text-on-tertiary-container', dotCol: 'bg-tertiary' },
+        pickup: 'Harrison & 8th St, SOMA',
+        pickupCoords: '37.7749° N, 122.4069° W',
+        dropoff: 'Salesforce Transit Center',
+        dropoffCoords: '37.7897° N, 122.3972° W',
+        party: '1 Passenger',
+        luggage: 'Backpack Only',
+        soloDist: '2.10 mi',
+        soloTime: '15.4 min',
+        soloFare: '$23.00',
+        detourCalc: '(16.8m - 15.4m) / 15.4m = +9.09%',
+        detourRatio: '9.1% of 15.0% Cap',
+        detourBarWidth: '60%',
+        detourPassed: true,
+        pooledTime: '16.8 minutes',
+        maxAllowed: '17.7 minutes (15.4m × 1.15)',
+        headroom: '+0.9 min (54 seconds)',
+        shapleyFare: '$16.20',
+        shapleySavingsText: '-29.5% Discount',
+        savingsDollars: 'Saved $6.80',
+        vehicleAssigned: 'Assigned: Vehicle V-12',
+        vehicleSub: 'Ford E-Transit 6-Seat Shuttle • Carlos M. (DRV-209)',
+        vehBattery: '91% SoC',
+        vehOcc: '3/6 Pax',
+        mapHud: 'Pickup Queued: Stop 2 on Manifest',
+        mapEta: 'ETA: 4m 20s',
+        isPruned: false
+      },
+      'REQ-8045': {
+        name: 'Simulated In-Intake Rider',
+        statusPill: { text: 'In Rolling Window', bg: 'bg-secondary-fixed', textCol: 'text-on-secondary-fixed-variant', dotCol: 'bg-secondary' },
+        pickup: 'Market & 4th St, Union Square',
+        pickupCoords: '37.7858° N, 122.4065° W',
+        dropoff: 'Oracle Park, South Beach',
+        dropoffCoords: '37.7786° N, 122.3893° W',
+        party: '2 Passengers',
+        luggage: 'None',
+        soloDist: '1.95 mi',
+        soloTime: '13.5 min',
+        soloFare: '$19.80',
+        detourCalc: 'Pending Solver Execution...',
+        detourRatio: 'Computing in Batch #148...',
+        detourBarWidth: '35%',
+        detourPassed: true,
+        pooledTime: 'Est. 14.5 minutes',
+        maxAllowed: '15.5 minutes (13.5m × 1.15)',
+        headroom: 'Est. +1.0 min',
+        shapleyFare: 'Est. $14.10',
+        shapleySavingsText: 'Est. -28.7%',
+        savingsDollars: 'Est. $5.70',
+        vehicleAssigned: 'Evaluating Candidates (V-04, V-12)',
+        vehicleSub: 'Solver running graph relaxation in background',
+        vehBattery: '88% SoC',
+        vehOcc: 'Pending',
+        mapHud: 'Rolling Window 148: Solves in 7.4s',
+        mapEta: 'Window T-8s',
+        isPruned: false
+      }
+    };
+
+    let currentReqId = 'REQ-8041';
+
+    function switchRequest(reqId) {
+      currentReqId = reqId;
+      const data = requestData[reqId];
+      if (!data) return;
+
+      // Update active toggle buttons
+      document.querySelectorAll('.req-selector-btn').forEach(btn => {
+        btn.classList.remove('bg-primary-container', 'text-on-primary-container', 'shadow-sm');
+        btn.classList.add('text-on-surface-variant');
+      });
+      const activeBtn = document.getElementById(`btn-${reqId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-primary-container', 'text-on-primary-container', 'shadow-sm');
+        activeBtn.classList.remove('text-on-surface-variant');
+      }
+
+      // Update headers
+      document.getElementById('breadcrumb-id').textContent = reqId;
+      document.getElementById('req-title-display').innerHTML = `${reqId} — <span class="font-normal text-on-surface-variant">${data.name}</span>`;
+      document.getElementById('req-id-badge').textContent = `ID: ${reqId}`;
+
+      // Status pill
+      const pill = document.getElementById('status-pill-badge');
+      pill.className = `px-3 py-1 rounded-full ${data.statusPill.bg} flex items-center gap-2`;
+      pill.innerHTML = `
+        <span class="w-2 h-2 rounded-full ${data.statusPill.dotCol} animate-pulse"></span>
+        <span class="font-label-sm text-label-sm ${data.statusPill.textCol} font-semibold uppercase tracking-wider">${data.statusPill.text}</span>
+      `;
+
+      // Pickup / Dropoff
+      document.getElementById('req-pickup-loc').textContent = data.pickup;
+      document.getElementById('req-pickup-coords').textContent = data.pickupCoords;
+      document.getElementById('req-dropoff-loc').textContent = data.dropoff;
+      document.getElementById('req-dropoff-coords').textContent = data.dropoffCoords;
+      document.getElementById('req-party-size').textContent = data.party;
+      document.getElementById('req-luggage').textContent = data.luggage;
+
+      // Solo benchmarks
+      document.getElementById('solo-dist').textContent = data.soloDist;
+      document.getElementById('solo-time').textContent = data.soloTime;
+      document.getElementById('solo-fare').textContent = data.soloFare;
+
+      // Detour Panel
+      document.getElementById('detour-formula-calc').textContent = data.detourCalc;
+      document.getElementById('detour-ratio-text').textContent = data.detourRatio;
+      document.getElementById('detour-gauge-bar').style.width = data.detourBarWidth;
+      document.getElementById('detour-pooled-time').textContent = data.pooledTime;
+      document.getElementById('detour-max-allowed').textContent = data.maxAllowed;
+      document.getElementById('detour-headroom').textContent = data.headroom;
+
+      const detourBadge = document.getElementById('detour-badge-tag');
+      if (data.detourPassed) {
+        detourBadge.textContent = 'PASS';
+        detourBadge.className = 'px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold';
+        document.getElementById('detour-formula-calc').className = 'font-bold text-primary text-sm py-1';
+        document.getElementById('detour-gauge-bar').className = 'h-full bg-primary-container rounded-full transition-all duration-500';
+      } else {
+        detourBadge.textContent = 'VIOLATION (>15%)';
+        detourBadge.className = 'px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold';
+        document.getElementById('detour-formula-calc').className = 'font-bold text-error text-sm py-1';
+        document.getElementById('detour-gauge-bar').className = 'h-full bg-error rounded-full transition-all duration-500';
+      }
+
+      // Shapley Panel
+      document.getElementById('shapley-final-fare').textContent = data.shapleyFare;
+      document.getElementById('shapley-savings-badge').textContent = data.shapleySavingsText;
+      document.getElementById('shapley-dollar-savings').textContent = data.savingsDollars;
+      document.getElementById('shapley-solo-strike').textContent = `${data.soloFare} Solo`;
+
+      // Vehicle Assignment Card
+      document.getElementById('vehicle-id-title').textContent = data.vehicleAssigned;
+      document.getElementById('vehicle-meta-subtitle').textContent = data.vehicleSub;
+      document.getElementById('veh-battery').textContent = data.vehBattery;
+      document.getElementById('veh-occ').textContent = data.vehOcc;
+      document.getElementById('map-hud-text').textContent = data.mapHud;
+      document.getElementById('map-hud-eta').textContent = data.mapEta;
+
+      // Special styling if Pruned
+      const assignBox = document.getElementById('assignment-container');
+      if (data.isPruned) {
+        assignBox.className = 'bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-col gap-5 border-l-4 border-error';
+      } else {
+        assignBox.className = 'bg-surface-container-lowest rounded-xl p-6 shadow-[0_8px_24px_-4px_rgba(15,23,42,0.04)] flex flex-col gap-5 border-l-4 border-primary';
+      }
+    }
+
+    function triggerDemoRerun() {
+      const btn = event.currentTarget;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span><span>Solving ILP...</span>`;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">check</span><span>Convergence in 12.4ms</span>`;
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }, 1500);
+      }, 700);
+    }
+
+    function openCancelModal() {
+      document.getElementById('modal-req-id').textContent = currentReqId;
+      const modal = document.getElementById('cancel-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCancelModal() {
+      const modal = document.getElementById('cancel-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    function confirmCancellation() {
+      closeCancelModal();
+      alert(`Request ${currentReqId} has been successfully cancelled in demo simulation state.`);
+    }
+  </script>
+</div></main></div></body></html>

@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"on-tertiary":"#ffffff","background":"#f9f9ff","surface-container-high":"#dee8ff","on-primary-container":"#004965","inverse-surface":"#263143","outline-variant":"#bdc8d1","on-background":"#111c2d","secondary-fixed-dim":"#eec200","on-error-container":"#93000a","on-secondary-fixed-variant":"#574500","on-tertiary-container":"#344b00","outline":"#6e7980","surface":"#f9f9ff","primary-container":"#38bdf8","surface-container-lowest":"#ffffff","on-primary":"#ffffff","tertiary-container":"#9ebc67","on-tertiary-fixed-variant":"#364e03","tertiary-fixed":"#ceee93","surface-bright":"#f9f9ff","on-surface":"#111c2d","surface-dim":"#cfdaf2","surface-container":"#e7eeff","on-secondary":"#ffffff","surface-container-highest":"#d8e3fb","error":"#ba1a1a","primary-fixed":"#c4e7ff","primary":"#00668a","on-primary-fixed":"#001e2c","on-primary-fixed-variant":"#004c69","on-tertiary-fixed":"#131f00","secondary":"#735c00","inverse-primary":"#7bd0ff","error-container":"#ffdad6","on-secondary-container":"#6f5900","on-secondary-fixed":"#231b00","secondary-fixed":"#ffe083","secondary-container":"#fed01b","tertiary-fixed-dim":"#b3d17a","primary-fixed-dim":"#7bd0ff","on-error":"#ffffff","on-surface-variant":"#3e484f","surface-container-low":"#f0f3ff","surface-tint":"#00668a","inverse-on-surface":"#ecf1ff","tertiary":"#4d661c","surface-variant":"#d8e3fb"},"borderRadius":{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"},"spacing":{"gutter":"1.5rem","space-md":"1rem","space-xs":"0.375rem","space-lg":"1.5rem","margin":"2rem","space-sm":"0.75rem","space-xl":"2.25rem"},"fontFamily":{"body-lg":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"headline-xl-mobile":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"title-lg":["Plus Jakarta Sans"],"title-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"]},"fontSize":{"body-lg":["15px",{"lineHeight":"22px","fontWeight":"500"}],"headline-lg":["36px",{"lineHeight":"44px","fontWeight":"700"}],"headline-xl-mobile":["32px",{"lineHeight":"40px","fontWeight":"800"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"500"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"700"}],"headline-xl":["44px",{"lineHeight":"52px","fontWeight":"800"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"700"}],"title-lg":["20px",{"lineHeight":"28px","fontWeight":"600"}],"title-md":["16px",{"lineHeight":"24px","fontWeight":"600"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"600"}]}}}};</script></head><body class="bg-background font-body-lg text-body-lg text-on-surface min-h-screen"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low/95 backdrop-blur-xl z-50 flex flex-col justify-between py-space-md shadow-[0_8px_24px_-4px_rgba(15,23,42,0.06)]"><div class="flex flex-col gap-space-md"><div class="px-space-md flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shadow-[0_4px_12px_rgba(56,189,248,0.35)]"><span class="material-symbols-outlined text-on-primary-container text-[22px]">hub</span></div><div class="flex flex-col"><span class="font-title-md text-title-md text-on-surface tracking-tight">RidePool<span class="text-primary">.AI</span></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Cooperative Dispatch</span></div></div></div><div class="px-space-md"><div class="bg-surface-container-high p-space-xs rounded-full flex items-center gap-1 shadow-inner"><a class="flex-1 text-center py-1 rounded-full font-label-md text-label-md transition-all bg-surface-container-lowest text-on-surface shadow-sm" data-path="live-dispatch-console" href="#">Dispatch</a><a class="flex-1 text-center py-1 rounded-full font-label-md text-label-md transition-all text-on-surface-variant hover:text-on-surface" data-path="passenger-flow-simulator" href="#">Rider App</a></div></div><div class="px-space-md"><div class="px-space-sm py-space-xs bg-tertiary-fixed/30 rounded-full flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span><span class="font-label-sm text-label-sm text-on-tertiary-container font-semibold truncate">Window #148 • 30s rolling</span></div></div><nav class="flex flex-col gap-1 px-space-sm" data-active-classes="bg-primary-container text-on-primary-container font-semibold shadow-sm"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="live-dispatch-console" href="#"><span class="material-symbols-outlined text-[20px]">radar</span><span class="font-title-md text-title-md">Live Dispatch Console</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="shapley-pricing-matrix" href="#"><span class="material-symbols-outlined text-[20px]">pie_chart</span><span class="font-title-md text-title-md">Shapley Cost Matrix</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="fleet-telemetry-map" href="#"><span class="material-symbols-outlined text-[20px]">directions_car</span><span class="font-title-md text-title-md">Fleet Telemetry Map</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="passenger-flow-simulator" href="#"><span class="material-symbols-outlined text-[20px]">person_pin_circle</span><span class="font-title-md text-title-md">Passenger Simulator</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="algorithm-benchmarks" href="#"><span class="material-symbols-outlined text-[20px]">query_stats</span><span class="font-title-md text-title-md">Algorithm Benchmarks</span></a></nav></div><div class="px-space-md flex flex-col gap-space-sm"><div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-[0_4px_16px_rgba(15,23,42,0.04)] flex flex-col gap-space-xs"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sim Engine</span><span class="font-label-sm text-label-sm text-primary font-bold">1x Active</span></div><div class="flex items-center justify-between gap-1"><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-primary-container text-on-surface hover:text-on-primary-container flex items-center justify-center transition-colors" title="Run Simulation" type="button"><span class="material-symbols-outlined text-[16px]">play_arrow</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Pause" type="button"><span class="material-symbols-outlined text-[16px]">pause</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Step 10s" type="button"><span class="material-symbols-outlined text-[16px]">forward_10</span></button><button class="flex-1 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" title="Reset Data" type="button"><span class="material-symbols-outlined text-[16px]">replay</span></button></div></div><div class="pt-space-xs flex items-center justify-between px-space-xs"><div class="flex items-center gap-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-title-md text-title-md leading-tight text-on-surface">Dr. L. Moreau</span><span class="font-label-sm text-label-sm text-on-surface-variant">Lead Dispatcher</span></div></div><button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button"><span class="material-symbols-outlined text-[18px]">tune</span></button></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-8 flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md flex-1"><div class="hidden xl:flex items-center gap-space-sm px-space-md py-1.5 rounded-full bg-surface-container-lowest shadow-sm"><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Active Pools</span><span class="font-title-md text-title-md text-primary font-bold">184 Trips</span></div><div class="w-1 h-3.5 bg-outline-variant/60 rounded-full"></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Avg Detour</span><span class="font-title-md text-title-md text-on-surface font-semibold">+8.4%</span><span class="font-label-sm text-label-sm text-on-surface-variant">(Cap 15%)</span></div><div class="w-1 h-3.5 bg-outline-variant/60 rounded-full"></div><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Shapley Savings</span><span class="font-title-md text-title-md text-tertiary font-bold">-28.6%</span></div></div></div><div class="flex items-center gap-space-sm"><div class="relative flex items-center"><input class="w-64 h-9 pl-9 pr-3 rounded-full bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary shadow-inner" placeholder="Search trip ID, rider, or vehicle..." type="text"/><span class="material-symbols-outlined absolute left-2.5 text-[18px] text-on-surface-variant">search</span></div><button class="w-9 h-9 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container shadow-sm relative transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive State Container -->
+<div class="px-8 py-6 flex flex-col gap-space-lg" id="event-inspector-app">
+<!-- 1. Header & Telemetry Strip -->
+<header class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<nav aria-label="Breadcrumbs" class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface-variant">
+<span>Operations Dashboard</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>Simulation Observability</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-semibold">Event Log &amp; Error Inspector</span>
+</nav>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high font-label-sm text-label-sm text-primary font-mono tracking-tight">/ops/events</span>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm pt-1">
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">Simulation Event Log &amp; Error Inspector</h1>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed/40 text-on-tertiary-container shadow-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-sm text-label-sm font-semibold tracking-wide">Live Stream: WS Active • 14 ms latency</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-mono">
+<span class="material-symbols-outlined text-[14px] text-primary">grain</span>
+<span>Batch #148 • Seed: 0x9AF48E-SF-PEAK</span>
+</div>
+</div>
+</div>
+<!-- Quick Action Node Dock -->
+<div class="flex items-center flex-wrap gap-2">
+<button class="h-9 px-4 rounded-full bg-surface-container-lowest text-on-surface hover:bg-surface-container shadow-sm flex items-center gap-1.5 font-label-md text-label-md transition-all" id="toggle-stream-btn" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary" id="stream-icon">pause</span>
+<span id="stream-label">Pause Stream</span>
+</button>
+<button class="h-9 px-4 rounded-full bg-surface-container-lowest text-on-surface hover:bg-surface-container shadow-sm flex items-center gap-1.5 font-label-md text-label-md transition-all" id="export-json-btn" type="button">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">file_download</span>
+<span>Export JSON</span>
+</button>
+<button class="h-9 px-4 rounded-full bg-primary-container text-on-primary-container shadow-sm hover:opacity-90 flex items-center gap-1.5 font-label-md text-label-md font-semibold transition-all" id="replay-batch-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+<span>Replay Batch #148</span>
+</button>
+</div>
+</header>
+<!-- 2. Stream Vitals Bar & Metrics -->
+<section class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-space-sm">
+<div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Logged</span>
+<span class="material-symbols-outlined text-[16px] text-primary">database</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold" id="metric-total">1,482</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Epoch 14:31:00–14:31:32 PST</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Info &amp; Success</span>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">1,320</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">90.2%</span>
+</div>
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden mt-1">
+<div class="bg-tertiary h-full rounded-full" style="width: 90.2%"></div>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Warnings &amp; Eval</span>
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md text-on-surface font-extrabold">142</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">9.5%</span>
+</div>
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden mt-1">
+<div class="bg-secondary-container h-full rounded-full" style="width: 9.5%"></div>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Pruned &amp; Errors</span>
+<span class="w-2 h-2 rounded-full bg-error"></span>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md text-error font-extrabold">20</span>
+<span class="font-label-sm text-label-sm text-error font-bold">0.3%</span>
+</div>
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden mt-1">
+<div class="bg-error h-full rounded-full" style="width: 0.3%"></div>
+</div>
+</div>
+<div class="col-span-2 md:col-span-4 lg:col-span-1 p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Throughput / Health</span>
+<span class="font-label-sm text-label-sm text-tertiary font-mono">0 Drop</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div>
+<span class="font-title-md text-title-md text-on-surface font-bold">~48.2</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ev/sec</span>
+</div>
+<!-- Sparkline SVG -->
+<svg class="w-24 h-6 text-primary" fill="none" viewbox="0 0 96 24">
+<path d="M0 18 Q 8 16 16 19 T 32 12 T 48 4 T 64 8 T 80 15 T 96 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</section>
+<!-- 5. Judge & Operator Edge-Case Simulator Strip -->
+<section class="p-space-sm rounded-lg bg-surface-container-high/60 backdrop-blur-md shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">science</span>
+</div>
+<div>
+<span class="font-title-md text-title-md text-on-surface block leading-tight">Judge &amp; Chaos Test Bar</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Inject synthetic stress states or force algorithmic fault telemetry</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-1.5 w-full lg:w-auto">
+<button class="chaos-btn px-3 py-1 rounded-full bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-sm text-label-sm shadow-sm transition-all flex items-center gap-1" data-scenario="normal" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span>Normal Batch Flow</span>
+</button>
+<button class="chaos-btn px-3 py-1 rounded-full bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-sm text-label-sm shadow-sm transition-all flex items-center gap-1" data-scenario="timeout" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+<span>Trigger Solver Timeout (&gt;500ms)</span>
+</button>
+<button class="chaos-btn px-3 py-1 rounded-full bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-sm text-label-sm shadow-sm transition-all flex items-center gap-1" data-scenario="osrm" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span>Trigger OSRM 503 Routing Fallback</span>
+</button>
+<button class="chaos-btn px-3 py-1 rounded-full bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-sm text-label-sm shadow-sm transition-all flex items-center gap-1" data-scenario="disconnect" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span>Simulate WS Heartbeat Reconnect</span>
+</button>
+<button class="px-3 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold shadow-sm hover:opacity-90 transition-all flex items-center gap-1" id="quick-filter-pruned" type="button">
+<span class="material-symbols-outlined text-[14px]">filter_alt</span>
+<span>Filter Algorithmic Rejections</span>
+</button>
+</div>
+</section>
+<!-- 3. Multi-Faceted Filter & Query Toolbar -->
+<section class="p-space-md rounded-lg bg-surface-container-lowest shadow-sm flex flex-col gap-space-sm">
+<div class="flex flex-col lg:flex-row gap-space-sm items-stretch lg:items-center justify-between">
+<!-- Search Input -->
+<div class="relative flex-1 min-w-[280px]">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-[20px] text-on-surface-variant">search</span>
+<input class="w-full h-10 pl-10 pr-24 rounded-full bg-surface-container-low font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest shadow-inner transition-all" id="event-search" placeholder="Filter by ID (REQ-8041, V-12, Batch #148), keyword, or solver branch..." type="text"/>
+<button class="hidden absolute right-2.5 top-2 px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface" id="clear-search-btn" type="button">Clear</button>
+</div>
+<!-- Severity Filter Chips -->
+<div class="flex items-center gap-1 overflow-x-auto pb-1 lg:pb-0" id="severity-filters">
+<button class="severity-pill px-3 py-1.5 rounded-full bg-on-surface text-surface font-label-md text-label-md font-semibold transition-all" data-severity="ALL" type="button">All Severities</button>
+<button class="severity-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1" data-severity="SUCCESS" type="button">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Success &amp; Info</span>
+</button>
+<button class="severity-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1" data-severity="WARN" type="button">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span>Warnings</span>
+</button>
+<button class="severity-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1" data-severity="ERROR" type="button">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>Errors &amp; Pruned</span>
+</button>
+<button class="severity-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1" data-severity="SOLVER" type="button">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>Solver MILP</span>
+</button>
+</div>
+</div>
+<!-- Secondary Categorization & Reset Line -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-2">
+<div class="flex flex-wrap items-center gap-1.5" id="category-filters">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mr-1">Lifecycle Category:</span>
+<button class="category-pill px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold transition-all" data-category="ALL" type="button">All Types</button>
+<button class="category-pill px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-label-sm text-label-sm transition-all" data-category="INGESTION" type="button">Ingestion &amp; Batch</button>
+<button class="category-pill px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-label-sm text-label-sm transition-all" data-category="OPTIMIZATION" type="button">Optimization &amp; Matching</button>
+<button class="category-pill px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-label-sm text-label-sm transition-all" data-category="AUDIT" type="button">Audits &amp; Shapley</button>
+<button class="category-pill px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-label-sm text-label-sm transition-all" data-category="FLEET" type="button">Fleet &amp; Waypoints</button>
+<button class="category-pill px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container font-label-sm text-label-sm transition-all" data-category="NETWORK" type="button">System &amp; Network</button>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant" id="filtered-count-label">Showing 10 of 1,482 events</span>
+<button class="text-primary hover:underline font-label-sm text-label-sm font-semibold flex items-center gap-1" id="reset-filters-btn" title="Clears view filters only; does not erase historical memory" type="button">
+<span class="material-symbols-outlined text-[14px]">refresh</span>
+<span>Reset View Filters</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 4. Master-Detail Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-md items-start">
+<!-- LEFT COLUMN: Chronological Event Stream Table (7 cols on XL) -->
+<section class="xl:col-span-7 flex flex-col gap-space-xs">
+<div class="px-space-xs py-1 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface font-bold">Ledger Feed</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high font-label-sm text-label-sm text-on-surface-variant">Live Synchronized</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">Sorted Descending (Latest First)</span>
+</div>
+<div class="flex flex-col gap-2" id="event-feed-list">
+<!-- Event Item 1: CANDIDATE_PRUNED (Error / Constraint violation) -->
+<article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md cursor-pointer transition-all border-l-4 border-error" data-category="OPTIMIZATION" data-entity="REQ-8044 V-12 Batch #148" data-event-id="EV-148-09" data-severity="ERROR" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono font-bold text-label-sm text-error bg-error-container/60 px-2 py-0.5 rounded-full">
+                    [CANDIDATE_PRUNED]
+                  </span>
+<span class="font-mono text-label-sm text-on-surface-variant">14:31:32.492 PST</span>
+<span class="text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-mono">Worker #04</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-semibold truncate">
+                  David Park (REQ-8044) pruned from Vehicle V-12 Coalition
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">
+                  Detour constraint violated: solo 31.0m vs pooled 36.6m (+18.2% &gt; 15.0% SLA cap). Re-routing to solo buffer.
+                </p>
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">REQ-8044</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">V-12</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">Batch #148</span>
+<span class="font-label-sm text-label-sm text-error font-medium ml-1">Hard Cap Reject (+18.2%)</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between h-full gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">chevron_right</span>
+<span class="font-mono text-label-sm text-on-surface-variant">id: 0x9AF-09</span>
+</div>
+</div>
+</article>
+<!-- Event Item 2: ASSIGNMENT_CONFIRMED (Success / Dispatch) -->
+<article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md cursor-pointer transition-all border-l-4 border-tertiary" data-category="FLEET" data-entity="V-12 REQ-8041 REQ-8042 REQ-8043 Batch #148" data-event-id="EV-148-08" data-severity="SUCCESS" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono font-bold text-label-sm text-tertiary bg-tertiary-fixed/60 px-2 py-0.5 rounded-full">
+                    [ASSIGNMENT_CONFIRMED]
+                  </span>
+<span class="font-mono text-label-sm text-on-surface-variant">14:31:32.410 PST</span>
+<span class="text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-mono">Dispatch Host</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-semibold truncate">
+                  Dispatched Vehicle V-12 to Coalition [Elena, Marcus, Sarah]
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">
+                  Final manifest sealed: 3 pick-ups scheduled, average detour +8.4%, departure window 90s lock.
+                </p>
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">V-12</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">REQ-8041</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">REQ-8042</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">REQ-8043</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between h-full gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">chevron_right</span>
+<span class="font-mono text-label-sm text-on-surface-variant">id: 0x9AF-08</span>
+</div>
+</div>
+</article>
+<!-- Event Item 3: FARE_CALCULATED (Shapley Proration) -->
+<article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md cursor-pointer transition-all border-l-4 border-primary-container" data-category="AUDIT" data-entity="REQ-8041 REQ-8042 REQ-8043 Shapley" data-event-id="EV-148-07" data-severity="SUCCESS" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono font-bold text-label-sm text-on-primary-container bg-primary-container/40 px-2 py-0.5 rounded-full">
+                    [FARE_CALCULATED]
+                  </span>
+<span class="font-mono text-label-sm text-on-surface-variant">14:31:32.280 PST</span>
+<span class="text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-mono">Shapley Engine</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-semibold truncate">
+                  Axiomatic Shapley value proration finalized for 3-passenger pool
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">
+                  Elena $17.80 (-27.3%), Marcus $15.40 (-24.1%), Sarah $11.20 (-32.5%). Efficiency surplus: $16.90.
+                </p>
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-tertiary font-semibold">Elena: -27.3%</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-tertiary font-semibold">Marcus: -24.1%</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-tertiary font-semibold">Sarah: -32.5%</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between h-full gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">chevron_right</span>
+<span class="font-mono text-label-sm text-on-surface-variant">id: 0x9AF-07</span>
+</div>
+</div>
+</article>
+<!-- Event Item 4: DETOUR_AUDIT_PASS -->
+<article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md cursor-pointer transition-all border-l-4 border-tertiary" data-category="AUDIT" data-entity="REQ-8041 REQ-8042 REQ-8043 V-12" data-event-id="EV-148-06" data-severity="SUCCESS" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono font-bold text-label-sm text-tertiary bg-tertiary-fixed/60 px-2 py-0.5 rounded-full">
+                    [DETOUR_AUDIT_PASS]
+                  </span>
+<span class="font-mono text-label-sm text-on-surface-variant">14:31:32.195 PST</span>
+<span class="text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-mono">SLA Auditor</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-semibold truncate">
+                  Constraint 3 passed: Max detour +11.1% &lt;= 15.0% cap
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">
+                  Elena: +8.4%, Marcus: +11.1%, Sarah: +5.7%. Zero riders breach delay SLA.
+                </p>
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">V-12</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">SLA Compliant</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between h-full gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">chevron_right</span>
+<span class="font-mono text-label-sm text-on-surface-variant">id: 0x9AF-06</span>
+</div>
+</div>
+</article>
+<!-- Event Item 5: SOLVER_CONVERGED -->
+<article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md cursor-pointer transition-all border-l-4 border-primary" data-category="OPTIMIZATION" data-entity="Batch #148 MILP SCIP" data-event-id="EV-148-05" data-severity="SOLVER" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono font-bold text-label-sm text-primary bg-primary-fixed/60 px-2 py-0.5 rounded-full">
+                    [SOLVER_CONVERGED]
+                  </span>
+<span class="font-mono text-label-sm text-on-surface-variant">14:31:32.142 PST</span>
+<span class="text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-mono">SCIP MILP</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-semibold truncate">
+                  Hybrid MILP solver converged in 142.4 ms
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">
+                  Optimality gap: 0.01% MIPGap, 42 branch cuts generated, 8 integer feasibility nodes pruned.
+                </p>
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">142.4ms Runtime</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">Gap: 0.01%</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">Batch #148</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between h-full gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">chevron_right</span>
+<span class="font-mono text-label-sm text-on-surface-variant">id: 0x9AF-05</span>
+</div>
+</div>
+</article>
+<!-- Event Item 6: OPTIMIZATION_STARTED -->
+<article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md cursor-pointer transition-all border-l-4 border-primary" data-category="OPTIMIZATION" data-entity="Batch #148 V-12 V-08 V-03" data-event-id="EV-148-04" data-severity="SOLVER" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono font-bold text-label-sm text-primary bg-primary-fixed/60 px-2 py-0.5 rounded-full">
+                    [OPTIMIZATION_STARTED]
+                  </span>
+<span class="font-mono text-label-sm text-on-surface-variant">14:31:32.000 PST</span>
+<span class="text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-mono">Dispatcher</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-semibold truncate">
+                  Batch #148 submitted to MILP solver instance
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">
+                  Evaluating 3 vehicles (V-12, V-08, V-03) against 4 unassigned requests. Permutation space: 16 coalitions.
+                </p>
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">3 Vehicles</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">4 Requests</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">Batch #148</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between h-full gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">chevron_right</span>
+<span class="font-mono text-label-sm text-on-surface-variant">id: 0x9AF-04</span>
+</div>
+</div>
+</article>
+<!-- Event Item 7: BATCH_TRIGGERED -->
+<article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md cursor-pointer transition-all border-l-4 border-primary-container" data-category="INGESTION" data-entity="Batch #148 Window" data-event-id="EV-148-03" data-severity="SUCCESS" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono font-bold text-label-sm text-on-primary-container bg-primary-container/40 px-2 py-0.5 rounded-full">
+                    [BATCH_TRIGGERED]
+                  </span>
+<span class="font-mono text-label-sm text-on-surface-variant">14:31:31.980 PST</span>
+<span class="text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-mono">Ingestion Window</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-semibold truncate">
+                  Rolling window #148 timer elapsed (30.0s window threshold)
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">
+                  Window closed with 4 pooled requests pending match. Queue lock granted to coordinator.
+                </p>
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">Batch #148</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">30.0s Window</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between h-full gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">chevron_right</span>
+<span class="font-mono text-label-sm text-on-surface-variant">id: 0x9AF-03</span>
+</div>
+</div>
+</article>
+<!-- Event Item 8: ROUTING_FALLBACK_WARN -->
+<article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md cursor-pointer transition-all border-l-4 border-secondary-container" data-category="NETWORK" data-entity="OSRM Router" data-event-id="EV-148-02" data-severity="WARN" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono font-bold text-label-sm text-secondary bg-secondary-fixed/80 px-2 py-0.5 rounded-full">
+                    [ROUTING_FALLBACK_WARN]
+                  </span>
+<span class="font-mono text-label-sm text-on-surface-variant">14:31:30.820 PST</span>
+<span class="text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-mono">OSRM Client</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-semibold truncate">
+                  OSRM secondary endpoint latency jitter (43.0 ms)
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">
+                  Response above 35ms threshold. Fallback to cached L2 distance matrix for fast path calculation.
+                </p>
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-secondary font-semibold">OSRM-East-2</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">Latency: 43.0ms</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between h-full gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">chevron_right</span>
+<span class="font-mono text-label-sm text-on-surface-variant">id: 0x9AF-02</span>
+</div>
+</div>
+</article>
+<!-- Event Item 9: VEHICLE_TELEMETRY -->
+<article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md cursor-pointer transition-all border-l-4 border-outline-variant" data-category="FLEET" data-entity="V-12 Telemetry" data-event-id="EV-148-01" data-severity="SUCCESS" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono font-bold text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">
+                    [VEHICLE_TELEMETRY]
+                  </span>
+<span class="font-mono text-label-sm text-on-surface-variant">14:31:30.124 PST</span>
+<span class="text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-mono">CAN Bus</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-semibold truncate">
+                  Vehicle V-12 waypoint check: Embarcadero &amp; Howard
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">
+                  Heading 142°, speed 22.4 mph, battery SoC 91%, internal cabin occupancy 0/4.
+                </p>
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-primary font-semibold">V-12</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">SoC: 91%</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">22.4 mph</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between h-full gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">chevron_right</span>
+<span class="font-mono text-label-sm text-on-surface-variant">id: 0x9AF-01</span>
+</div>
+</div>
+</article>
+<!-- Event Item 10: WS_RECONNECTED -->
+<article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md cursor-pointer transition-all border-l-4 border-surface-container-highest" data-category="NETWORK" data-entity="WS Channel 0x4B" data-event-id="EV-148-00" data-severity="SUCCESS" tabindex="0">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-mono font-bold text-label-sm text-on-primary-fixed bg-primary-fixed/80 px-2 py-0.5 rounded-full">
+                    [WS_RECONNECTED]
+                  </span>
+<span class="font-mono text-label-sm text-on-surface-variant">14:31:28.004 PST</span>
+<span class="text-label-sm px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-mono">Gateway</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-semibold truncate">
+                  WebSocket channel 0x4B heartbeat recovered in 8ms
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">
+                  Zero frame buffer loss. TCP ACK received for simulation sequence #4892.
+                </p>
+<div class="flex flex-wrap items-center gap-1.5 pt-1">
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-on-surface-variant">Socket 0x4B</span>
+<span class="entity-tag px-2 py-0.5 rounded-full bg-surface-container font-mono text-label-sm text-tertiary font-semibold">Latency: 8ms</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between h-full gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">chevron_right</span>
+<span class="font-mono text-label-sm text-on-surface-variant">id: 0x9AF-00</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- RIGHT COLUMN: Selected Event Deep-Dive Panel (5 cols on XL) -->
+<aside class="xl:col-span-5 sticky top-20 flex flex-col gap-space-sm" id="detail-drawer">
+<div class="p-space-lg rounded-lg bg-surface-container-lowest shadow-md flex flex-col gap-space-md">
+<!-- Deep Dive Header -->
+<div class="flex items-start justify-between gap-space-sm border-b border-surface-container pb-space-sm">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-mono font-extrabold text-label-sm text-error bg-error-container px-2 py-0.5 rounded-full" id="detail-badge">
+                  [CANDIDATE_PRUNED]
+                </span>
+<span class="font-mono text-label-sm text-on-surface-variant" id="detail-timestamp">14:31:32.492 PST</span>
+</div>
+<h2 class="font-title-lg text-title-lg text-on-surface font-bold leading-snug pt-1" id="detail-title">
+                David Park (REQ-8044) • Pruning Diagnostic
+              </h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono" id="detail-subtitle">
+                Event ID: EV-148-09 • Branch: 148-alpha-prune
+              </span>
+</div>
+<button class="p-2 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors" id="copy-json-btn" title="Copy raw JSON payload" type="button">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+</div>
+<!-- Executive Diagnostic Summary Box -->
+<div class="p-space-sm rounded-lg bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center gap-1.5 text-on-surface font-semibold font-title-md text-title-md">
+<span class="material-symbols-outlined text-[18px] text-error">gavel</span>
+<span>Executive Diagnostic Summary</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface" id="detail-summary">
+              The SCIP MILP solver candidate generator pruned rider <strong>David Park (REQ-8044)</strong> from <strong>Vehicle V-12</strong>. David’s destination on Market St would introduce an <strong>additional 5.6 minutes</strong> of travel time, resulting in an individual detour of <strong>+18.2%</strong>, exceeding the contractual <strong>15.0% maximum detour SLA guarantee</strong>.
+            </p>
+</div>
+<!-- Mathematical Proof / Cause Breakdown -->
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Mathematical Constraint Proof</span>
+<div class="p-space-sm rounded-lg bg-inverse-surface text-inverse-on-surface font-mono text-body-md flex flex-col gap-1.5">
+<div class="flex justify-between items-center text-primary-fixed font-bold">
+<span>FORMULA: Detour% = ((T_pooled - T_solo) / T_solo) * 100</span>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-1 font-label-sm text-label-sm">
+<div>
+<span class="text-outline-variant block">Solo Direct Time (T_solo):</span>
+<span class="text-surface font-bold">31.0 minutes</span>
+</div>
+<div>
+<span class="text-outline-variant block">Simulated Pooled Time (T_pooled):</span>
+<span class="text-surface font-bold">36.6 minutes</span>
+</div>
+<div>
+<span class="text-outline-variant block">Detour Computed:</span>
+<span class="text-error font-extrabold">+18.2%</span>
+</div>
+<div>
+<span class="text-outline-variant block">Hard SLA Cap Threshold:</span>
+<span class="text-secondary-fixed font-bold">15.0% Max</span>
+</div>
+</div>
+<div class="pt-1.5 border-t border-outline/30 flex items-center justify-between text-label-sm">
+<span class="text-error font-semibold">Δ Breach: +3.2% above threshold</span>
+<span class="text-outline-variant">Action: PRUNE_NODE</span>
+</div>
+</div>
+</div>
+<!-- Secondary Constraint Cascade -->
+<div class="p-space-sm rounded-lg bg-surface-container flex flex-col gap-1">
+<div class="flex items-center gap-1.5 text-on-surface font-semibold font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-secondary">alt_route</span>
+<span>Secondary Cascade Effect</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              If David Park were accepted into V-12, co-passenger <strong>Marcus Chen (REQ-8042)</strong> would also experience an unacceptable delay surge from <strong>+11.1% to +19.4%</strong> detour, triggering a secondary SLA fault.
+            </p>
+</div>
+<!-- Affected Entities & Deep Links -->
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Entity Graph Links</span>
+<div class="grid grid-cols-2 gap-2">
+<a class="p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center gap-2 text-on-surface transition-colors" data-path="passenger-flow-simulator" href="#">
+<span class="material-symbols-outlined text-[18px] text-primary">person_search</span>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md truncate">REQ-8044</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Rider Profile</span>
+</div>
+</a>
+<a class="p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center gap-2 text-on-surface transition-colors" data-path="fleet-telemetry-map" href="#">
+<span class="material-symbols-outlined text-[18px] text-primary">directions_car</span>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md truncate">Vehicle V-12</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Live Map View</span>
+</div>
+</a>
+<a class="p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center gap-2 text-on-surface transition-colors" data-path="algorithm-benchmarks" href="#">
+<span class="material-symbols-outlined text-[18px] text-primary">insights</span>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md truncate">MILP Solver</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Constraint Model</span>
+</div>
+</a>
+<a class="p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center gap-2 text-on-surface transition-colors" data-path="shapley-pricing-matrix" href="#">
+<span class="material-symbols-outlined text-[18px] text-primary">calculate</span>
+<div class="flex flex-col min-w-0">
+<span class="font-title-md text-title-md truncate">Shapley Split</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cost Matrix</span>
+</div>
+</a>
+</div>
+</div>
+<!-- Raw JSON Telemetry Tree -->
+<div class="flex flex-col gap-1.5 pt-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Structured JSON Payload</span>
+<span class="font-mono text-label-sm text-primary">Size: 412 Bytes</span>
+</div>
+<pre class="p-space-sm rounded-lg bg-on-surface text-surface font-mono text-label-sm overflow-x-auto leading-relaxed shadow-inner max-h-56" id="detail-json-code"><code>{
+  "event_id": "EV-148-09",
+  "event_type": "CANDIDATE_PRUNED",
+  "timestamp_epoch_ms": 1711204292492,
+  "timestamp_iso": "2025-03-23T14:31:32.492-07:00",
+  "batch_id": 148,
+  "prng_seed": "0x9AF48E-SF-PEAK",
+  "solver_worker": "worker-04",
+  "branch_id": "148-alpha-prune",
+  "vehicle_id": "V-12",
+  "request_id": "REQ-8044",
+  "passenger_name": "David Park",
+  "constraint": "MAX_DETOUR_CAP_EXCEEDED",
+  "metrics": {
+    "t_solo_seconds": 1860,
+    "t_pooled_seconds": 2196,
+    "detour_pct": 18.22,
+    "max_allowed_detour_pct": 15.00,
+    "delta_breach_pct": 3.22,
+    "secondary_passenger_affected": "REQ-8042",
+    "secondary_detour_surge_pct": 19.41
+  },
+  "action_taken": "FALLBACK_TO_SOLO_DISPATCH_QUEUE"
+}</code></pre>
+</div>
+</div>
+</aside>
+</div>
+</div>
+<!-- Client-side Interactive Engine Script -->
+<script>
+    (function () {
+      // Mock Event Database for interactive inspection
+      const EVENT_DATABASE = {
+        'EV-148-09': {
+          badge: '[CANDIDATE_PRUNED]',
+          badgeClass: 'text-error bg-error-container',
+          timestamp: '14:31:32.492 PST',
+          title: 'David Park (REQ-8044) • Pruning Diagnostic',
+          subtitle: 'Event ID: EV-148-09 • Branch: 148-alpha-prune',
+          summary: 'The SCIP MILP solver candidate generator pruned rider David Park (REQ-8044) from Vehicle V-12. David’s destination on Market St would introduce an additional 5.6 minutes of travel time, resulting in an individual detour of +18.2%, exceeding the contractual 15.0% maximum detour SLA guarantee.',
+          rawJson: {
+            event_id: 'EV-148-09',
+            event_type: 'CANDIDATE_PRUNED',
+            timestamp_iso: '2025-03-23T14:31:32.492-07:00',
+            batch_id: 148,
+            prng_seed: '0x9AF48E-SF-PEAK',
+            solver_worker: 'worker-04',
+            vehicle_id: 'V-12',
+            request_id: 'REQ-8044',
+            metrics: {
+              t_solo_seconds: 1860,
+              t_pooled_seconds: 2196,
+              detour_pct: 18.22,
+              max_allowed_detour_pct: 15.00
+            },
+            action_taken: 'FALLBACK_TO_SOLO_DISPATCH_QUEUE'
+          }
+        },
+        'EV-148-08': {
+          badge: '[ASSIGNMENT_CONFIRMED]',
+          badgeClass: 'text-tertiary bg-tertiary-fixed',
+          timestamp: '14:31:32.410 PST',
+          title: 'Vehicle V-12 Final Manifest Locked',
+          subtitle: 'Event ID: EV-148-08 • Dispatcher Coordinator',
+          summary: 'Optimal coalition resolved. Vehicle V-12 is allocated to riders Elena Vance (REQ-8041), Marcus Chen (REQ-8042), and Sarah Kim (REQ-8043). Total pooled vehicle distance saved: 6.8 vehicle-kilometers.',
+          rawJson: {
+            event_id: 'EV-148-08',
+            event_type: 'ASSIGNMENT_CONFIRMED',
+            timestamp_iso: '2025-03-23T14:31:32.410-07:00',
+            batch_id: 148,
+            vehicle_id: 'V-12',
+            assigned_requests: ['REQ-8041', 'REQ-8042', 'REQ-8043'],
+            metrics: {
+              fleet_miles_saved: 4.22,
+              co2_saved_grams: 864,
+              avg_detour_pct: 8.4
+            }
+          }
+        },
+        'EV-148-07': {
+          badge: '[FARE_CALCULATED]',
+          badgeClass: 'text-on-primary-container bg-primary-container/40',
+          timestamp: '14:31:32.280 PST',
+          title: 'Axiomatic Shapley Fair-Division Finalized',
+          subtitle: 'Event ID: EV-148-07 • Game-Theoretic Engine',
+          summary: 'Calculated marginal detour contributions across all 2^3 subsets. Elena receives a 27.3% discount ($17.80), Marcus receives 24.1% ($15.40), and Sarah receives 32.5% ($11.20). Individual rationality satisfied across all riders.',
+          rawJson: {
+            event_id: 'EV-148-07',
+            event_type: 'FARE_CALCULATED',
+            timestamp_iso: '2025-03-23T14:31:32.280-07:00',
+            batch_id: 148,
+            proration_method: 'SHAPLEY_COOPERATIVE_CORE',
+            splits: {
+              'REQ-8041': { solo: 24.50, pooled: 17.80, savings_pct: 27.3 },
+              'REQ-8042': { solo: 20.30, pooled: 15.40, savings_pct: 24.1 },
+              'REQ-8043': { solo: 16.60, pooled: 11.20, savings_pct: 32.5 }
+            }
+          }
+        },
+        'EV-148-05': {
+          badge: '[SOLVER_CONVERGED]',
+          badgeClass: 'text-primary bg-primary-fixed',
+          timestamp: '14:31:32.142 PST',
+          title: 'SCIP Hybrid MILP Optimizer Completed',
+          subtitle: 'Event ID: EV-148-05 • Worker Pool Node 02',
+          summary: 'Branch-and-cut optimization finished in 142.4ms. Explored 42 LP relaxations with a final relative gap of 0.01% against the lower bounding dual simplex envelope.',
+          rawJson: {
+            event_id: 'EV-148-05',
+            event_type: 'SOLVER_CONVERGED',
+            timestamp_iso: '2025-03-23T14:31:32.142-07:00',
+            runtime_ms: 142.4,
+            mip_gap: 0.0001,
+            nodes_explored: 42,
+            simplex_iterations: 1184
+          }
+        },
+        'EV-148-02': {
+          badge: '[ROUTING_FALLBACK_WARN]',
+          badgeClass: 'text-secondary bg-secondary-fixed',
+          timestamp: '14:31:30.820 PST',
+          title: 'OSRM Distance Matrix Jitter Fallback',
+          subtitle: 'Event ID: EV-148-02 • Network Circuit Breaker',
+          summary: 'The primary OSRM routing matrix service responded in 43.0ms (exceeding the strict 35.0ms batch budget). Switched to internal L2 Euclidean approximation with speed-profile multiplier to maintain <200ms batch SLA.',
+          rawJson: {
+            event_id: 'EV-148-02',
+            event_type: 'ROUTING_FALLBACK_WARN',
+            endpoint: 'osrm-secondary-az2',
+            latency_ms: 43.0,
+            sla_budget_ms: 35.0,
+            circuit_breaker: 'TRIPPED_SOFT_FALLBACK'
+          }
+        }
+      };
+
+      // Search and Filter Elements
+      const searchInput = document.getElementById('event-search');
+      const clearSearchBtn = document.getElementById('clear-search-btn');
+      const eventRows = document.querySelectorAll('.event-row');
+      const severityPills = document.querySelectorAll('.severity-pill');
+      const categoryPills = document.querySelectorAll('.category-pill');
+      const resetFiltersBtn = document.getElementById('reset-filters-btn');
+      const filteredCountLabel = document.getElementById('filtered-count-label');
+      const quickFilterPruned = document.getElementById('quick-filter-pruned');
+
+      let currentSeverity = 'ALL';
+      let currentCategory = 'ALL';
+      let currentSearch = '';
+
+      function applyFilters() {
+        let visibleCount = 0;
+        eventRows.forEach(row => {
+          const rowSeverity = row.getAttribute('data-severity');
+          const rowCategory = row.getAttribute('data-category');
+          const rowEntity = (row.getAttribute('data-entity') || '').toLowerCase();
+          const rowText = row.innerText.toLowerCase();
+
+          const matchesSeverity = (currentSeverity === 'ALL') || (rowSeverity === currentSeverity);
+          const matchesCategory = (currentCategory === 'ALL') || (rowCategory === currentCategory);
+          const matchesSearch = !currentSearch || rowText.includes(currentSearch) || rowEntity.includes(currentSearch);
+
+          if (matchesSeverity && matchesCategory && matchesSearch) {
+            row.style.display = 'block';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        filteredCountLabel.innerText = `Showing ${visibleCount} of 1,482 events`;
+      }
+
+      // Severity Click
+      severityPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          severityPills.forEach(p => {
+            p.classList.remove('bg-on-surface', 'text-surface');
+            p.classList.add('bg-surface-container', 'text-on-surface-variant');
+          });
+          pill.classList.remove('bg-surface-container', 'text-on-surface-variant');
+          pill.classList.add('bg-on-surface', 'text-surface');
+          currentSeverity = pill.getAttribute('data-severity');
+          applyFilters();
+        });
+      });
+
+      // Category Click
+      categoryPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          categoryPills.forEach(p => {
+            p.classList.remove('bg-surface-container-high', 'font-semibold');
+            p.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+          });
+          pill.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+          pill.classList.add('bg-surface-container-high', 'font-semibold');
+          currentCategory = pill.getAttribute('data-category');
+          applyFilters();
+        });
+      });
+
+      // Search Input
+      searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value.trim().toLowerCase();
+        if (currentSearch.length > 0) {
+          clearSearchBtn.classList.remove('hidden');
+        } else {
+          clearSearchBtn.classList.add('hidden');
+        }
+        applyFilters();
+      });
+
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        currentSearch = '';
+        clearSearchBtn.classList.add('hidden');
+        applyFilters();
+      });
+
+      // Reset View Filters
+      resetFiltersBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        currentSearch = '';
+        clearSearchBtn.classList.add('hidden');
+
+        currentSeverity = 'ALL';
+        severityPills.forEach(p => {
+          p.classList.remove('bg-on-surface', 'text-surface');
+          p.classList.add('bg-surface-container', 'text-on-surface-variant');
+        });
+        severityPills[0].classList.remove('bg-surface-container', 'text-on-surface-variant');
+        severityPills[0].classList.add('bg-on-surface', 'text-surface');
+
+        currentCategory = 'ALL';
+        categoryPills.forEach(p => {
+          p.classList.remove('bg-surface-container-high', 'font-semibold');
+          p.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+        });
+        categoryPills[0].classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+        categoryPills[0].classList.add('bg-surface-container-high', 'font-semibold');
+
+        applyFilters();
+      });
+
+      // Quick Filter Pruned
+      quickFilterPruned.addEventListener('click', () => {
+        currentSeverity = 'ERROR';
+        severityPills.forEach(p => {
+          p.classList.remove('bg-on-surface', 'text-surface');
+          p.classList.add('bg-surface-container', 'text-on-surface-variant');
+        });
+        const errorPill = document.querySelector('[data-severity="ERROR"]');
+        if (errorPill) {
+          errorPill.classList.remove('bg-surface-container', 'text-on-surface-variant');
+          errorPill.classList.add('bg-on-surface', 'text-surface');
+        }
+        applyFilters();
+      });
+
+      // Selection Inspection Logic
+      const detailBadge = document.getElementById('detail-badge');
+      const detailTimestamp = document.getElementById('detail-timestamp');
+      const detailTitle = document.getElementById('detail-title');
+      const detailSubtitle = document.getElementById('detail-subtitle');
+      const detailSummary = document.getElementById('detail-summary');
+      const detailJsonCode = document.getElementById('detail-json-code');
+
+      eventRows.forEach(row => {
+        row.addEventListener('click', () => {
+          eventRows.forEach(r => r.classList.remove('ring-2', 'ring-primary'));
+          row.classList.add('ring-2', 'ring-primary');
+
+          const eventId = row.getAttribute('data-event-id');
+          const data = EVENT_DATABASE[eventId];
+
+          if (data) {
+            detailBadge.innerText = data.badge;
+            detailBadge.className = `font-mono font-extrabold text-label-sm px-2 py-0.5 rounded-full ${data.badgeClass}`;
+            detailTimestamp.innerText = data.timestamp;
+            detailTitle.innerText = data.title;
+            detailSubtitle.innerText = data.subtitle;
+            detailSummary.innerHTML = data.summary;
+            detailJsonCode.innerHTML = `<code>${JSON.stringify(data.rawJson, null, 2)}</code>`;
+          }
+        });
+      });
+
+      // Stream Toggle Simulation
+      const toggleStreamBtn = document.getElementById('toggle-stream-btn');
+      const streamIcon = document.getElementById('stream-icon');
+      const streamLabel = document.getElementById('stream-label');
+      let isPaused = false;
+
+      toggleStreamBtn.addEventListener('click', () => {
+        isPaused = !isPaused;
+        if (isPaused) {
+          streamIcon.innerText = 'play_arrow';
+          streamLabel.innerText = 'Resume Stream';
+          toggleStreamBtn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+        } else {
+          streamIcon.innerText = 'pause';
+          streamLabel.innerText = 'Pause Stream';
+          toggleStreamBtn.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+        }
+      });
+
+      // Chaos Simulator Buttons
+      const chaosButtons = document.querySelectorAll('.chaos-btn');
+      chaosButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const scenario = btn.getAttribute('data-scenario');
+          const feedList = document.getElementById('event-feed-list');
+          
+          let newRowHTML = '';
+          const nowStr = new Date().toTimeString().split(' ')[0] + '.' + Math.floor(Math.random() * 900 + 100) + ' PST';
+
+          if (scenario === 'timeout') {
+            newRowHTML = `
+              <article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-md border-l-4 border-error animate-pulse" data-event-id="EV-CHAOS-TIMEOUT" data-severity="ERROR" data-category="OPTIMIZATION" data-entity="SCIP Timeout" tabindex="0">
+                <div class="flex items-start justify-between gap-space-sm">
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono font-bold text-label-sm text-error bg-error-container px-2 py-0.5 rounded-full">[SOLVER_TIMEOUT_ERR]</span>
+                      <span class="font-mono text-label-sm text-on-surface-variant">${nowStr}</span>
+                    </div>
+                    <p class="font-body-lg text-body-lg text-on-surface font-bold truncate">Solver execution breached hard SLA: 512.8ms &gt; 500.0ms budget</p>
+                    <p class="font-body-md text-body-md text-error">Simulated timeout: Dispatched fallback Greedy Insertion heuristic to prevent live dispatch lockup.</p>
+                  </div>
+                  <span class="material-symbols-outlined text-error">warning</span>
+                </div>
+              </article>
+            `;
+          } else if (scenario === 'osrm') {
+            newRowHTML = `
+              <article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-md border-l-4 border-secondary-container animate-pulse" data-event-id="EV-CHAOS-OSRM" data-severity="WARN" data-category="NETWORK" data-entity="OSRM 503" tabindex="0">
+                <div class="flex items-start justify-between gap-space-sm">
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono font-bold text-label-sm text-secondary bg-secondary-fixed px-2 py-0.5 rounded-full">[OSRM_CIRCUIT_BREAK]</span>
+                      <span class="font-mono text-label-sm text-on-surface-variant">${nowStr}</span>
+                    </div>
+                    <p class="font-body-lg text-body-lg text-on-surface font-bold truncate">OSRM Gateway returned HTTP 503 Service Unavailable</p>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Active failover to pre-baked Haversine distance matrix. Zero interruption to vehicle dispatch queue.</p>
+                  </div>
+                  <span class="material-symbols-outlined text-secondary">cloud_off</span>
+                </div>
+              </article>
+            `;
+          } else if (scenario === 'disconnect') {
+            newRowHTML = `
+              <article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-md border-l-4 border-primary animate-pulse" data-event-id="EV-CHAOS-WS" data-severity="SUCCESS" data-category="NETWORK" data-entity="WS Reset" tabindex="0">
+                <div class="flex items-start justify-between gap-space-sm">
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono font-bold text-label-sm text-primary bg-primary-fixed px-2 py-0.5 rounded-full">[WS_HEARTBEAT_ACK]</span>
+                      <span class="font-mono text-label-sm text-on-surface-variant">${nowStr}</span>
+                    </div>
+                    <p class="font-body-lg text-body-lg text-on-surface font-bold truncate">WebSocket handshake restabilized • 0 unconfirmed frames</p>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Stream re-synced to cluster socket node #03. Latency: 11.2ms.</p>
+                  </div>
+                  <span class="material-symbols-outlined text-primary">sync</span>
+                </div>
+              </article>
+            `;
+          } else {
+            newRowHTML = `
+              <article class="event-row p-space-sm rounded-lg bg-surface-container-lowest shadow-md border-l-4 border-tertiary" data-event-id="EV-CHAOS-NORMAL" data-severity="SUCCESS" data-category="INGESTION" data-entity="Batch Sync" tabindex="0">
+                <div class="flex items-start justify-between gap-space-sm">
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="font-mono font-bold text-label-sm text-tertiary bg-tertiary-fixed px-2 py-0.5 rounded-full">[NORMAL_INGEST]</span>
+                      <span class="font-mono text-label-sm text-on-surface-variant">${nowStr}</span>
+                    </div>
+                    <p class="font-body-lg text-body-lg text-on-surface font-bold truncate">Standard batch ingestion cycle executed seamlessly</p>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Rolling window closed with 0 anomalies. 3 new candidate rides dispatched.</p>
+                  </div>
+                  <span class="material-symbols-outlined text-tertiary">check_circle</span>
+                </div>
+              </article>
+            `;
+          }
+
+          if (newRowHTML) {
+            feedList.insertAdjacentHTML('afterbegin', newRowHTML);
+            const totalMetric = document.getElementById('metric-total');
+            if (totalMetric) {
+              const currentVal = parseInt(totalMetric.innerText.replace(/,/g, ''), 10);
+              totalMetric.innerText = (currentVal + 1).toLocaleString();
+            }
+          }
+        });
+      });
+
+      // Copy JSON button micro-interaction
+      const copyJsonBtn = document.getElementById('copy-json-btn');
+      copyJsonBtn.addEventListener('click', () => {
+        const text = detailJsonCode.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          const originalIcon = copyJsonBtn.innerHTML;
+          copyJsonBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-tertiary">check</span>';
+          setTimeout(() => {
+            copyJsonBtn.innerHTML = originalIcon;
+          }, 1500);
+        });
+      });
+
+      // Export JSON log button
+      const exportBtn = document.getElementById('export-json-btn');
+      exportBtn.addEventListener('click', () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(EVENT_DATABASE, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "batch-148-simulation-events.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+      });
+
+    })();
+  </script>
+</div></main></div></body></html>
