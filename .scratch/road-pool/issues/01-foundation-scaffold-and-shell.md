@@ -6,9 +6,9 @@
 
 **Status:** ready-for-agent
 
-- [ ] Backend runs on Python 3.12 with FastAPI, CORS, and WebSocket endpoint `/ws/live` streaming tick events.
-- [ ] Frontend runs on React + Vite + TypeScript with Tailwind CSS configured using Stitch Kinetic Glow design tokens and Plus Jakarta Sans.
-- [ ] Global header allows switching between Operations view and Passenger view without resetting state.
-- [ ] Simulation control bar allows toggling between Running, Paused, Stepping, and Reset states.
-- [ ] Leaflet map renders centered on Pune, India (18.5204, 73.8567) and displays live simulated vehicle positions.
-- [ ] End-to-end health check and WebSocket ping succeed cleanly.
+- [x] Backend runs on Python 3.12 with FastAPI, CORS, and WebSocket endpoint `/ws/live` streaming tick events.
+- [x] Frontend runs on React + Vite + TypeScript with Tailwind CSS configured using Stitch Kinetic Glow design tokens and Plus Jakarta Sans.
+- [x] Global header allows switching between Operations view and Passenger view without resetting state.
+- [x] Simulation control bar allows toggling between Running, Paused, Stepping, and Reset states.
+- [x] Leaflet map renders centered on Pune, India (18.5204, 73.8567) and displays live simulated vehicle positions.
+- [x] End-to-end health check and WebSocket ping succeed cleanly.
