@@ -4,7 +4,7 @@ RidePool AI - Global Simulation Service & State Manager
 import asyncio
 import math
 import time
-from typing import Dict, List, Set, Any, Optional
+from typing import Dict, List, Set, Any, Optional, Literal
 from fastapi import WebSocket
 from app.models.simulation import (
     GlobalSimulationSnapshot, SimulationEngineState, SimulationKPIs,

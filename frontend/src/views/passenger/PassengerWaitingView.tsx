@@ -5,8 +5,6 @@ import { ShapleySlideOverSheet } from '../../components/ShapleySlideOverSheet';
 import {
   requeueRideRequest,
   dispatchSoloRide,
-  generateCandidateDemand,
-  getPrivacySafeRiderId,
 } from '../../services/routingService';
 import { cancelRideRequestDirect } from '../../services/simulationService';
 
@@ -38,7 +36,7 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
   const activeReq = activeReqId ? requests[activeReqId] : Object.values(requests)[0];
 
   const currentWindowId = engine?.currentWindowId ?? 101;
-  const timeRemaining = engine?.timeRemainingInWindowSec ?? 45;
+  const timeRemaining = engine?.timeRemainingInWindowSec ?? 28;
   const totalWindowSec = engine?.windowIntervalSec ?? 45;
 
   // Matching lifecycle states
@@ -55,25 +53,12 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
 
   const isSearching = !isMatched && !isNoMatch;
 
-  // Loading and action state
+  // Action and UI states
   const [isActionPending, setIsActionPending] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isShapleySheetOpen, setIsShapleySheetOpen] = useState<boolean>(false);
   const [showCancelModal, setShowCancelModal] = useState<boolean>(false);
   const [isCancelling, setIsCancelling] = useState<boolean>(false);
-
-  // Candidate requests in current batch window (excluding user's own request)
-  const candidateRequests = Object.values(requests).filter(
-    (r) =>
-      r.status === 'waiting_batch' &&
-      r.batch_id === currentWindowId &&
-      r.request_id !== activeReq?.request_id
-  );
-
-  const candidateSeatsCount = candidateRequests.reduce((acc, r) => acc + (r.party_size || 1), 0);
-  const mySeats = activeReq?.party_size || 1;
-  const totalCapacity = 4;
-  const availableSeats = Math.max(0, totalCapacity - mySeats - candidateSeatsCount);
 
   const progressPercent = Math.max(
     0,
@@ -84,18 +69,17 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
     ? vehicles[activeReq.assigned_vehicle_id]
     : Object.values(vehicles)[0];
 
-  const actualDetourPct = activeReq?.detour_pct ?? session?.actualDetourPct ?? 8.33;
-
   // Handler: Fast-Forward dispatch
   const handleFastForward = async () => {
     setIsActionPending(true);
-    setStatusMessage('Fast-forwarding: Locking batch & dispatching into OR-Tools solver...');
+    setStatusMessage('Locking batch & computing optimal multi-passenger routing...');
     try {
       await onDispatchNow();
       setTimeout(() => {
         setIsActionPending(false);
         setStatusMessage(null);
-      }, 1000);
+        if (onNavigateToActive) onNavigateToActive();
+      }, 900);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Dispatch failed';
       setStatusMessage(`Error: ${msg}`);
@@ -103,11 +87,11 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
     }
   };
 
-  // Handler: Confirm Cancel Ride Request
+  // Handler: Confirm Cancel
   const handleConfirmCancel = async () => {
     if (!activeReq?.request_id) return;
     setIsCancelling(true);
-    setStatusMessage('Cancelling ride request and releasing hold...');
+    setStatusMessage('Cancelling ride request...');
     try {
       if (onCancelRide) {
         await onCancelRide(activeReq.request_id);
@@ -124,18 +108,17 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
     }
   };
 
-  // Handler: Wait longer / Requeue
+  // Handler: Wait in next window
   const handleWaitLonger = async () => {
     if (!activeReq?.request_id) return;
     setIsActionPending(true);
-    setStatusMessage('Re-queuing request into rolling window (+45s)...');
     try {
       await requeueRideRequest(activeReq.request_id);
-      setStatusMessage('Request re-admitted to active batch window!');
+      setStatusMessage('Request re-queued for next 45s window');
       setTimeout(() => {
         setIsActionPending(false);
         setStatusMessage(null);
-      }, 1500);
+      }, 1000);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to requeue';
       setStatusMessage(`Error: ${msg}`);
@@ -143,555 +126,290 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
     }
   };
 
-  // Handler: Switch to Solo Ride
+  // Handler: Switch to Solo Direct
   const handleSwitchToSolo = async () => {
     if (!activeReq?.request_id) return;
     setIsActionPending(true);
-    setStatusMessage('Switching to dedicated Solo Ride (0% Detour)...');
     try {
       await dispatchSoloRide(activeReq.request_id);
-      setStatusMessage('Solo direct ride dispatched! Assigned dedicated vehicle.');
+      setStatusMessage('Direct solo vehicle dispatched');
       setTimeout(() => {
         setIsActionPending(false);
         setStatusMessage(null);
-      }, 1200);
+      }, 1000);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to dispatch solo ride';
+      const msg = err instanceof Error ? err.message : 'Failed to dispatch solo';
       setStatusMessage(`Error: ${msg}`);
-      setIsActionPending(false);
-    }
-  };
-
-  // Handler: Simulate commuter influx (demo mode)
-  const handleSimulateCommuterInflux = async () => {
-    setIsActionPending(true);
-    try {
-      await generateCandidateDemand(1);
-      setStatusMessage('Simulated commuter joined the candidate pool!');
-      setTimeout(() => {
-        setStatusMessage(null);
-      }, 2000);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Simulation failed';
-      setStatusMessage(`Error: ${msg}`);
-    } finally {
       setIsActionPending(false);
     }
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl mx-auto w-full">
-      {/* LEFT COLUMN: Matching Telemetry & Batch Countdown (5 cols) */}
-      <div className="lg:col-span-5 flex flex-col gap-5">
-        {/* Master Matching Card */}
-        <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-7 shadow-card border border-outline-variant/30 relative overflow-hidden flex flex-col gap-6">
-          {/* Ambient Glow */}
-          <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary-container/20 rounded-full blur-3xl pointer-events-none"></div>
-
-          {/* Top Header */}
-          <div className="flex items-center justify-between z-10">
-            <div className="flex items-center gap-3">
-              <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-sm ${
-                  isMatched
-                    ? 'bg-tertiary-fixed text-on-tertiary-fixed'
-                    : isNoMatch
-                    ? 'bg-error-container text-on-error-container'
-                    : 'bg-primary-container text-on-primary-container'
-                }`}
-              >
-                <span className="material-symbols-outlined text-[20px]">
-                  {isMatched ? 'verified' : isNoMatch ? 'error' : 'electric_car'}
-                </span>
-              </div>
-              <div>
-                <h1 className="font-extrabold text-lg text-on-surface tracking-tight">
-                  {activeReq?.request_id || 'REQ-P101'}
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl mx-auto w-full animate-fade-in">
+      {/* Left Column: Focused Status Card (5 cols) */}
+      <div className="lg:col-span-5 flex flex-col gap-4">
+        <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col gap-5">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="font-bold text-lg text-slate-900 tracking-tight">
+                  {isMatched ? 'Pool Matched' : isNoMatch ? 'Match Incomplete' : 'Batch Window Active'}
                 </h1>
-                <span className="text-xs text-on-surface-variant font-medium">
-                  {isMatched
-                    ? 'Shared Pool Matched & Dispatched'
-                    : isNoMatch
-                    ? 'No Compatible Match Found'
-                    : 'Grouping into Cooperative Pool'}
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
+                    isMatched
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : isNoMatch
+                      ? 'bg-rose-100 text-rose-800'
+                      : 'bg-slate-100 text-slate-700'
+                  }`}
+                >
+                  Window #{currentWindowId}
                 </span>
               </div>
-            </div>
-
-            <span
-              id="batch-window-badge"
-              className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-sm ${
-                isMatched
-                  ? 'bg-tertiary-fixed text-on-tertiary-fixed'
+              <p className="text-xs text-slate-500 mt-0.5">
+                {isMatched
+                  ? 'Assigned dedicated EV on your corridor'
                   : isNoMatch
-                  ? 'bg-error-container text-on-error-container'
-                  : 'bg-secondary-container/40 text-on-secondary-container'
-              }`}
-            >
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  isMatched
-                    ? 'bg-tertiary'
-                    : isNoMatch
-                    ? 'bg-error'
-                    : 'bg-secondary animate-ping'
-                }`}
-              ></span>
-              {isMatched ? 'Match Found ✓' : isNoMatch ? 'No Valid Match ✕' : `Batch Window #${currentWindowId}`}
-            </span>
-          </div>
-
-          {/* Status Alert Banner if applicable */}
-          {statusMessage && (
-            <div className="z-10 p-3 rounded-xl bg-primary-fixed/20 border border-primary text-primary text-xs font-semibold flex items-center gap-2 animate-fadeIn">
-              <span className="material-symbols-outlined text-[16px] animate-spin">sync</span>
-              <span>{statusMessage}</span>
+                  ? 'No compatible co-riders within ≤15% detour limit'
+                  : 'Pooling compatible riders along the Pune metro corridor'}
+              </p>
             </div>
-          )}
-
-          {/* Animated Countdown Gauge Hero */}
-          <div className="bg-gradient-to-br from-surface-container-low via-surface-bright to-surface-container-high/40 rounded-2xl p-5 border border-outline-variant/30 flex flex-col items-center justify-center gap-4 text-center z-10">
-            {isSearching && (
-              <>
-                <div className="relative w-32 h-32 flex items-center justify-center">
-                  <svg className="w-32 h-32 -rotate-90 transform" viewBox="0 0 100 100">
-                    <circle
-                      className="text-surface-container"
-                      cx="50"
-                      cy="50"
-                      fill="transparent"
-                      r="42"
-                      stroke="currentColor"
-                      strokeWidth="8"
-                    />
-                    <circle
-                      className="text-primary transition-all duration-1000"
-                      cx="50"
-                      cy="50"
-                      fill="transparent"
-                      r="42"
-                      stroke="currentColor"
-                      strokeWidth="8"
-                      strokeDasharray="264"
-                      strokeDashoffset={264 - (264 * progressPercent) / 100}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute flex flex-col items-center justify-center">
-                    <span className="text-3xl font-black text-on-surface leading-none">
-                      {timeRemaining}
-                    </span>
-                    <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mt-0.5">
-                      Sec
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-xs font-bold text-primary uppercase tracking-wider">
-                    Rolling Intake Buffer
-                  </span>
-                  <span className="text-xs text-on-surface-variant font-medium">
-                    Batch #{currentWindowId} closes in {timeRemaining}s • Dispatches into Pune OR-Tools Solver
-                  </span>
-                </div>
-              </>
-            )}
-
-            {isMatched && (
-              <div className="flex flex-col items-center gap-2 py-2">
-                <div className="w-14 h-14 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center shadow-md">
-                  <span className="material-symbols-outlined text-[32px]">check_circle</span>
-                </div>
-                <span className="font-bold text-base text-on-surface">Optimal Shared Pool Matched!</span>
-                <span className="text-xs text-tertiary font-bold">
-                  Assigned to {assignedVehicle?.name || 'BYD e6 • City Shuttle'} ({activeReq?.assigned_vehicle_id || 'V-101'})
-                </span>
-                <span className="text-[11px] text-on-surface-variant">
-                  Detour: +{actualDetourPct.toFixed(1)}% (Strict ≤15.0% Cap Preserved)
-                </span>
-              </div>
-            )}
-
-            {isNoMatch && (
-              <div className="flex flex-col items-center gap-2 py-2">
-                <div className="w-14 h-14 rounded-full bg-error-container text-on-error-container flex items-center justify-center shadow-md">
-                  <span className="material-symbols-outlined text-[32px]">warning</span>
-                </div>
-                <span className="font-bold text-base text-on-surface">No Valid Shared Match Found</span>
-                <span className="text-xs text-error font-semibold max-w-xs">
-                  {activeReq?.rejection_reason ||
-                    'All candidate coalitions would exceed the strict 15.0% detour guarantee or vehicle capacity.'}
-                </span>
-                <span className="text-[11px] text-on-surface-variant">
-                  Select a resolution below to continue your journey.
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* FALLBACK OPTIONS (When No Valid Match is found) */}
-          {isNoMatch && (
-            <div className="p-4 rounded-2xl bg-error-container/10 border border-error/30 flex flex-col gap-3 z-10">
-              <span className="text-xs font-bold text-on-surface uppercase tracking-wider flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px] text-error">alt_route</span>
-                <span>Choose How to Proceed</span>
-              </span>
-
-              <div className="flex flex-col gap-2">
-                <button
-                  type="button"
-                  id="btn-wait-longer"
-                  disabled={isActionPending}
-                  onClick={handleWaitLonger}
-                  className="w-full h-10 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-bold flex items-center justify-center gap-2 border border-outline-variant/40 transition-all active:scale-95"
-                >
-                  <span className="material-symbols-outlined text-[16px] text-primary">schedule</span>
-                  <span>Wait for Next Batch (+45s Window)</span>
-                </button>
-
-                <button
-                  type="button"
-                  id="btn-search-another-vehicle"
-                  disabled={isActionPending}
-                  onClick={handleWaitLonger}
-                  className="w-full h-10 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-bold flex items-center justify-center gap-2 border border-outline-variant/40 transition-all active:scale-95"
-                >
-                  <span className="material-symbols-outlined text-[16px] text-secondary">explore</span>
-                  <span>Search Another Vehicle / Corridor</span>
-                </button>
-
-                <button
-                  type="button"
-                  id="btn-switch-solo-ride"
-                  disabled={isActionPending}
-                  onClick={handleSwitchToSolo}
-                  className="w-full h-10 rounded-xl bg-primary hover:bg-primary/95 text-on-primary text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95"
-                >
-                  <span className="material-symbols-outlined text-[16px]">local_taxi</span>
-                  <span>Switch to Solo Ride (Direct Taxi • ₹{activeReq?.solo_fare_inr.toFixed(2)})</span>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* SEAT AVAILABILITY & 4-SEAT CABIN OCCUPANCY */}
-          <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-3 z-10">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-on-surface-variant font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[15px] text-primary">airline_seat_recline_normal</span>
-                <span>Vehicle Capacity & Cabin Seat Allocation</span>
-              </span>
-              <span className="font-bold text-on-surface text-xs">
-                {mySeats + candidateSeatsCount} / {totalCapacity} Reserved
-              </span>
-            </div>
-
-            {/* 4-Seat Visual Grid */}
-            <div className="grid grid-cols-4 gap-2">
-              {Array.from({ length: totalCapacity }).map((_, idx) => {
-                const isMySeat = idx < mySeats;
-                const isCandidateSeat = idx >= mySeats && idx < mySeats + candidateSeatsCount;
-                const isAvailable = idx >= mySeats + candidateSeatsCount;
-
-                return (
-                  <div
-                    key={idx}
-                    className={`h-12 rounded-xl flex flex-col items-center justify-center gap-0.5 border text-[10px] font-bold transition-all ${
-                      isMySeat
-                        ? 'bg-primary text-on-primary border-primary shadow-xs'
-                        : isCandidateSeat
-                        ? 'bg-secondary-container text-on-secondary-container border-secondary/40'
-                        : 'bg-surface-container-lowest text-on-surface-variant/70 border-dashed border-outline-variant/50'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[14px]">
-                      {isAvailable ? 'chair' : 'person'}
-                    </span>
-                    <span>
-                      {isMySeat ? 'You' : isCandidateSeat ? 'Co-Rider' : 'Free'}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="flex items-center justify-between text-[11px] text-on-surface-variant pt-1 border-t border-outline-variant/20">
-              <span>Your Group: <b>{mySeats} Seat{mySeats > 1 ? 's' : ''}</b></span>
-              <span>Candidate Pool: <b>{candidateSeatsCount} Seat{candidateSeatsCount > 1 ? 's' : ''}</b></span>
-              <span className="text-emerald-600 font-bold">Open: <b>{availableSeats}</b></span>
-            </div>
-          </div>
-
-          {/* DYNAMIC CANDIDATE COMMUTERS IN ROLLING POOL */}
-          <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-3 z-10">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-on-surface-variant font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[15px] text-secondary">groups</span>
-                <span>Candidate Commuters in Pool ({candidateRequests.length})</span>
-              </span>
-              {isSearching && (
-                <button
-                  type="button"
-                  id="btn-simulate-commuter-influx"
-                  disabled={isActionPending}
-                  onClick={handleSimulateCommuterInflux}
-                  className="text-[10px] text-primary hover:underline font-bold flex items-center gap-1"
-                >
-                  <span className="material-symbols-outlined text-[12px]">add</span>
-                  <span>Simulate Commuter</span>
-                </button>
-              )}
-            </div>
-
-            {candidateRequests.length > 0 ? (
-              <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1">
-                {candidateRequests.map((cand) => {
-                  const privacyId = getPrivacySafeRiderId(cand.request_id, cand.passenger_id);
-                  return (
-                    <div
-                      key={cand.request_id}
-                      className="p-2.5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex items-center justify-between text-xs hover:border-primary/40 transition-colors"
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-xs shrink-0">
-                          <span className="material-symbols-outlined text-[14px]">person</span>
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-on-surface truncate">{privacyId}</span>
-                            <span className="px-1.5 py-0.5 rounded-md bg-secondary/10 text-secondary text-[10px] font-bold">
-                              {cand.party_size} {cand.party_size === 1 ? 'Seat' : 'Seats'}
-                            </span>
-                          </div>
-                          <span className="text-[10px] text-on-surface-variant truncate">
-                            {cand.pickup.name} → {cand.dropoff.name}
-                          </span>
-                        </div>
-                      </div>
-
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold shrink-0 ml-2">
-                        Compatible
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="p-3 rounded-xl bg-surface-container-lowest text-center text-xs text-on-surface-variant flex flex-col items-center gap-1">
-                <span className="material-symbols-outlined text-[18px] text-on-surface-variant/60">hourglass_empty</span>
-                <span>Waiting for nearby Pune commuters to buffer along your route...</span>
-                <span className="text-[10px] text-on-surface-variant/70">
-                  Privacy-safe identifiers will populate here as co-riders join.
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Planned Route & Stop Sequence Preview */}
-          {activeReq && (
-            <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex flex-col gap-3 z-10">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-on-surface-variant font-bold uppercase tracking-wider text-[11px]">
-                  Your Planned Route & Constraints
-                </span>
-                <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold">
-                  ≤15.0% Detour Guarantee
-                </span>
-              </div>
-
-              <div className="flex flex-col gap-1.5 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
-                  <span className="font-semibold text-on-surface truncate">Pickup: {activeReq.pickup.name}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-secondary shrink-0"></span>
-                  <span className="font-semibold text-on-surface truncate">Dest: {activeReq.dropoff.name}</span>
-                </div>
-                {activeReq.preferred_pickup_time && (
-                  <div className="flex items-center gap-2 text-[11px] text-on-surface-variant pt-0.5">
-                    <span className="material-symbols-outlined text-[14px] text-secondary">schedule</span>
-                    <span>Pickup: {activeReq.preferred_pickup_time}</span>
-                    {activeReq.arrival_deadline && (
-                      <span className="text-tertiary font-bold">• Must arrive by {activeReq.arrival_deadline}</span>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Stop Sequence Preview */}
-              <div className="pt-2 border-t border-outline-variant/20 flex flex-col gap-1 text-[11px]">
-                <span className="text-on-surface-variant font-semibold">Planned Stop Sequence:</span>
-                <div className="flex items-center gap-1.5 text-on-surface text-[11px] font-medium flex-wrap">
-                  <span className="px-1.5 py-0.5 rounded bg-surface-container-lowest border border-outline-variant/30">
-                    1. Your Pickup
-                  </span>
-                  <span>→</span>
-                  <span className="px-1.5 py-0.5 rounded bg-surface-container-lowest border border-outline-variant/30">
-                    2. Co-Rider Pickup
-                  </span>
-                  <span>→</span>
-                  <span className="px-1.5 py-0.5 rounded bg-surface-container-lowest border border-outline-variant/30">
-                    3. Your Drop-off
-                  </span>
-                  <span>→</span>
-                  <span className="px-1.5 py-0.5 rounded bg-surface-container-lowest border border-outline-variant/30">
-                    4. Co-Rider Drop-off
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-outline-variant/30 text-center">
-                <div className="p-2 rounded-xl bg-surface-container-lowest">
-                  <span className="text-[10px] text-on-surface-variant block">Direct Solo Fare</span>
-                  <span className="text-sm font-extrabold text-on-surface">
-                    ₹{activeReq.solo_fare_inr.toFixed(2)}
-                  </span>
-                </div>
-                <div className="p-2 rounded-xl bg-surface-container-lowest">
-                  <span className="text-[10px] text-on-surface-variant block">Pooled Shapley Fare</span>
-                  <span className="text-sm font-extrabold text-tertiary">
-                    ₹{(activeReq.shapley_fare_inr ?? activeReq.solo_fare_inr * 0.75).toFixed(2)}
-                  </span>
-                  <span className="text-[9px] text-emerald-600 font-bold block">Save ~25%</span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                id="btn-why-paying-this-fare"
-                onClick={() => setIsShapleySheetOpen(true)}
-                className="w-full mt-2 py-2 px-3 rounded-xl bg-tertiary-container/30 hover:bg-tertiary-container/50 text-tertiary text-xs font-bold flex items-center justify-center gap-1.5 transition-all border border-tertiary/20"
-              >
-                <span className="material-symbols-outlined text-[16px]">balance</span>
-                <span>Why am I paying this fare? (Shapley Audit)</span>
-              </button>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="flex flex-col gap-2 z-10">
-            {isMatched && onNavigateToActive ? (
-              <button
-                type="button"
-                id="view-active-trip-btn"
-                onClick={onNavigateToActive}
-                className="w-full h-12 rounded-xl bg-tertiary hover:bg-tertiary/95 text-on-tertiary text-xs font-extrabold flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 animate-bounce-short"
-              >
-                <span className="material-symbols-outlined text-[18px]">electric_car</span>
-                <span>Open Live Active Trip & Cabin Layout (/passenger/active)</span>
-              </button>
-            ) : !isMatched ? (
-              <button
-                type="button"
-                id="btn-fast-forward-dispatch"
-                disabled={isActionPending}
-                onClick={handleFastForward}
-                className="w-full h-11 rounded-xl bg-primary hover:bg-primary/95 text-on-primary text-xs font-bold flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 disabled:opacity-50"
-              >
-                <span className="material-symbols-outlined text-[18px]">bolt</span>
-                <span>Fast-Forward: Dispatch Batch Now</span>
-              </button>
-            ) : null}
-
-            {onNavigateToActive && (
-              <button
-                type="button"
-                onClick={onNavigateToActive}
-                className="w-full h-10 rounded-xl bg-primary-fixed/30 hover:bg-primary-fixed/50 text-primary text-xs font-bold flex items-center justify-center gap-1.5 border border-primary/20 transition-all"
-              >
-                <span className="material-symbols-outlined text-[16px]">airline_seat_recline_normal</span>
-                <span>Inspect Fleet Cabin & Live Telematics</span>
-              </button>
-            )}
-
-            {activeReq && (
-              <button
-                type="button"
-                id="btn-cancel-waiting-ride"
-                disabled={isCancelling}
-                onClick={() => setShowCancelModal(true)}
-                className="w-full h-10 rounded-xl bg-error/10 hover:bg-error/20 text-error text-xs font-bold flex items-center justify-center gap-1.5 border border-error/20 transition-all active:scale-95"
-              >
-                <span className="material-symbols-outlined text-[16px]">cancel</span>
-                <span>Cancel Ride Request</span>
-              </button>
-            )}
 
             <button
               type="button"
               onClick={onBackToBooking}
-              className="w-full h-10 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-xs font-bold flex items-center justify-center gap-1.5 border border-outline-variant/30 transition-all"
+              className="text-xs font-semibold text-slate-500 hover:text-slate-900 hover:underline"
             >
-              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-              <span>Back to Route Planner</span>
+              Back
             </button>
           </div>
+
+          {/* Progress / Status Block */}
+          {isSearching && (
+            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex flex-col gap-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-slate-700 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-slate-900 animate-pulse" />
+                  Finding corridor co-riders
+                </span>
+                <span className="font-mono font-bold text-slate-900 tabular-nums">
+                  {timeRemaining}s remaining
+                </span>
+              </div>
+
+              {/* Clean Linear Progress Bar */}
+              <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                <div
+                  className="bg-slate-900 h-full transition-all duration-1000 ease-linear rounded-full"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] text-slate-500">
+                <span>45-second batch window</span>
+                <span>Optimized via OR-Tools PDP</span>
+              </div>
+            </div>
+          )}
+
+          {/* Matched Banner */}
+          {isMatched && (
+            <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <span className="material-symbols-outlined text-emerald-700 text-[20px]">
+                  check_circle
+                </span>
+                <div>
+                  <div className="font-bold">
+                    Vehicle {assignedVehicle?.name || 'Tata Tigor EV'} Assigned
+                  </div>
+                  <div className="text-[11px] text-emerald-800">
+                    Departing for pickup • Occupancy {assignedVehicle?.occupied_seats || 2}/4
+                  </div>
+                </div>
+              </div>
+              {onNavigateToActive && (
+                <button
+                  type="button"
+                  id="btn-navigate-to-active"
+                  onClick={onNavigateToActive}
+                  className="px-3 py-1.5 rounded-md bg-emerald-700 text-white font-bold text-xs hover:bg-emerald-800 transition-colors shadow-xs"
+                >
+                  View Ride
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Corridor & Route Summary */}
+          <div className="space-y-2 p-3.5 rounded-lg border border-slate-200 bg-white">
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
+              Trip Details
+            </span>
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-slate-900" />
+                <span className="font-semibold text-slate-900">
+                  {activeReq?.pickup?.name || 'Shivajinagar Station'}
+                </span>
+              </div>
+              <span className="text-slate-400">→</span>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                <span className="font-semibold text-slate-900">
+                  {activeReq?.dropoff?.name || 'Hinjewadi IT Park'}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-100">
+              <span>Party size: {activeReq?.party_size || 1} seat(s)</span>
+              <span>Passenger: {activeReq?.passenger_name || 'Elena Vance'}</span>
+            </div>
+          </div>
+
+          {/* Transparent Upfront Fare Guarantee */}
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <div>
+              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
+                Upfront Fair Fare
+              </span>
+              <div className="flex items-baseline gap-2 mt-0.5">
+                <span className="text-2xl font-bold font-mono text-slate-900 tabular-nums">
+                  ₹{(activeReq?.shapley_fare_inr ?? 82.5).toFixed(2)}
+                </span>
+                <span className="text-xs font-mono text-slate-400 line-through tabular-nums">
+                  ₹{(activeReq?.solo_fare_inr ?? 145.0).toFixed(2)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-end gap-1">
+              <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800 font-mono">
+                Saving ~41%
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsShapleySheetOpen(true)}
+                className="text-[10px] text-slate-600 hover:text-slate-900 hover:underline"
+              >
+                Explain Fare
+              </button>
+            </div>
+          </div>
+
+          {/* Primary Action Buttons */}
+          <div className="space-y-2 pt-2">
+            {isMatched ? (
+              <button
+                type="button"
+                id="btn-view-ride-details"
+                onClick={onNavigateToActive}
+                className="w-full h-11 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm"
+              >
+                <span className="material-symbols-outlined text-[18px]">navigation</span>
+                <span>Enter In-Ride Tracker</span>
+              </button>
+            ) : isNoMatch ? (
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={handleWaitLonger}
+                  disabled={isActionPending}
+                  className="h-10 rounded-lg bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-colors disabled:opacity-50"
+                >
+                  Wait in Next Window (+45s)
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSwitchToSolo}
+                  disabled={isActionPending}
+                  className="h-10 rounded-lg bg-white border border-slate-300 text-slate-800 font-bold text-xs hover:bg-slate-50 transition-colors disabled:opacity-50"
+                >
+                  Switch to Solo Direct
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                id="btn-fast-forward-dispatch"
+                onClick={handleFastForward}
+                disabled={isActionPending}
+                className="w-full h-11 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined text-[18px]">bolt</span>
+                <span>Fast-Forward Match (Solve Now)</span>
+              </button>
+            )}
+
+            {/* Cancel Button */}
+            <button
+              type="button"
+              id="btn-cancel-ride-request"
+              onClick={() => setShowCancelModal(true)}
+              className="w-full py-2 rounded-lg text-slate-500 hover:text-rose-700 text-xs font-semibold hover:bg-rose-50 transition-colors"
+            >
+              Cancel Ride Request
+            </button>
+          </div>
+
+          {statusMessage && (
+            <div className="p-3 rounded-lg bg-slate-100 border border-slate-200 text-xs text-slate-700">
+              {statusMessage}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* RIGHT COLUMN: Live Map View (7 cols) */}
-      <div className="lg:col-span-7 h-[680px]">
+      {/* Right Column: Live Map (7 cols) */}
+      <div className="lg:col-span-7 h-[640px] rounded-xl overflow-hidden border border-slate-200 bg-white">
         <LiveMap
           vehicles={vehicles}
           requests={requests}
-          selectedVehicleId={snapshot?.selection?.selectedVehicleId || null}
+          selectedVehicleId={assignedVehicle?.vehicle_id || null}
           onSelectVehicle={onSelectVehicle}
           onSelectRequest={onSelectRequest}
-          soloRoutePolyline={
-            activeReq?.pickup && activeReq?.dropoff
-              ? [
-                  [activeReq.pickup.lat, activeReq.pickup.lng],
-                  [activeReq.dropoff.lat, activeReq.dropoff.lng],
-                ]
-              : null
-          }
-          soloPickupLocation={activeReq?.pickup || null}
-          soloDropoffLocation={activeReq?.dropoff || null}
         />
       </div>
 
-      {/* Shapley Fair Fare Slide-Over Sheet */}
-      <ShapleySlideOverSheet
-        isOpen={isShapleySheetOpen}
-        onClose={() => setIsShapleySheetOpen(false)}
-        requestId={activeReq?.request_id}
-      />
-
-      {/* Cancellation Confirmation Dialog */}
+      {/* Cancel Confirmation Modal */}
       {showCancelModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="bg-surface-container-high rounded-3xl p-6 max-w-md w-full border border-outline-variant/30 shadow-2xl space-y-4">
-            <div className="flex items-center gap-3 text-error">
-              <span className="material-symbols-outlined text-3xl">warning</span>
-              <h3 className="text-lg font-bold text-on-surface">Cancel Ride Request?</h3>
-            </div>
-            <p className="text-xs text-on-surface-variant leading-relaxed">
-              Are you sure you want to cancel your pooled ride request? You will be removed from the batch window and your seat reservation will be released.
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+          <div className="bg-white rounded-xl border border-slate-200 p-6 max-w-sm w-full space-y-4 shadow-xl">
+            <h3 className="font-bold text-base text-slate-900">Cancel Ride Request?</h3>
+            <p className="text-xs text-slate-600">
+              Your reserved seat in Rolling Batch #{currentWindowId} will be released immediately with zero penalty.
             </p>
-            <div className="flex items-center justify-end gap-3 pt-2">
+            <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 type="button"
-                disabled={isCancelling}
                 onClick={() => setShowCancelModal(false)}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-on-surface-variant hover:bg-surface-container"
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
               >
-                Keep Waiting
+                Keep Request
               </button>
               <button
                 type="button"
-                id="btn-confirm-cancel-ride-waiting"
-                disabled={isCancelling}
+                id="btn-confirm-cancel-ride"
                 onClick={handleConfirmCancel}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-error text-on-error hover:bg-error/90 flex items-center gap-1.5 shadow-md active:scale-95 disabled:opacity-50"
+                disabled={isCancelling}
+                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 text-white hover:bg-rose-700 transition-colors disabled:opacity-50"
               >
-                {isCancelling ? 'Cancelling...' : 'Yes, Cancel Request'}
+                {isCancelling ? 'Cancelling...' : 'Confirm Cancel'}
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Shapley Fair Fare Slide-Over Sheet */}
+      <ShapleySlideOverSheet
+        isOpen={isShapleySheetOpen}
+        onClose={() => setIsShapleySheetOpen(false)}
+        requestId={activeReq?.request_id || null}
+      />
     </div>
   );
 };

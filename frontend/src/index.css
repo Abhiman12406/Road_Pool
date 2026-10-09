@@ -6,14 +6,24 @@
   html, body {
     margin: 0;
     padding: 0;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #fbfbfa;
+    color: #111827;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Monospace figures for all financial, ETA, and mathematical readouts */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
 }
 
-/* Custom scrollbars */
+/* Subtle, unobtrusive scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -21,19 +31,28 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #bdc8d1;
+  background: #e5e7eb;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #6e7980;
+  background: #9ca3af;
+}
+
+/* Minimalist Utility Bento Surface */
+.bento-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
 }
 
 /* Leaflet map custom styling */
 .leaflet-container {
   font-family: 'Plus Jakarta Sans', sans-serif !important;
-  background-color: #f9f9ff !important;
+  background-color: #f3f4f6 !important;
   width: 100%;
   height: 100%;
-  border-radius: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
 }
+

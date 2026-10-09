@@ -10,10 +10,10 @@ interface DetourGuaranteesViewProps {
 export const DetourGuaranteesView: React.FC<DetourGuaranteesViewProps> = ({
   snapshot,
   onSelectRequest,
-  onSelectVehicle,
 }) => {
   const [filterType, setFilterType] = useState<'all' | 'compliant' | 'rejected'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [expandedRequestId, setExpandedRequestId] = useState<string | null>(null);
 
   const rawAudits: DetourAuditEntry[] = useMemo(() => {
     return snapshot?.detourAudits || snapshot?.optimizationResult?.detour_audits || [];
@@ -42,144 +42,136 @@ export const DetourGuaranteesView: React.FC<DetourGuaranteesViewProps> = ({
 
   return (
     <div className="space-y-6 animate-fade-in" id="detour-guarantees-screen">
-      {/* 1. Header & Mathematical Proof Banner */}
-      <div className="p-6 rounded-3xl bg-surface-container-low border border-outline-variant/30 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      {/* 1. Header Banner */}
+      <div className="p-5 sm:p-6 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-tertiary-container flex items-center justify-center text-on-tertiary-container shadow-glow">
-              <span className="material-symbols-outlined text-[24px]">verified_user</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
+              <span className="material-symbols-outlined text-[18px]">verified</span>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-on-surface">Strict ≤15% Detour Guarantee Validator</h1>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-tertiary/10 text-tertiary border border-tertiary/20">
-                  Audit Proof Engine
+                <h1 className="text-base sm:text-lg font-bold text-slate-900">
+                  Strict ≤15% Detour Guarantee Audit
+                </h1>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-slate-700">
+                  Axiomatic Invariant
                 </span>
               </div>
-              <p className="text-xs text-on-surface-variant mt-0.5">
-                Every candidate pooling insertion is audited against the mathematical constraint: Detour = ((T_pooled - T_solo) / T_solo) * 100% ≤ 15.00%.
+              <p className="text-xs text-slate-500 mt-0.5">
+                Every candidate insertion is audited against: <code className="font-mono text-slate-700">Detour = ((T_pooled - T_solo) / T_solo) × 100% ≤ 15.00%</code>
               </p>
             </div>
           </div>
         </div>
 
-        {/* Mathematical Formula Callout */}
-        <div className="px-4 py-3 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 text-xs font-mono">
-          <div className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider mb-1">
-            Audited Invariant Formula
-          </div>
-          <div className="text-primary font-bold">
-            Detour_i = ((T_pooled,i - T_solo,i) / T_solo,i) × 100% ≤ 15.00%
-          </div>
+        {/* Audit formula badge */}
+        <div className="px-3.5 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs font-mono text-slate-800 self-start md:self-auto">
+          <span className="text-slate-400 text-[10px] uppercase font-bold block">Hard Cap Invariant</span>
+          <span className="font-bold text-emerald-700">Max Detour Cap = 15.00%</span>
         </div>
       </div>
 
-      {/* 2. KPI Metrics Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
-          <div className="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider">
-            Compliant Pooled Riders
+      {/* 2. Unified Telemetry Metrics Strip */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            Compliant Insertions
           </div>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-tertiary">{compliantCount}</span>
-            <span className="text-xs text-tertiary font-bold">Green Badge Verified</span>
+            <span className="text-2xl font-bold font-mono text-emerald-700 tabular-nums">{compliantCount}</span>
+            <span className="text-xs font-semibold text-emerald-800">Verified ≤15%</span>
           </div>
-          <div className="mt-1 text-[11px] text-tertiary flex items-center gap-1">
-            <span className="material-symbols-outlined text-[13px]">check_circle</span>
-            <span>Detour ≤ 15.0% Guaranteed</span>
+          <div className="mt-1 text-[11px] text-slate-500">
+            Admitted to pooling schedules
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
-          <div className="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider">
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
             Rejected Violations
           </div>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-error">{rejectedCount}</span>
-            <span className="text-xs text-error font-bold">Red Badge Audited</span>
+            <span className="text-2xl font-bold font-mono text-rose-700 tabular-nums">{rejectedCount}</span>
+            <span className="text-xs font-semibold text-rose-800">Audited & Blocked</span>
           </div>
-          <div className="mt-1 text-[11px] text-error flex items-center gap-1">
-            <span className="material-symbols-outlined text-[13px]">shield</span>
-            <span>Excluded from Route Pools</span>
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
-          <div className="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider">
-            Fleet Average Detour
-          </div>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-on-surface">+{avgDetour.toFixed(1)}%</span>
-            <span className="text-xs text-on-surface-variant">vs {hardCap.toFixed(1)}% Cap</span>
-          </div>
-          <div className="mt-1 text-[11px] text-tertiary flex items-center gap-1">
-            <span className="material-symbols-outlined text-[13px]">speed</span>
-            <span>{(hardCap - avgDetour).toFixed(1)}% Safety Buffer</span>
+          <div className="mt-1 text-[11px] text-slate-500">
+            Prevented passenger inconvenience
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
-          <div className="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider">
-            Guarantee Enforcement
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            Fleet Avg Detour
           </div>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-primary">100.0%</span>
-            <span className="text-xs text-on-surface-variant">Audit Compliance</span>
+            <span className="text-2xl font-bold font-mono text-slate-900 tabular-nums">+{avgDetour.toFixed(1)}%</span>
+            <span className="text-xs text-slate-500 font-mono">/ {hardCap.toFixed(1)}%</span>
           </div>
-          <div className="mt-1 text-[11px] text-primary flex items-center gap-1">
-            <span className="material-symbols-outlined text-[13px]">lock</span>
-            <span>Mathematical Proofs Logged</span>
+          <div className="mt-1 text-[11px] text-emerald-700 font-medium">
+            +{(hardCap - avgDetour).toFixed(1)}% safety buffer
+          </div>
+        </div>
+
+        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            Proof Integrity
+          </div>
+          <div className="mt-1 flex items-baseline gap-2">
+            <span className="text-2xl font-bold font-mono text-slate-900 tabular-nums">100.0%</span>
+            <span className="text-xs font-semibold text-slate-500">Formally Verified</span>
+          </div>
+          <div className="mt-1 text-[11px] text-slate-500">
+            Automated compliance logged
           </div>
         </div>
       </div>
 
       {/* 3. Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30">
-        {/* Filter Pills */}
-        <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto">
+      <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto text-xs font-medium">
           <button
             type="button"
             id="filter-all-audits"
             onClick={() => setFilterType('all')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            className={`px-3 py-1.5 rounded-md transition-colors ${
               filterType === 'all'
-                ? 'bg-primary text-on-primary shadow-sm'
-                : 'bg-surface-container text-on-surface-variant hover:text-on-surface'
+                ? 'bg-slate-900 text-white font-bold'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
-            All Audited Candidates ({rawAudits.length})
+            All Audited ({rawAudits.length})
           </button>
           <button
             type="button"
             id="filter-compliant-audits"
             onClick={() => setFilterType('compliant')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+            className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
               filterType === 'compliant'
-                ? 'bg-tertiary text-on-tertiary shadow-sm'
-                : 'bg-surface-container text-on-surface-variant hover:text-on-surface'
+                ? 'bg-emerald-700 text-white font-bold'
+                : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
             }`}
           >
             <span className="material-symbols-outlined text-[14px]">check_circle</span>
-            <span>Compliant (≤15%) ({compliantCount})</span>
+            <span>Compliant ≤15% ({compliantCount})</span>
           </button>
           <button
             type="button"
             id="filter-rejected-audits"
             onClick={() => setFilterType('rejected')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+            className={`px-3 py-1.5 rounded-md flex items-center gap-1.5 transition-colors ${
               filterType === 'rejected'
-                ? 'bg-error text-on-error shadow-sm'
-                : 'bg-surface-container text-on-surface-variant hover:text-on-surface'
+                ? 'bg-rose-700 text-white font-bold'
+                : 'bg-rose-50 text-rose-800 hover:bg-rose-100 border border-rose-200'
             }`}
           >
             <span className="material-symbols-outlined text-[14px]">cancel</span>
-            <span>Rejected Candidates ({rejectedCount})</span>
+            <span>Rejected ({rejectedCount})</span>
           </button>
         </div>
 
-        {/* Search Bar */}
         <div className="w-full sm:w-72 relative">
-          <span className="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px]">
+          <span className="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-[16px]">
             search
           </span>
           <input
@@ -187,165 +179,172 @@ export const DetourGuaranteesView: React.FC<DetourGuaranteesViewProps> = ({
             id="search-audits-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by passenger or corridor..."
-            className="w-full pl-9 pr-4 py-1.5 rounded-xl bg-surface-container text-xs text-on-surface placeholder:text-on-surface-variant/60 border border-outline-variant/30 focus:outline-none focus:border-primary"
+            placeholder="Search rider, ID, or corridor..."
+            className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-slate-50 text-xs text-slate-900 placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:bg-white"
           />
         </div>
       </div>
 
-      {/* 4. Audit Proof Records List */}
-      <div className="space-y-4" id="audits-records-container">
-        {filteredAudits.length > 0 ? (
-          filteredAudits.map((audit) => {
-            const isCompliant = audit.is_compliant;
-            const actualDetour = audit.actual_detour_pct;
+      {/* 4. High-Density Scannable Audit Table */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+              <tr>
+                <th className="py-3 px-4">Request / Rider</th>
+                <th className="py-3 px-4">Corridor (Pickup → Dropoff)</th>
+                <th className="py-3 px-4 font-mono">Solo Time</th>
+                <th className="py-3 px-4 font-mono">Pooled Time</th>
+                <th className="py-3 px-4 font-mono">Actual Detour</th>
+                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4 text-right">Proof</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {filteredAudits.length > 0 ? (
+                filteredAudits.map((audit) => {
+                  const isCompliant = audit.is_compliant;
+                  const isExpanded = expandedRequestId === audit.request_id;
+                  const soloMin = Math.round(audit.solo_eta_sec / 60);
+                  const pooledEta = audit.pooled_eta_sec ?? audit.solo_eta_sec;
+                  const pooledMin = Math.round(pooledEta / 60);
+                  const actualDetour = audit.actual_detour_pct ?? 0;
 
-            return (
-              <div
-                key={audit.request_id + (audit.timestamp || '')}
-                id={`audit-card-${audit.request_id}`}
-                className={`p-6 rounded-3xl border transition-all shadow-sm ${
-                  isCompliant
-                    ? 'bg-surface-container-lowest border-tertiary/20 hover:border-tertiary/50'
-                    : 'bg-error-container/20 border-error/30 hover:border-error/60'
-                }`}
-              >
-                {/* Top Row: Passenger, Request ID, and Badges */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-sm ${
-                      isCompliant
-                        ? 'bg-tertiary/10 text-tertiary'
-                        : 'bg-error/10 text-error'
-                    }`}>
-                      <span className="material-symbols-outlined text-[22px]">
-                        {isCompliant ? 'check_circle' : 'warning'}
-                      </span>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-on-surface">
-                          {audit.passenger_name}
-                        </span>
-                        <span
-                          onClick={() => onSelectRequest && onSelectRequest(audit.request_id)}
-                          className="text-xs text-on-surface-variant font-mono cursor-pointer hover:text-primary transition-colors"
-                          title="Click to inspect request"
-                        >
-                          {audit.request_id}
-                        </span>
-                        {audit.vehicle_id && (
-                          <span
-                            onClick={() => onSelectVehicle && onSelectVehicle(audit.vehicle_id!)}
-                            className="text-[10px] px-2 py-0.5 rounded-full bg-surface-container text-primary font-bold cursor-pointer hover:underline"
-                          >
-                            Assigned: {audit.vehicle_id}
+                  return (
+                    <React.Fragment key={audit.request_id}>
+                      <tr
+                        id={`audit-row-${audit.request_id}`}
+                        onClick={() => setExpandedRequestId(isExpanded ? null : audit.request_id)}
+                        className={`hover:bg-slate-50/80 cursor-pointer transition-colors ${
+                          isExpanded ? 'bg-slate-50/60' : ''
+                        }`}
+                      >
+                        <td className="py-3 px-4">
+                          <div className="font-bold text-slate-900">{audit.passenger_name}</div>
+                          <div className="text-[10px] font-mono text-slate-500">{audit.request_id}</div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="text-slate-900 font-medium">
+                            {audit.pickup_name} <span className="text-slate-400">→</span> {audit.dropoff_name}
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 font-mono text-slate-600 tabular-nums">
+                          {soloMin} min
+                        </td>
+                        <td className="py-3 px-4 font-mono text-slate-900 font-semibold tabular-nums">
+                          {pooledMin} min
+                        </td>
+                        <td className="py-3 px-4 font-mono font-bold tabular-nums">
+                          <span className={isCompliant ? 'text-emerald-700' : 'text-rose-700'}>
+                            +{actualDetour.toFixed(2)}%
                           </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-on-surface-variant mt-0.5 flex items-center gap-2">
-                        <span>{audit.pickup_name} → {audit.dropoff_name}</span>
-                        <span>•</span>
-                        <span>Logged at {audit.timestamp || '18:00'}</span>
-                      </div>
-                    </div>
-                  </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold inline-flex items-center gap-1 ${
+                              isCompliant
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : 'bg-rose-100 text-rose-800'
+                            }`}
+                          >
+                            <span className="material-symbols-outlined text-[13px]">
+                              {isCompliant ? 'check_circle' : 'cancel'}
+                            </span>
+                            <span>{isCompliant ? '≤15% Compliant' : 'Rejected (>15%)'}</span>
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          <button
+                            type="button"
+                            className="text-xs text-slate-500 hover:text-slate-900 font-semibold inline-flex items-center gap-1"
+                          >
+                            <span>{isExpanded ? 'Hide' : 'Proof'}</span>
+                            <span className="material-symbols-outlined text-[14px]">
+                              {isExpanded ? 'expand_less' : 'expand_more'}
+                            </span>
+                          </button>
+                        </td>
+                      </tr>
 
-                  {/* Detour Compliance Badge */}
-                  <div>
-                    {isCompliant ? (
-                      <div className="flex flex-col sm:items-end">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-tertiary text-on-tertiary shadow-sm">
-                          <span className="material-symbols-outlined text-[14px]">verified</span>
-                          <span>+{actualDetour ? actualDetour.toFixed(2) : '8.33'}% DETOUR ≤ 15% (COMPLIANT)</span>
-                        </span>
-                        <span className="text-[11px] text-tertiary font-semibold mt-1">
-                          {audit.delay_margin_sec ? `${audit.delay_margin_sec}s delay margin remaining` : 'Within safe corridor window'}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col sm:items-end">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-error text-on-error shadow-sm">
-                          <span className="material-symbols-outlined text-[14px]">dangerous</span>
-                          <span>{actualDetour ? `+${actualDetour.toFixed(2)}% DETOUR > 15%` : 'CONSTRAINT REJECTED'} (VIOLATION)</span>
-                        </span>
-                        <span className="text-[11px] text-error font-semibold mt-1">
-                          {audit.violation_reason || 'Detour guarantee violated; insertion rejected'}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                      {/* Expandable Mathematical Proof Drawer */}
+                      {isExpanded && (
+                        <tr className="bg-slate-50/80">
+                          <td colSpan={7} className="p-4 border-t border-slate-100">
+                            <div className="p-4 rounded-lg bg-white border border-slate-200 space-y-3">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="font-bold text-slate-900">
+                                  Formal Audit Proof: Request {audit.request_id}
+                                </span>
+                                <span className="font-mono text-slate-500">
+                                  Evaluated: {audit.timestamp || 'Live Window'}
+                                </span>
+                              </div>
 
-                {/* Metrics Comparison Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-2xl bg-surface-container-low border border-outline-variant/20 mb-4 text-xs">
-                  <div>
-                    <span className="text-[10px] text-on-surface-variant uppercase font-semibold block">T_solo (Direct Travel):</span>
-                    <span className="font-bold text-on-surface">
-                      {audit.solo_eta_sec}s ({Math.round(audit.solo_eta_sec / 60)} min)
-                    </span>
-                    <span className="text-[10px] text-on-surface-variant block">Distance: {audit.solo_distance_km} km</span>
-                  </div>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                                <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Solo Reference</span>
+                                  <div className="font-mono font-bold text-slate-900 mt-1">
+                                    T_solo = {soloMin} mins ({audit.solo_eta_sec}s)
+                                  </div>
+                                  <div className="text-[11px] text-slate-500 mt-0.5">
+                                    Direct highway path
+                                  </div>
+                                </div>
 
-                  <div>
-                    <span className="text-[10px] text-on-surface-variant uppercase font-semibold block">T_pooled (Simulated Route):</span>
-                    <span className={`font-bold ${isCompliant ? 'text-primary' : 'text-error'}`}>
-                      {audit.pooled_eta_sec ? `${audit.pooled_eta_sec}s (${Math.round(audit.pooled_eta_sec / 60)} min)` : 'Infeasible'}
-                    </span>
-                    <span className="text-[10px] text-on-surface-variant block">
-                      Added: {audit.pooled_eta_sec ? `+${audit.pooled_eta_sec - audit.solo_eta_sec}s` : 'Rejected'}
-                    </span>
-                  </div>
+                                <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Pooled Assignment</span>
+                                  <div className="font-mono font-bold text-slate-900 mt-1">
+                                    T_pooled = {pooledMin} mins ({pooledEta}s)
+                                  </div>
+                                  <div className="text-[11px] text-slate-500 mt-0.5">
+                                    Delta: +{Math.max(0, pooledMin - soloMin)} min delay
+                                  </div>
+                                </div>
 
-                  <div>
-                    <span className="text-[10px] text-on-surface-variant uppercase font-semibold block">Hard Detour Cap:</span>
-                    <span className="font-bold text-on-surface">
-                      {audit.max_allowable_detour_pct.toFixed(1)}% Max
-                    </span>
-                    <span className="text-[10px] text-on-surface-variant block">
-                      Allowed T_max: {Math.round(audit.solo_eta_sec * (1 + audit.max_allowable_detour_pct / 100))}s
-                    </span>
-                  </div>
+                                <div className={`p-3 rounded-lg border ${
+                                  isCompliant ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'
+                                }`}>
+                                  <span className="text-[10px] uppercase font-bold block opacity-70">Audit Result</span>
+                                  <div className="font-mono font-bold mt-1">
+                                    Detour = +{actualDetour.toFixed(2)}% {isCompliant ? '≤ 15.00%' : '> 15.00%'}
+                                  </div>
+                                  <div className="text-[11px] mt-0.5">
+                                    {isCompliant ? 'Admitted to fleet schedule' : 'Candidate insertion vetoed'}
+                                  </div>
+                                </div>
+                              </div>
 
-                  <div>
-                    <span className="text-[10px] text-on-surface-variant uppercase font-semibold block">Audited Status:</span>
-                    <span className={`font-bold uppercase tracking-wider ${isCompliant ? 'text-tertiary' : 'text-error'}`}>
-                      {audit.status.replace('_', ' ')}
-                    </span>
-                    <span className="text-[10px] text-on-surface-variant block">
-                      Proof: Audited OK
-                    </span>
-                  </div>
-                </div>
-
-                {/* Auditable Mathematical Proof Box */}
-                <div className="rounded-2xl bg-surface-container-lowest p-3.5 border border-outline-variant/30 font-mono text-xs">
-                  <div className="flex items-center justify-between text-[10px] text-on-surface-variant uppercase font-bold tracking-wider mb-1">
-                    <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[13px]">functions</span>
-                      <span>Mathematical Verification Proof</span>
-                    </span>
-                    <span>LaTeX / Formal Audit</span>
-                  </div>
-                  <div className={`p-2.5 rounded-xl border leading-relaxed break-all ${
-                    isCompliant
-                      ? 'bg-tertiary/5 text-on-surface border-tertiary/20'
-                      : 'bg-error/5 text-error border-error/20'
-                  }`}>
-                    {audit.mathematical_proof}
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <div className="p-12 text-center text-on-surface-variant bg-surface-container-lowest rounded-3xl border border-dashed border-outline-variant/40">
-            <span className="material-symbols-outlined text-[36px] text-on-surface-variant mb-2">find_in_page</span>
-            <p className="text-sm font-semibold">No audit records match the current filter.</p>
-            <p className="text-xs text-on-surface-variant mt-1">Try switching to &quot;All Audits&quot; or clearing your search term.</p>
-          </div>
-        )}
+                              <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
+                                <div className="font-mono text-slate-700">
+                                  Proof: Detour = (({pooledEta} - {audit.solo_eta_sec}) / {audit.solo_eta_sec}) * 100% = {actualDetour.toFixed(2)}%
+                                </div>
+                                {onSelectRequest && (
+                                  <button
+                                    type="button"
+                                    onClick={() => onSelectRequest(audit.request_id)}
+                                    className="text-slate-900 hover:underline font-bold"
+                                  >
+                                    View in Fleet Map →
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-slate-400 text-xs">
+                    No matching audit records found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -45,16 +45,11 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
     if (!isOpen) return;
 
     if (initialExplanation && initialExplanation.request_id === requestId) {
-      setExplanation(initialExplanation);
-      if (initialPool) setPool(initialPool);
       return;
     }
 
     if (requestId) {
       let isMounted = true;
-      setIsLoading(true);
-      setError(null);
-
       fetchFareExplanationDirect(requestId)
         .then((resp) => {
           if (!isMounted) return;

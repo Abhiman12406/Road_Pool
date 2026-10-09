@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSimulationSocket } from './services/simulationService';
 import { ShellHeader, type ActiveViewKey } from './components/ShellHeader';
 import { GuidedStoryView } from './views/story/GuidedStoryView';
-import { AcceptanceScenariosBar } from './components/AcceptanceScenariosBar';
+import { DemoScenarioDrawer } from './components/DemoScenarioDrawer';
 import { GuidedStoryOverlay } from './components/GuidedStoryOverlay';
 import type { GlobalSimulationSnapshot, MidTripJoinCandidate } from './types/simulation';
 import { OpsOverviewView } from './views/ops/OpsOverviewView';
@@ -48,10 +48,27 @@ export function App() {
 
   // Acceptance Scenarios & Guided Story Mode states
   const [isStoryModeOpen, setIsStoryModeOpen] = useState<boolean>(false);
-  const [isScenariosBarOpen, setIsScenariosBarOpen] = useState<boolean>(true);
+  const [isDemoDrawerOpen, setIsDemoDrawerOpen] = useState<boolean>(false);
   const [scenarioSnapshotOverride, setScenarioSnapshotOverride] = useState<GlobalSimulationSnapshot | null>(null);
   const [activeCandidateOverride, setActiveCandidateOverride] = useState<MidTripJoinCandidate | null>(null);
   const [autoOpenShapleySheet, setAutoOpenShapleySheet] = useState<boolean>(false);
+
+  // Keyboard shortcut: Press 'D' (when not in an input/textarea) to toggle Demo Scenario Drawer
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeTag = (document.activeElement?.tagName || '').toLowerCase();
+      if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') {
+        return;
+      }
+      if (e.key === 'd' || e.key === 'D') {
+        if (!e.ctrlKey && !e.metaKey && !e.altKey) {
+          setIsDemoDrawerOpen((prev) => !prev);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Sync browser history state if user clicks back/forward
   useEffect(() => {
@@ -121,7 +138,7 @@ export function App() {
   const effectiveSnapshot = scenarioSnapshotOverride || snapshot;
 
   return (
-    <div className="min-h-screen bg-background text-on-surface flex flex-col font-sans">
+    <div className="min-h-screen bg-background text-on-surface flex flex-col font-sans selection:bg-slate-200">
       {/* 1. Global Shell Navigation Bar */}
       <ShellHeader
         currentView={currentView}
@@ -130,40 +147,30 @@ export function App() {
         isConnected={isConnected}
         isStoryModeOpen={isStoryModeOpen}
         onToggleStoryMode={() => setIsStoryModeOpen((prev) => !prev)}
-        isScenariosBarOpen={isScenariosBarOpen}
-        onToggleScenariosBar={() => setIsScenariosBarOpen((prev) => !prev)}
+        isScenariosBarOpen={isDemoDrawerOpen}
+        onToggleScenariosBar={() => setIsDemoDrawerOpen((prev) => !prev)}
+        onOpenDemoDrawer={() => setIsDemoDrawerOpen(true)}
       />
-
-      {/* 2. Quick Runner Bar for 12 Acceptance Scenarios */}
-      <div className="mt-16">
-        <AcceptanceScenariosBar
-          isOpen={isScenariosBarOpen}
-          onToggle={() => setIsScenariosBarOpen((prev) => !prev)}
-          onApplyScenarioSnapshot={handleApplyScenarioSnapshot}
-          onOpenShapleySheet={handleOpenShapleySheet}
-          onResetToLive={handleResetToLive}
-        />
-      </div>
 
       {/* Connection Notice banner if offline and not in scenario demo override */}
       {!isConnected && (
-        <div className="bg-error-container text-on-error-container px-6 py-2 text-xs font-semibold flex items-center justify-between">
+        <div className="mt-14 bg-amber-50 border-b border-amber-200 text-amber-900 px-6 py-2 text-xs font-semibold flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[16px]">signal_disconnected</span>
+            <span className="material-symbols-outlined text-[16px] text-amber-700">sensors_off</span>
             <span>{error ? `Live stream notice: ${error}` : 'Simulation running with built-in Pune benchmark scenarios & fallback estimates.'}</span>
           </div>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="text-[11px] font-semibold text-primary hover:underline"
+            className="text-[11px] font-bold text-slate-900 hover:underline"
           >
             Reconnect Live Stream
           </button>
         </div>
       )}
 
-      {/* 3. Main Content View Area */}
-      <main className="flex-1 p-4 sm:p-6 max-w-[1600px] w-full mx-auto">
+      {/* 2. Main Content View Area */}
+      <main className={`flex-1 p-4 sm:p-6 max-w-[1600px] w-full mx-auto ${isConnected ? 'mt-14' : ''}`}>
         {currentView === 'guided-story' && (
           <GuidedStoryView
             snapshot={effectiveSnapshot}
@@ -251,6 +258,20 @@ export function App() {
           />
         )}
       </main>
+
+      {/* 3. Global Demo Scenarios & Simulation Drawer (On-demand slide-over) */}
+      <DemoScenarioDrawer
+        isOpen={isDemoDrawerOpen}
+        onClose={() => setIsDemoDrawerOpen(false)}
+        onApplyScenarioSnapshot={handleApplyScenarioSnapshot}
+        onOpenShapleySheet={handleOpenShapleySheet}
+        onResetToLive={handleResetToLive}
+        onLaunchStoryMode={() => setIsStoryModeOpen(true)}
+        onAdvanceStop={advanceVehicleStop}
+        onSimulateCoRiderCancellation={simulateCoRiderCancellation}
+        onResetSession={resetPassengerSession}
+        isLiveMode={scenarioSnapshotOverride === null}
+      />
 
       {/* 4. Global Interactive Guided Story Mode Wizard Overlay */}
       <GuidedStoryOverlay

@@ -31,9 +31,9 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
     try {
       await onSolveOptimization(15.0);
       setSolveMessage('Optimization complete! All active stop sequences verified <=15% detour.');
-      setTimeout(() => setSolveMessage(null), 4000);
-    } catch (e) {
-      setSolveMessage('Optimization solve failed');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Optimization solve failed';
+      setSolveMessage(`Failed: ${msg}`);
     } finally {
       setIsSolving(false);
     }
@@ -45,22 +45,20 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
   );
 
   return (
-    <div className="space-y-6 animate-fade-in" id="route-optimization-screen">
+    <div className="space-y-6" id="route-optimization-screen">
       {/* 1. Header Banner & Solver Telemetry */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-6 rounded-3xl bg-surface-container-low border border-outline-variant/30 shadow-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-xl bg-white border border-neutral-200">
         <div>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-primary-container flex items-center justify-center text-on-primary-container shadow-glow">
-              <span className="material-symbols-outlined text-[24px]">alt_route</span>
-            </div>
+            <span className="material-symbols-outlined text-[22px] text-neutral-800">alt_route</span>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-on-surface">Route Optimization & Stop Sequencing</h1>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
+                <h1 className="text-lg font-bold text-neutral-900">Route Optimization & Stop Sequencing</h1>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-medium bg-neutral-100 text-neutral-700 border border-neutral-200">
                   Google OR-Tools PDP
                 </span>
               </div>
-              <p className="text-xs text-on-surface-variant mt-0.5">
+              <p className="text-xs text-neutral-500 mt-0.5">
                 Capacitated pickup-and-delivery routing with strict pickup-before-dropoff precedence & capacity validation.
               </p>
             </div>
@@ -70,7 +68,7 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
         {/* Solver Actions & Status */}
         <div className="flex items-center gap-3">
           {solveMessage && (
-            <div className="text-xs px-3 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-medium animate-pulse">
+            <div className="text-xs px-3 py-1 rounded-md bg-neutral-100 border border-neutral-200 text-neutral-800 font-medium">
               {solveMessage}
             </div>
           )}
@@ -79,9 +77,9 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
             id="run-ortools-solver-btn"
             onClick={handleRunSolver}
             disabled={isSolving}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-on-primary font-semibold text-xs shadow-md hover:bg-primary/90 transition-all disabled:opacity-50"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-neutral-900 text-white font-medium text-xs hover:bg-neutral-800 transition-all disabled:opacity-50"
           >
-            <span className={`material-symbols-outlined text-[16px] ${isSolving ? 'animate-spin' : ''}`}>
+            <span className={`material-symbols-outlined text-[15px] ${isSolving ? 'animate-spin' : 'text-amber-400'}`}>
               {isSolving ? 'sync' : 'auto_fix_high'}
             </span>
             <span>{isSolving ? 'Optimizing...' : 'Re-solve Routes (OR-Tools)'}</span>
@@ -91,63 +89,63 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
 
       {/* 2. KPI Summary Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
-          <div className="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider">
+        <div className="p-4 rounded-xl bg-white border border-neutral-200">
+          <div className="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider">
             Active Stop Sequence
           </div>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-primary">{totalStopsCount}</span>
-            <span className="text-xs text-on-surface-variant">stops across fleet</span>
+            <span className="text-2xl font-bold font-mono tabular-nums text-neutral-900">{totalStopsCount}</span>
+            <span className="text-xs text-neutral-500 font-mono">stops across fleet</span>
           </div>
-          <div className="mt-1 text-[11px] text-tertiary flex items-center gap-1">
+          <div className="mt-1 text-[11px] text-emerald-700 font-medium flex items-center gap-1">
             <span className="material-symbols-outlined text-[13px]">verified</span>
             <span>Strict Precedence Enforced</span>
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
-          <div className="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider">
+        <div className="p-4 rounded-xl bg-white border border-neutral-200">
+          <div className="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider">
             Fleet Average Detour
           </div>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-on-surface">
+            <span className="text-2xl font-bold font-mono tabular-nums text-emerald-700">
               +{optimizationResult?.average_detour_pct ? optimizationResult.average_detour_pct.toFixed(1) : (snapshot?.kpis?.fleetDetourAveragePct?.toFixed(1) || '8.4')}%
             </span>
-            <span className="text-xs text-tertiary font-bold">≤ 15.0% Cap</span>
+            <span className="text-xs text-neutral-500 font-mono">≤ 15.0% Cap</span>
           </div>
-          <div className="mt-1 text-[11px] text-tertiary flex items-center gap-1">
+          <div className="mt-1 text-[11px] text-emerald-700 font-medium flex items-center gap-1">
             <span className="material-symbols-outlined text-[13px]">check_circle</span>
             <span>All onboard within threshold</span>
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
-          <div className="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider">
+        <div className="p-4 rounded-xl bg-white border border-neutral-200">
+          <div className="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider">
             Accepted Pooled Riders
           </div>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-tertiary">
+            <span className="text-2xl font-bold font-mono tabular-nums text-emerald-700">
               {optimizationResult?.accepted_request_ids?.length || 2}
             </span>
-            <span className="text-xs text-on-surface-variant">riders admitted</span>
+            <span className="text-xs text-neutral-500 font-mono">riders admitted</span>
           </div>
-          <div className="mt-1 text-[11px] text-on-surface-variant">
+          <div className="mt-1 text-[11px] text-neutral-500 font-mono">
             {optimizationResult?.rejected_request_ids?.length || 0} rejected with proof
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm">
-          <div className="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider">
+        <div className="p-4 rounded-xl bg-white border border-neutral-200">
+          <div className="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider">
             Solver Algorithm
           </div>
           <div className="mt-1">
-            <span className="text-sm font-bold text-on-surface leading-tight block truncate">
+            <span className="text-sm font-bold text-neutral-900 leading-tight block truncate">
               Greedy + OR-Tools PDP
             </span>
-            <span className="text-[11px] text-on-surface-variant">Capacitated VRP solver</span>
+            <span className="text-[11px] text-neutral-500">Capacitated VRP solver</span>
           </div>
-          <div className="mt-1 text-[11px] text-primary flex items-center gap-1">
-            <span className="material-symbols-outlined text-[13px]">speed</span>
+          <div className="mt-1 text-[11px] text-neutral-700 font-medium flex items-center gap-1">
+            <span className="material-symbols-outlined text-[13px] text-neutral-500">speed</span>
             <span>Sub-second solve latency</span>
           </div>
         </div>
@@ -156,17 +154,17 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
       {/* 3. Main Route Optimization Workspace: Fleet Selector & Ordered Stops Sequence */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Vehicle Selection & Occupancy Cards (4 cols) */}
-        <div className="lg:col-span-4 space-y-4">
+        <div className="lg:col-span-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-on-surface uppercase tracking-wider">
+            <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
               Fleet Vehicles & Capacity
             </h2>
-            <span className="text-xs text-on-surface-variant">
+            <span className="text-xs text-neutral-500 font-mono">
               {Object.keys(vehicles).length} Vehicles
             </span>
           </div>
 
-          <div className="space-y-3" id="vehicle-fleet-list">
+          <div className="space-y-2.5" id="vehicle-fleet-list">
             {Object.entries(vehicles).map(([vId, vehicle]) => {
               const plan = vehiclePlans[vId];
               const isSelected = selectedVehicleId === vId;
@@ -183,40 +181,38 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
                     setSelectedVehicleId(vId);
                     if (onSelectVehicle) onSelectVehicle(vId);
                   }}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer ${
+                  className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-surface-container-high border-primary shadow-md'
-                      : 'bg-surface-container-lowest border-outline-variant/30 hover:border-outline-variant/80'
+                      ? 'bg-neutral-50 border-neutral-900 ring-1 ring-neutral-900'
+                      : 'bg-white border-neutral-200 hover:border-neutral-300'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2.5">
-                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-                        isSelected ? 'bg-primary text-on-primary font-bold' : 'bg-surface-container text-on-surface'
-                      }`}>
-                        <span className="material-symbols-outlined text-[18px]">directions_car</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-md bg-neutral-100 text-neutral-800 flex items-center justify-center font-mono font-bold text-xs border border-neutral-200">
+                        {vId}
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-on-surface">{vehicle.name}</div>
-                        <div className="text-[10px] text-on-surface-variant">{vId} • {vehicle.current_location.name}</div>
+                        <div className="text-xs font-semibold text-neutral-900">{vehicle.name}</div>
+                        <div className="text-[10px] text-neutral-500">{vehicle.current_location.name}</div>
                       </div>
                     </div>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold uppercase border ${
                       vehicle.status === 'en_route'
-                        ? 'bg-primary/10 text-primary border border-primary/20'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                         : vehicle.status === 'full'
-                        ? 'bg-error/10 text-error border border-error/20'
-                        : 'bg-surface-variant text-on-surface-variant'
+                        ? 'bg-rose-50 text-rose-700 border-rose-200'
+                        : 'bg-neutral-100 text-neutral-600 border-neutral-200'
                     }`}>
                       {vehicle.status.replace('_', ' ')}
                     </span>
                   </div>
 
                   {/* Capacity Utilization Bar */}
-                  <div className="mt-3 bg-surface-container rounded-xl p-2.5">
-                    <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-[11px] font-semibold text-on-surface-variant">Capacity Utilization:</span>
-                      <span className="font-bold text-on-surface">
+                  <div className="mt-2.5 bg-neutral-100 rounded-lg p-2.5 border border-neutral-200">
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="text-[11px] font-medium text-neutral-600">Capacity Utilization:</span>
+                      <span className="font-mono tabular-nums font-semibold text-neutral-900 text-xs">
                         {occSeats} / {capacity} seats ({occPct}%)
                       </span>
                     </div>
@@ -229,15 +225,15 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
                           <div
                             key={idx}
                             title={isOccupied ? `Seat ${idx + 1}: Occupied` : `Seat ${idx + 1}: Available`}
-                            className={`flex-1 h-2 rounded-full transition-all ${
-                              isOccupied ? 'bg-primary' : 'bg-outline-variant/40'
+                            className={`flex-1 h-1.5 rounded-full transition-all ${
+                              isOccupied ? 'bg-neutral-900' : 'bg-neutral-300'
                             }`}
                           />
                         );
                       })}
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-on-surface-variant">
+                    <div className="flex items-center justify-between text-[11px] text-neutral-500 font-mono">
                       <span>{stopsCount} ordered stops</span>
                       <span>Peak: {plan?.peak_occupancy || occSeats}/{capacity}</span>
                     </div>
@@ -249,55 +245,55 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
         </div>
 
         {/* Right Column: Ordered Stop Sequence Visualization (8 cols) */}
-        <div className="lg:col-span-8 space-y-4">
+        <div className="lg:col-span-8 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold text-on-surface uppercase tracking-wider">
+              <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
                 Ordered Stop Sequence (1 → 2 → 3)
               </h2>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-semibold">
+              <span className="text-xs px-2 py-0.5 rounded-md bg-neutral-100 border border-neutral-200 text-neutral-700 font-mono font-medium">
                 Vehicle: {selectedVehicleId}
               </span>
             </div>
             {activePlan && (
-              <span className="text-xs text-on-surface-variant">
+              <span className="text-xs text-neutral-500 font-mono">
                 Total trip: {activePlan.total_distance_km ? activePlan.total_distance_km.toFixed(1) : '8.5'} km • ~{Math.round((activePlan.total_duration_sec || 780) / 60)} min
               </span>
             )}
           </div>
 
           {/* Sequence Pipeline Container */}
-          <div className="p-6 rounded-3xl bg-surface-container-lowest border border-outline-variant/30 shadow-sm space-y-6">
+          <div className="p-5 rounded-xl bg-white border border-neutral-200 space-y-4">
             {/* Start Node: Vehicle Current Location */}
             {selectedVehicle && (
-              <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-surface-container-low border border-outline-variant/30">
-                <div className="w-10 h-10 rounded-2xl bg-surface-container-high flex items-center justify-center text-primary font-bold shadow-inner">
-                  <span className="material-symbols-outlined text-[20px]">near_me</span>
+              <div className="flex items-center gap-3.5 p-3 rounded-lg bg-neutral-50 border border-neutral-200">
+                <div className="w-8 h-8 rounded-lg bg-neutral-200 flex items-center justify-center text-neutral-800 font-bold">
+                  <span className="material-symbols-outlined text-[18px]">near_me</span>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold uppercase tracking-wider text-primary">Start Depot / Origin</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-neutral-900">Start Depot / Origin</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-neutral-200 text-neutral-800 font-mono font-medium">
                       Current Position
                     </span>
                   </div>
-                  <div className="text-sm font-semibold text-on-surface mt-0.5">
+                  <div className="text-xs font-semibold text-neutral-900 mt-0.5">
                     {selectedVehicle.current_location.name}
                   </div>
-                  <div className="text-xs text-on-surface-variant">
+                  <div className="text-[11px] text-neutral-500 font-mono">
                     GPS: {selectedVehicle.current_location.lat.toFixed(4)}, {selectedVehicle.current_location.lng.toFixed(4)}
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-bold text-on-surface">Time: 00:00</span>
-                  <div className="text-[10px] text-on-surface-variant">Initial departures</div>
+                  <span className="text-xs font-mono font-semibold text-neutral-900">Time: 00:00</span>
+                  <div className="text-[10px] text-neutral-400">Initial departures</div>
                 </div>
               </div>
             )}
 
             {/* Sequence Steps */}
             {activePlan && activePlan.stops && activePlan.stops.length > 0 ? (
-              <div className="relative pl-6 space-y-6 before:absolute before:left-10 before:top-2 before:bottom-2 before:w-0.5 before:bg-outline-variant/40">
+              <div className="relative pl-4 space-y-3 before:absolute before:left-7 before:top-2 before:bottom-2 before:w-0.5 before:bg-neutral-200">
                 {activePlan.stops.map((stop, index) => {
                   const isPickup = stop.stop_type === 'pickup';
                   const stepNumber = index + 1;
@@ -307,13 +303,13 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
                       key={stop.stop_id || index}
                       id={`stop-step-${stepNumber}`}
                       onClick={() => onSelectRequest && onSelectRequest(stop.request_id)}
-                      className="relative flex items-start gap-4 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary/50 transition-all cursor-pointer group"
+                      className="relative flex items-start gap-3.5 p-3.5 rounded-lg bg-neutral-50 border border-neutral-200 hover:border-neutral-400 transition-all cursor-pointer group"
                     >
                       {/* Step Number Badge */}
-                      <div className={`relative z-10 w-9 h-9 rounded-2xl flex items-center justify-center font-bold text-xs shadow-md transition-transform group-hover:scale-105 ${
+                      <div className={`relative z-10 w-7 h-7 rounded-md flex items-center justify-center font-mono font-bold text-xs ${
                         isPickup
-                          ? 'bg-secondary text-on-secondary shadow-secondary/30'
-                          : 'bg-primary text-on-primary shadow-primary/30'
+                          ? 'bg-neutral-900 text-white'
+                          : 'bg-neutral-200 text-neutral-900'
                       }`}>
                         {stepNumber}
                       </div>
@@ -321,34 +317,34 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
                       {/* Stop Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 ${
+                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold uppercase tracking-wider flex items-center gap-1 border ${
                             isPickup
-                              ? 'bg-secondary-container text-on-secondary-container'
-                              : 'bg-tertiary-container text-on-tertiary-container'
+                              ? 'bg-neutral-900 text-white border-neutral-900'
+                              : 'bg-neutral-100 text-neutral-700 border-neutral-200'
                           }`}>
-                            <span className="material-symbols-outlined text-[12px]">
+                            <span className="material-symbols-outlined text-[11px]">
                               {isPickup ? 'person_add' : 'person_remove'}
                             </span>
                             <span>{stop.stop_type}</span>
                           </span>
 
-                          <span className="text-xs font-bold text-on-surface">
+                          <span className="text-xs font-semibold text-neutral-900">
                             {stop.passenger_name}
                           </span>
-                          <span className="text-[11px] text-on-surface-variant font-mono">
+                          <span className="text-[11px] text-neutral-500 font-mono">
                             ({stop.request_id})
                           </span>
                         </div>
 
-                        <div className="text-sm font-semibold text-on-surface mt-1.5 flex items-center gap-1.5">
-                          <span className="material-symbols-outlined text-[16px] text-primary">location_on</span>
+                        <div className="text-xs font-semibold text-neutral-800 mt-1 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[14px] text-neutral-400">location_on</span>
                           <span>{stop.location.name}</span>
                         </div>
 
-                        <div className="text-xs text-on-surface-variant mt-1 flex items-center gap-3">
+                        <div className="text-xs text-neutral-500 mt-1 flex items-center gap-2 font-mono">
                           <span>ETA: ~{Math.round(stop.eta_seconds_from_now / 60)} min ({stop.eta_seconds_from_now}s)</span>
                           <span>•</span>
-                          <span className={isPickup ? 'text-secondary font-semibold' : 'text-primary font-semibold'}>
+                          <span className={isPickup ? 'text-neutral-900 font-semibold' : 'text-neutral-700 font-medium'}>
                             {isPickup ? '+1 Seat Occupied' : '-1 Seat Released'}
                           </span>
                         </div>
@@ -356,11 +352,11 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
 
                       {/* Precedence Verification Marker */}
                       <div className="text-right flex flex-col items-end">
-                        <span className="text-[10px] font-bold text-tertiary bg-tertiary-fixed/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <span className="text-[10px] font-mono font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md flex items-center gap-1">
                           <span className="material-symbols-outlined text-[11px]">done_all</span>
                           <span>Precedence OK</span>
                         </span>
-                        <span className="text-[11px] text-on-surface-variant mt-1">
+                        <span className="text-[11px] text-neutral-400 font-mono mt-1">
                           Step #{stepNumber}
                         </span>
                       </div>
@@ -369,22 +365,22 @@ export const RouteOptimizationView: React.FC<RouteOptimizationViewProps> = ({
                 })}
               </div>
             ) : (
-              <div className="p-8 text-center text-on-surface-variant bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/40">
-                <span className="material-symbols-outlined text-[32px] text-on-surface-variant mb-2">hourglass_empty</span>
-                <p className="text-xs">No active stops assigned to this vehicle in the current window.</p>
-                <p className="text-[11px] text-on-surface-variant mt-1">Vehicle is idle at its current location awaiting dispatch admissions.</p>
+              <div className="p-8 text-center text-neutral-500 bg-neutral-50 rounded-xl border border-dashed border-neutral-300">
+                <span className="material-symbols-outlined text-[28px] text-neutral-400 mb-1">hourglass_empty</span>
+                <p className="text-xs font-medium">No active stops assigned to this vehicle in the current window.</p>
+                <p className="text-[11px] text-neutral-400 mt-0.5">Vehicle is idle at its current location awaiting dispatch admissions.</p>
               </div>
             )}
           </div>
 
           {/* Mathematical Precedence & Capacity Guarantee Callout */}
-          <div className="p-4 rounded-2xl bg-surface-container-high border border-outline-variant/30 flex items-start gap-3">
-            <span className="material-symbols-outlined text-primary text-[20px] mt-0.5">verified_user</span>
+          <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200 flex items-start gap-2.5">
+            <span className="material-symbols-outlined text-neutral-700 text-[18px] mt-0.5">verified_user</span>
             <div className="text-xs">
-              <span className="font-bold text-on-surface block">Precedence & Capacity Invariant Guaranteed:</span>
-              <p className="text-on-surface-variant mt-0.5">
-                For every rider $i$, the Pickup stop index $P_i$ strictly precedes Dropoff stop index $D_i$ ($P_i &lt; D_i$).
-                Cumulative onboard seat count is strictly constrained to $\le {selectedVehicle?.capacity || 4}$ seats at all stops in the sequence.
+              <span className="font-semibold text-neutral-900 block">Precedence & Capacity Invariant Guaranteed:</span>
+              <p className="text-neutral-600 mt-0.5 leading-relaxed">
+                For every rider <span className="font-mono font-semibold">i</span>, the Pickup stop index <span className="font-mono font-semibold">P_i</span> strictly precedes Dropoff stop index <span className="font-mono font-semibold">D_i</span> (<span className="font-mono">P_i &lt; D_i</span>).
+                Cumulative onboard seat count is strictly constrained to <span className="font-mono font-semibold">≤ {selectedVehicle?.capacity || 4}</span> seats at all stops in the sequence.
               </p>
             </div>
           </div>
