@@ -31,6 +31,7 @@ const firebaseConfig = {
 };
 
 export const isFirebaseConfigured = Boolean(
+  import.meta.env.MODE !== 'test' &&
   firebaseConfig.apiKey &&
   firebaseConfig.apiKey.length > 5 &&
   !firebaseConfig.apiKey.includes('YOUR_')
