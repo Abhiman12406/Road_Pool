@@ -98,6 +98,26 @@ async def create_ride_request(cmd: CreateRideRequestCommand):
     await sim_engine.broadcast_state()
     return {"status": "success", "request": req}
 
+@router.post("/request/{request_id}/requeue")
+async def requeue_request(request_id: str):
+    async with sim_engine.lock:
+        try:
+            req = sim_engine.requeue_request(request_id)
+        except KeyError:
+            raise HTTPException(status_code=404, detail=f"Request {request_id} not found")
+    await sim_engine.broadcast_state()
+    return {"status": "success", "request": req}
+
+@router.post("/request/{request_id}/solo-dispatch")
+async def solo_dispatch_request(request_id: str):
+    async with sim_engine.lock:
+        try:
+            req = sim_engine.dispatch_solo_ride(request_id)
+        except KeyError:
+            raise HTTPException(status_code=404, detail=f"Request {request_id} not found")
+    await sim_engine.broadcast_state()
+    return {"status": "success", "request": req}
+
 class ConfigureBatchCommand(BaseModel):
     window_interval_sec: Optional[int] = None
     batch_threshold: Optional[int] = None

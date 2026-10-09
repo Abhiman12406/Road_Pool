@@ -87,7 +87,7 @@ export interface ActivePassengerSession {
   riderId: string;
   activeTripRequestId: string | null;
   assignedVehicleId: string | null;
-  lifecycleStatus: 'idle' | 'waiting_batch' | 'matched' | 'en_route_pickup' | 'in_transit' | 'dropped_off';
+  lifecycleStatus: 'idle' | 'waiting_batch' | 'matched' | 'en_route_pickup' | 'in_transit' | 'dropped_off' | 'no_match' | 'rejected' | 'solo_dispatched';
   guaranteedMaxDetourPct: number;
   actualDetourPct: number | null;
   fareSoloDirectInr: number;

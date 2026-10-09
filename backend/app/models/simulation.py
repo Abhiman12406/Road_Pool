@@ -107,8 +107,8 @@ class SimulationKPIs(BaseModel):
 class SimulationEngineState(BaseModel):
     status: Literal['running', 'paused', 'stepping', 'reset'] = 'running'
     currentWindowId: int = 101
-    windowIntervalSec: int = 30
-    timeRemainingInWindowSec: int = 30
+    windowIntervalSec: int = 45
+    timeRemainingInWindowSec: int = 45
     batchThreshold: int = 6
     batchStatus: Literal['intake_open', 'locked_optimizing', 'dispatched'] = 'intake_open'
     queuedRequestCount: int = 0
@@ -128,7 +128,7 @@ class ActivePassengerSession(BaseModel):
     riderId: str = "RIDER-PUNE-01"
     activeTripRequestId: Optional[str] = None
     assignedVehicleId: Optional[str] = None
-    lifecycleStatus: Literal['idle', 'waiting_batch', 'matched', 'en_route_pickup', 'in_transit', 'dropped_off'] = 'idle'
+    lifecycleStatus: Literal['idle', 'waiting_batch', 'matched', 'en_route_pickup', 'in_transit', 'dropped_off', 'no_match', 'rejected', 'solo_dispatched'] = 'idle'
     guaranteedMaxDetourPct: float = 15.0
     actualDetourPct: Optional[float] = None
     fareSoloDirectInr: float = 0.0

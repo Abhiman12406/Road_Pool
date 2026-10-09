@@ -464,7 +464,8 @@ class SimulationEngine:
                 active_session.actualDetourPct = matched_req.detour_pct or 8.0
                 active_session.assignedVehicleId = matched_req.assigned_vehicle_id
             else:
-                active_session.lifecycleStatus = "idle"
+                active_session.lifecycleStatus = "no_match"
+                active_session.assignedVehicleId = None
 
         # Advance rolling window cycle
         self.state.engine.currentWindowId += 1
@@ -496,6 +497,7 @@ class SimulationEngine:
         preferred_pickup_time: Optional[str] = None,
         arrival_deadline: Optional[str] = None,
         special_requirements: Optional[str] = None,
+        is_user_request: bool = True,
     ) -> RideRequest:
         if party_size < 1 or party_size > 4:
             raise ValueError(f"Party size must be between 1 and 4 seats. Maximum vehicle capacity is 4. (Requested: {party_size})")
@@ -540,10 +542,11 @@ class SimulationEngine:
             if r.status in ['waiting_batch', 'matched', 'en_route_pickup', 'in_transit']
         ])
         
-        self.state.activePassengerSession.activeTripRequestId = req_id
-        self.state.activePassengerSession.lifecycleStatus = "waiting_batch"
-        self.state.activePassengerSession.fareSoloDirectInr = solo_fare_inr
-        self.state.activePassengerSession.fareShapleyPooledInr = round(solo_fare_inr * 0.75, 2)
+        if is_user_request:
+            self.state.activePassengerSession.activeTripRequestId = req_id
+            self.state.activePassengerSession.lifecycleStatus = "waiting_batch"
+            self.state.activePassengerSession.fareSoloDirectInr = solo_fare_inr
+            self.state.activePassengerSession.fareShapleyPooledInr = round(solo_fare_inr * 0.75, 2)
         
         # Check if batch size threshold has been reached
         if self.state.engine.queuedRequestCount >= self.state.engine.batchThreshold:
@@ -576,10 +579,107 @@ class SimulationEngine:
                 solo_distance_km=sample[6],
                 solo_eta_sec=sample[7],
                 solo_fare_inr=sample[8],
-                passenger_name=sample[9]
+                passenger_name=sample[9],
+                is_user_request=False
             )
             created.append(req)
         return created
+
+    def requeue_request(self, request_id: str) -> RideRequest:
+        """
+        Re-queues a request into the currently active batch window (e.g. after a no-match
+        or when the rider chooses to wait longer for the next batch).
+        """
+        req = self.state.requests.get(request_id)
+        if not req:
+            raise KeyError(f"Request {request_id} not found")
+        
+        req.status = "waiting_batch"
+        req.batch_id = self.state.engine.currentWindowId
+        req.assigned_vehicle_id = None
+        req.rejection_reason = None
+        req.detour_pct = None
+        req.pooled_eta_sec = None
+        
+        # Ensure the batch window has adequate time (at least 35-45s) for the user
+        if self.state.engine.timeRemainingInWindowSec < 20:
+            self.state.engine.timeRemainingInWindowSec = self.state.engine.windowIntervalSec
+            
+        waiting_reqs = [
+            r for r in self.state.requests.values() 
+            if r.status == 'waiting_batch' and r.batch_id == self.state.engine.currentWindowId
+        ]
+        self.state.engine.queuedRequestCount = len(waiting_reqs)
+        self.state.engine.queuedSeatsCount = sum(r.party_size for r in waiting_reqs)
+        
+        if self.state.activePassengerSession.activeTripRequestId == request_id:
+            self.state.activePassengerSession.lifecycleStatus = "waiting_batch"
+            self.state.activePassengerSession.assignedVehicleId = None
+            self.state.activePassengerSession.actualDetourPct = None
+            
+        return req
+
+    def dispatch_solo_ride(self, request_id: str) -> RideRequest:
+        """
+        Directly dispatches a solo ride for the passenger when no shared match is found
+        or when the rider opts for an immediate direct cab.
+        """
+        req = self.state.requests.get(request_id)
+        if not req:
+            raise KeyError(f"Request {request_id} not found")
+            
+        # Find an available or idle vehicle
+        assigned_veh = None
+        for v in self.state.vehicles.values():
+            if v.status == "idle" or v.occupied_seats == 0:
+                assigned_veh = v
+                break
+        if not assigned_veh:
+            assigned_veh = list(self.state.vehicles.values())[0]
+            
+        req.status = "matched"
+        req.assigned_vehicle_id = assigned_veh.vehicle_id
+        req.detour_pct = 0.0
+        req.pooled_eta_sec = req.solo_eta_sec
+        req.shapley_fare_inr = req.solo_fare_inr
+        req.rejection_reason = None
+        
+        # Assign stop sequence directly
+        assigned_veh.status = "en_route"
+        assigned_veh.occupied_seats = req.party_size
+        assigned_veh.planned_stops = [
+            RouteStop(
+                stop_id=f"SOLO-P-{req.request_id}",
+                request_id=req.request_id,
+                stop_type="pickup",
+                location=req.pickup,
+                passenger_name=req.passenger_name,
+                eta_seconds_from_now=120,
+                completed=False
+            ),
+            RouteStop(
+                stop_id=f"SOLO-D-{req.request_id}",
+                request_id=req.request_id,
+                stop_type="dropoff",
+                location=req.dropoff,
+                passenger_name=req.passenger_name,
+                eta_seconds_from_now=120 + req.solo_eta_sec,
+                completed=False
+            )
+        ]
+        assigned_veh.route_polyline = [
+            [req.pickup.lat, req.pickup.lng],
+            [req.dropoff.lat, req.dropoff.lng]
+        ]
+        
+        if self.state.activePassengerSession.activeTripRequestId == request_id:
+            self.state.activePassengerSession.lifecycleStatus = "matched"
+            self.state.activePassengerSession.assignedVehicleId = assigned_veh.vehicle_id
+            self.state.activePassengerSession.actualDetourPct = 0.0
+            self.state.activePassengerSession.fareShapleyPooledInr = req.solo_fare_inr
+            
+        self.state.kpis.servedPassengersCount += 1
+        return req
 
     def _tick_step(self, elapsed: float):
         # Update timer
@@ -588,6 +688,16 @@ class SimulationEngine:
             self.lock_and_dispatch_batch(trigger_reason="timer_expired")
         else:
             self.state.engine.timeRemainingInWindowSec = max(0, int(remaining))
+
+        # In demo mode, if there is a passenger waiting and candidate count is low,
+        # simulate natural commuter influx around mid-window (~25s remaining)
+        if self.state.engine.isDemoMode and self.state.activePassengerSession.lifecycleStatus == "waiting_batch":
+            waiting_reqs = [
+                r for r in self.state.requests.values() 
+                if r.status == 'waiting_batch' and r.batch_id == self.state.engine.currentWindowId
+            ]
+            if len(waiting_reqs) == 1 and 20 <= self.state.engine.timeRemainingInWindowSec <= 26:
+                self.generate_synthetic_demand(count=1)
 
         # Vehicle micro-telemetry movement (subtle drift around Pune roads)
         drift_speed = 0.00015 * (elapsed / 1.0)

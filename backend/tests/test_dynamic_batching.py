@@ -12,7 +12,7 @@ def reset_simulation_state():
     sim_engine.set_engine_status('reset')
 
 def test_default_batching_configuration():
-    assert sim_engine.state.engine.windowIntervalSec in [15, 30]
+    assert sim_engine.state.engine.windowIntervalSec in [15, 30, 45]
     assert sim_engine.state.engine.batchThreshold == 6
     assert sim_engine.state.engine.currentWindowId >= 101
     assert sim_engine.state.engine.batchStatus == "intake_open"
@@ -86,8 +86,8 @@ def test_threshold_trigger_locks_and_dispatches_batch():
 def test_timer_expiration_trigger():
     start_window = sim_engine.state.engine.currentWindowId
     
-    # Step past the window duration (e.g. 35 seconds)
-    sim_engine.step_forward(seconds=35)
+    # Step past the window duration
+    sim_engine.step_forward(seconds=sim_engine.state.engine.windowIntervalSec + 5)
     
     # Window ID should have incremented
     assert sim_engine.state.engine.currentWindowId > start_window

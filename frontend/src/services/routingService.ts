@@ -170,3 +170,48 @@ export async function submitPassengerRideRequest(payload: {
 
   return res.json();
 }
+
+export async function requeueRideRequest(requestId: string) {
+  const res = await fetch(`${API_BASE}/simulation/request/${encodeURIComponent(requestId)}/requeue`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.detail || `Failed to requeue request ${requestId}`);
+  }
+  return res.json();
+}
+
+export async function dispatchSoloRide(requestId: string) {
+  const res = await fetch(`${API_BASE}/simulation/request/${encodeURIComponent(requestId)}/solo-dispatch`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.detail || `Failed to dispatch solo ride for ${requestId}`);
+  }
+  return res.json();
+}
+
+export async function generateCandidateDemand(count: number = 1) {
+  const res = await fetch(`${API_BASE}/simulation/batch/generate-demand`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ count }),
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.detail || `Failed to simulate candidate demand`);
+  }
+  return res.json();
+}
+
+export function getPrivacySafeRiderId(reqId: string, paxId?: string): string {
+  // Generates privacy-safe identifier such as Rider P-204, Rider P-318
+  const cleanNum = parseInt(reqId.replace(/\D/g, ''), 10) || 101;
+  const hashSeed = (paxId ? paxId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0);
+  const code = (cleanNum + 103 + (hashSeed % 150));
+  return `Rider P-${code}`;
+}
