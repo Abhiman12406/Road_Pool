@@ -2,8 +2,20 @@
 RidePool AI Backend Configuration
 """
 import os
+from pathlib import Path
 from typing import List, Optional
 from pydantic import BaseModel, Field
+
+try:
+    from dotenv import load_dotenv
+    # Load .env from backend directory or project root
+    env_path = Path(__file__).resolve().parent.parent / ".env"
+    load_dotenv(dotenv_path=env_path)
+    if not os.getenv("SUPABASE_URL"):
+        root_env = Path(__file__).resolve().parent.parent.parent / "frontend" / ".env"
+        load_dotenv(dotenv_path=root_env)
+except ImportError:
+    pass
 
 class Settings(BaseModel):
     PROJECT_NAME: str = "RidePool AI"
