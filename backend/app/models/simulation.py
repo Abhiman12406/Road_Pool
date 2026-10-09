@@ -1,7 +1,7 @@
 """
 Simulation and Entity Models for RidePool AI
 """
-from typing import List, Dict, Optional, Literal
+from typing import List, Dict, Optional, Literal, Any
 from pydantic import BaseModel, Field
 
 class Location(BaseModel):
@@ -143,3 +143,4 @@ class GlobalSimulationSnapshot(BaseModel):
     activePassengerSession: ActivePassengerSession
     optimizationResult: Optional[OptimizationResult] = None
     detourAudits: List[DetourAuditEntry] = Field(default_factory=list)
+    shapleyPools: Dict[str, Any] = Field(default_factory=dict)

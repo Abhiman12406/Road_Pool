@@ -1,3 +1,5 @@
+import type { ShapleyPoolResult } from './shapley';
+
 export interface Location {
   lat: number;
   lng: number;
@@ -148,4 +150,5 @@ export interface GlobalSimulationSnapshot {
   activePassengerSession: ActivePassengerSession;
   optimizationResult?: OptimizationResult | null;
   detourAudits?: DetourAuditEntry[];
+  shapleyPools?: Record<string, ShapleyPoolResult>;
 }

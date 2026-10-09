@@ -12,6 +12,7 @@ from app.models.simulation import (
     DetourAuditEntry, VehicleRoutePlan, OptimizationResult
 )
 from app.services.route_optimizer import route_optimizer
+from app.services.shapley_service import shapley_engine
 from app.config import settings
 
 PUNE_LANDMARKS = {
@@ -284,6 +285,48 @@ class SimulationEngine:
             timestamp="17:42:15"
         )
 
+        # Precompute initial Shapley Fair-Fare pool for V-101 demo
+        initial_shapley_pools: Dict[str, Any] = {}
+        try:
+            pool_v1_reqs = [
+                initial_requests["REQ-P101"],
+                RideRequest(
+                    request_id="REQ-P104",
+                    passenger_id="PAX-04",
+                    passenger_name="Marcus Chen",
+                    pickup=PUNE_LANDMARKS["Aundh"],
+                    dropoff=PUNE_LANDMARKS["Baner"],
+                    party_size=1,
+                    request_time="17:41:00",
+                    solo_eta_sec=510,
+                    solo_distance_km=4.2,
+                    solo_fare_inr=115.0,
+                    status="in_transit",
+                    assigned_vehicle_id="V-101",
+                ),
+                RideRequest(
+                    request_id="REQ-P105",
+                    passenger_id="PAX-05",
+                    passenger_name="Sarah Kim",
+                    pickup=PUNE_LANDMARKS["Shivajinagar"],
+                    dropoff=PUNE_LANDMARKS["Hinjewadi"],
+                    party_size=1,
+                    request_time="17:42:00",
+                    solo_eta_sec=1150,
+                    solo_distance_km=14.5,
+                    solo_fare_inr=345.0,
+                    status="in_transit",
+                    assigned_vehicle_id="V-101",
+                ),
+            ]
+            initial_shapley_pools["V-101"] = shapley_engine.compute_shapley_for_pool(
+                requests=pool_v1_reqs,
+                vehicle=v1,
+                batch_id=100,
+            )
+        except Exception as e:
+            logger.error(f"Error computing initial Shapley pool for V-101: {e}")
+
         return GlobalSimulationSnapshot(
             engine=SimulationEngineState(
                 status='running',
@@ -326,7 +369,8 @@ class SimulationEngine:
                 fareShapleyPooledInr=132.50
             ),
             optimizationResult=initial_opt_result,
-            detourAudits=initial_audits
+            detourAudits=initial_audits,
+            shapleyPools=initial_shapley_pools
         )
 
     async def register_connection(self, websocket: WebSocket):
@@ -444,9 +488,46 @@ class SimulationEngine:
                         veh.route_polyline = plan.route_polyline
                     veh.status = "en_route" if len(plan.stops) > 0 else "idle"
 
+            # Compute Combinatorial Shapley Fair-Fare allocations for all matched pools
+            for v_id, plan in opt_result.vehicle_plans.items():
+                assigned_req_objs = [
+                    self.state.requests[rid] for rid in plan.assigned_request_ids
+                    if rid in self.state.requests
+                ]
+                if assigned_req_objs:
+                    veh = self.state.vehicles.get(v_id)
+                    try:
+                        shapley_res = shapley_engine.compute_shapley_for_pool(
+                            requests=assigned_req_objs,
+                            vehicle=veh,
+                            batch_id=window_id,
+                        )
+                        self.state.shapleyPools[v_id] = shapley_res
+                        for req_obj in assigned_req_objs:
+                            exp = shapley_res.rider_explanations.get(req_obj.request_id)
+                            if exp:
+                                req_obj.shapley_fare_inr = exp.reconciled_fare_inr
+                    except Exception as e:
+                        logger.error(f"Error computing Shapley pool for {v_id}: {e}")
+
             # Update fleet average detour KPI
             if opt_result.average_detour_pct > 0:
                 self.state.kpis.fleetDetourAveragePct = opt_result.average_detour_pct
+
+            # Update KPI savings dynamically from active Shapley pools
+            total_solo_sum = 0.0
+            total_grand_sum = 0.0
+            for pool in self.state.shapleyPools.values():
+                if hasattr(pool, 'sum_solo_fares_inr'):
+                    total_solo_sum += pool.sum_solo_fares_inr
+                    total_grand_sum += pool.grand_coalition_cost_inr
+                elif isinstance(pool, dict):
+                    total_solo_sum += pool.get('sum_solo_fares_inr', 0.0)
+                    total_grand_sum += pool.get('grand_coalition_cost_inr', 0.0)
+            if total_solo_sum > 0:
+                tot_sav = max(0.0, total_solo_sum - total_grand_sum)
+                self.state.kpis.totalCoalitionSavingsInr = round(tot_sav, 2)
+                self.state.kpis.shapleySavingsPct = round((tot_sav / total_solo_sum) * 100.0, 1)
 
         # Update KPIs
         self.state.kpis.activePoolsCount = len([v for v in self.state.vehicles.values() if len(v.planned_stops) > 0])
@@ -680,6 +761,56 @@ class SimulationEngine:
             
         self.state.kpis.servedPassengersCount += 1
         return req
+
+    def get_shapley_explanation_for_request(self, request_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Retrieves or dynamically computes the exact Shapley fair-fare breakdown
+        and 7-coalition matrix for a specific ride request.
+        """
+        req = self.state.requests.get(request_id)
+        if not req:
+            return None
+
+        # 1. Check if request is part of an active calculated vehicle pool
+        for v_id, pool in self.state.shapleyPools.items():
+            if hasattr(pool, 'rider_explanations') and request_id in pool.rider_explanations:
+                return {
+                    "pool": pool,
+                    "explanation": pool.rider_explanations[request_id],
+                }
+            elif isinstance(pool, dict) and request_id in pool.get('rider_explanations', {}):
+                return {
+                    "pool": pool,
+                    "explanation": pool['rider_explanations'][request_id],
+                }
+
+        # 2. Dynamic evaluation for waiting / unpooled request:
+        # Form a 3-rider coalition evaluation with other available commuters
+        other_candidates = [
+            r for r in self.state.requests.values()
+            if r.request_id != request_id and r.status in ['waiting_batch', 'matched', 'en_route_pickup', 'in_transit']
+        ][:2]
+
+        eval_cohort = [req] + other_candidates
+        assigned_v = None
+        if req.assigned_vehicle_id and req.assigned_vehicle_id in self.state.vehicles:
+            assigned_v = self.state.vehicles[req.assigned_vehicle_id]
+        else:
+            assigned_v = list(self.state.vehicles.values())[0]
+
+        try:
+            pool_res = shapley_engine.compute_shapley_for_pool(
+                requests=eval_cohort,
+                vehicle=assigned_v,
+                batch_id=req.batch_id or self.state.engine.currentWindowId,
+            )
+            return {
+                "pool": pool_res,
+                "explanation": pool_res.rider_explanations.get(request_id),
+            }
+        except Exception as e:
+            logger.error(f"Error computing dynamic Shapley breakdown for {request_id}: {e}")
+            return None
 
     def _tick_step(self, elapsed: float):
         # Update timer

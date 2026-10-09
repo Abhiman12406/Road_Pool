@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import type { GlobalSimulationSnapshot } from '../../types/simulation';
 import type { PuneLandmark, DirectRouteResponse } from '../../types/routing';
 import { LiveMap } from '../../components/LiveMap';
+import { ShapleySlideOverSheet } from '../../components/ShapleySlideOverSheet';
 import {
   fetchPuneLandmarks,
   fetchDirectRoute,
@@ -62,6 +63,7 @@ export const PassengerHomeView: React.FC<PassengerHomeViewProps> = ({
   const [partySize, setPartySize] = useState<number>(1);
   const [forceFallback, setForceFallback] = useState<boolean>(false);
   const [showBreakdown, setShowBreakdown] = useState<boolean>(false);
+  const [isShapleySheetOpen, setIsShapleySheetOpen] = useState<boolean>(false);
 
   // Timing and Special Requirements State
   const [pickupTimeMode, setPickupTimeMode] = useState<'asap' | 'custom'>('asap');
@@ -669,9 +671,14 @@ export const PassengerHomeView: React.FC<PassengerHomeViewProps> = ({
                     <span className="px-2 py-0.5 rounded-full bg-tertiary/15 text-tertiary text-xs font-bold">
                       Save ₹{routeData.estimated_pooled_savings_inr.toFixed(2)} (25%)
                     </span>
-                    <span className="text-[10px] text-on-surface-variant mt-0.5">
-                      Shapley Fair-Fare Estimate
-                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsShapleySheetOpen(true)}
+                      className="text-[10px] text-primary hover:underline font-semibold mt-1 flex items-center gap-0.5"
+                    >
+                      <span className="material-symbols-outlined text-[13px]">balance</span>
+                      <span>How Shapley Fares Work</span>
+                    </button>
                   </div>
                 </div>
 
@@ -753,6 +760,14 @@ export const PassengerHomeView: React.FC<PassengerHomeViewProps> = ({
                 </span>
               </div>
             </div>
+            <button
+              type="button"
+              onClick={() => setIsShapleySheetOpen(true)}
+              className="py-2 px-3 rounded-xl bg-tertiary-container/30 hover:bg-tertiary-container/50 text-tertiary text-xs font-bold flex items-center justify-center gap-1.5 transition-all border border-tertiary/20"
+            >
+              <span className="material-symbols-outlined text-[15px]">balance</span>
+              <span>Why am I paying this fare? (Shapley Audit)</span>
+            </button>
           </div>
         )}
       </div>
@@ -778,6 +793,13 @@ export const PassengerHomeView: React.FC<PassengerHomeViewProps> = ({
           }
         />
       </div>
+
+      {/* Shapley Fair Fare Slide-Over Sheet */}
+      <ShapleySlideOverSheet
+        isOpen={isShapleySheetOpen}
+        onClose={() => setIsShapleySheetOpen(false)}
+        requestId={activeRider?.activeTripRequestId || null}
+      />
     </div>
   );
 };

@@ -5,12 +5,14 @@ import { OpsOverviewView } from './views/ops/OpsOverviewView';
 import { BatchManagerView } from './views/ops/BatchManagerView';
 import { RouteOptimizationView } from './views/ops/RouteOptimizationView';
 import { DetourGuaranteesView } from './views/ops/DetourGuaranteesView';
+import { FairFaresView } from './views/ops/FairFaresView';
 import { PassengerHomeView } from './views/passenger/PassengerHomeView';
 import { PassengerWaitingView } from './views/passenger/PassengerWaitingView';
 
 export function App() {
   const [currentView, setCurrentView] = useState<ActiveViewKey>(() => {
     const path = window.location.pathname;
+    if (path.includes('fair-fares') || path.includes('/ops/fair-fares')) return 'ops-fair-fares';
     if (path.includes('optimization') || path.includes('/ops/optimization')) return 'ops-optimization';
     if (path.includes('detour') || path.includes('/ops/detour-guarantees')) return 'ops-detour-guarantees';
     if (path.includes('batches') || path.includes('/ops/batches')) return 'ops-batches';
@@ -35,7 +37,8 @@ export function App() {
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
-      if (path.includes('optimization')) setCurrentView('ops-optimization');
+      if (path.includes('fair-fares')) setCurrentView('ops-fair-fares');
+      else if (path.includes('optimization')) setCurrentView('ops-optimization');
       else if (path.includes('detour')) setCurrentView('ops-detour-guarantees');
       else if (path.includes('batches')) setCurrentView('ops-batches');
       else if (path.includes('waiting')) setCurrentView('passenger-waiting');
@@ -53,6 +56,7 @@ export function App() {
       'ops-batches': '/ops/batches',
       'ops-optimization': '/ops/optimization',
       'ops-detour-guarantees': '/ops/detour-guarantees',
+      'ops-fair-fares': '/ops/fair-fares',
       'passenger-home': '/passenger/home',
       'passenger-waiting': '/passenger/waiting',
     };
@@ -123,6 +127,14 @@ export function App() {
 
         {currentView === 'ops-detour-guarantees' && (
           <DetourGuaranteesView
+            snapshot={snapshot}
+            onSelectVehicle={handleSelectVehicle}
+            onSelectRequest={handleSelectRequest}
+          />
+        )}
+
+        {currentView === 'ops-fair-fares' && (
+          <FairFaresView
             snapshot={snapshot}
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}

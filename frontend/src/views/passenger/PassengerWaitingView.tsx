@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { GlobalSimulationSnapshot } from '../../types/simulation';
 import { LiveMap } from '../../components/LiveMap';
+import { ShapleySlideOverSheet } from '../../components/ShapleySlideOverSheet';
 import {
   requeueRideRequest,
   dispatchSoloRide,
@@ -52,6 +53,7 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
   // Loading and action state
   const [isActionPending, setIsActionPending] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [isShapleySheetOpen, setIsShapleySheetOpen] = useState<boolean>(false);
 
   // Candidate requests in current batch window (excluding user's own request)
   const candidateRequests = Object.values(requests).filter(
@@ -527,6 +529,16 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
                   <span className="text-[9px] text-emerald-600 font-bold block">Save ~25%</span>
                 </div>
               </div>
+
+              <button
+                type="button"
+                id="btn-why-paying-this-fare"
+                onClick={() => setIsShapleySheetOpen(true)}
+                className="w-full mt-2 py-2 px-3 rounded-xl bg-tertiary-container/30 hover:bg-tertiary-container/50 text-tertiary text-xs font-bold flex items-center justify-center gap-1.5 transition-all border border-tertiary/20"
+              >
+                <span className="material-symbols-outlined text-[16px]">balance</span>
+                <span>Why am I paying this fare? (Shapley Audit)</span>
+              </button>
             </div>
           )}
 
@@ -577,6 +589,13 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
           soloDropoffLocation={activeReq?.dropoff || null}
         />
       </div>
+
+      {/* Shapley Fair Fare Slide-Over Sheet */}
+      <ShapleySlideOverSheet
+        isOpen={isShapleySheetOpen}
+        onClose={() => setIsShapleySheetOpen(false)}
+        requestId={activeReq?.request_id}
+      />
     </div>
   );
 };
