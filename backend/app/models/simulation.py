@@ -144,3 +144,28 @@ class GlobalSimulationSnapshot(BaseModel):
     optimizationResult: Optional[OptimizationResult] = None
     detourAudits: List[DetourAuditEntry] = Field(default_factory=list)
     shapleyPools: Dict[str, Any] = Field(default_factory=dict)
+
+class MidTripJoinCandidate(BaseModel):
+    request_id: str
+    passenger_name: str
+    pickup: Location
+    dropoff: Location
+    party_size: int = 1
+    solo_fare_inr: float
+    proposed_fare_inr: float
+    extra_duration_sec: int
+    extra_distance_km: float
+    affected_passenger_fare_before: float
+    affected_passenger_fare_after: float
+    affected_passenger_eta_delta_sec: int
+    detour_pct: float
+    is_valid: bool
+    rejection_reason: Optional[str] = None
+    mathematical_proof: Optional[str] = None
+
+class MidTripConsentStatus(BaseModel):
+    candidate: MidTripJoinCandidate
+    driver_consent: Optional[Literal['pending', 'accepted', 'rejected']] = 'pending'
+    passenger_consent: Optional[Literal['pending', 'accepted', 'rejected']] = 'pending'
+    status: Literal['pending', 'accepted_both', 'rejected_driver', 'rejected_passenger', 'violation_rejected'] = 'pending'
+    message: str = ""

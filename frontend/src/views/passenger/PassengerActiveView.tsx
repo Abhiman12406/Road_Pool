@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import type { GlobalSimulationSnapshot, Vehicle, RideRequest } from '../../types/simulation';
+import type { GlobalSimulationSnapshot, Vehicle, RideRequest, MidTripJoinCandidate } from '../../types/simulation';
 import { LiveMap } from '../../components/LiveMap';
 import { CabinLayoutGrid } from '../../components/CabinLayoutGrid';
 import { StopsTimeline } from '../../components/StopsTimeline';
@@ -14,7 +14,13 @@ import {
   cancelRideRequestDirect,
   simulateCoRiderCancellationDirect,
   resetPassengerSessionDirect,
+  evaluateMidTripJoinDirect,
+  processMidTripConsentDirect,
 } from '../../services/simulationService';
+import {
+  buildCompatibleJoinCandidate,
+  buildIncompatibleJoinCandidate,
+} from '../../services/scenarioService';
 
 interface PassengerActiveViewProps {
   snapshot: GlobalSimulationSnapshot | null;
@@ -25,6 +31,8 @@ interface PassengerActiveViewProps {
   onCancelRide?: (requestId: string) => Promise<any>;
   onSimulateCoRiderCancellation?: (vehicleId: string) => Promise<any>;
   onResetSession?: () => Promise<any>;
+  initialCandidate?: MidTripJoinCandidate | null;
+  autoOpenShapleySheet?: boolean;
 }
 
 export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
@@ -36,6 +44,8 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
   onCancelRide,
   onSimulateCoRiderCancellation,
   onResetSession,
+  initialCandidate,
+  autoOpenShapleySheet,
 }) => {
   const session = snapshot?.activePassengerSession;
   const vehicles = useMemo(() => snapshot?.vehicles || {}, [snapshot?.vehicles]);
@@ -63,6 +73,28 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
     message: string;
     type?: 'info' | 'warning' | 'success';
   } | null>(null);
+
+  // Mid-trip joiner candidate & two-way consent state
+  const [activeJoinCandidate, setActiveJoinCandidate] = useState<MidTripJoinCandidate | null>(
+    initialCandidate || null
+  );
+  const [driverConsent, setDriverConsent] = useState<'pending' | 'accepted' | 'rejected'>('pending');
+  const [passengerConsent, setPassengerConsent] = useState<'pending' | 'accepted' | 'rejected'>('pending');
+  const [isEvaluatingJoiner, setIsEvaluatingJoiner] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (autoOpenShapleySheet) {
+      setIsShapleySheetOpen(true);
+    }
+  }, [autoOpenShapleySheet]);
+
+  useEffect(() => {
+    if (initialCandidate) {
+      setActiveJoinCandidate(initialCandidate);
+      setDriverConsent('pending');
+      setPassengerConsent('pending');
+    }
+  }, [initialCandidate]);
 
   // Active vehicle data
   const baseVehicle: Vehicle = vehicles[activeVehicleId] || {
@@ -259,6 +291,145 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
     onNavigateToBooking();
   };
 
+  // Mid-trip Join & Consent Handlers
+  const handleSimulateCompatibleJoiner = async () => {
+    setIsEvaluatingJoiner(true);
+    try {
+      const res = await evaluateMidTripJoinDirect(currentVehicle.vehicle_id, false, 'Vikram Sen', 1);
+      if (res && res.candidate) {
+        setActiveJoinCandidate(res.candidate);
+      } else {
+        setActiveJoinCandidate(buildCompatibleJoinCandidate());
+      }
+      setDriverConsent('pending');
+      setPassengerConsent('pending');
+      setToastInfo({
+        title: 'New Mid-Trip Request Received',
+        message: 'Vikram Sen requested to join en route. Review Driver & Passenger consent cards below.',
+        type: 'info',
+      });
+    } catch {
+      setActiveJoinCandidate(buildCompatibleJoinCandidate());
+      setDriverConsent('pending');
+      setPassengerConsent('pending');
+    } finally {
+      setIsEvaluatingJoiner(false);
+    }
+  };
+
+  const handleSimulateIncompatibleJoiner = async () => {
+    setIsEvaluatingJoiner(true);
+    try {
+      const res = await evaluateMidTripJoinDirect(currentVehicle.vehicle_id, true, 'Ananya Rao', 1);
+      if (res && res.candidate) {
+        setActiveJoinCandidate(res.candidate);
+      } else {
+        setActiveJoinCandidate(buildIncompatibleJoinCandidate());
+      }
+      setToastInfo({
+        title: 'Mid-Trip Request Rejected (>15% Detour)',
+        message: 'Candidate exceeded the <=15.0% detour guarantee (+18.4%). Rejection mathematically enforced.',
+        type: 'warning',
+      });
+    } catch {
+      setActiveJoinCandidate(buildIncompatibleJoinCandidate());
+    } finally {
+      setIsEvaluatingJoiner(false);
+    }
+  };
+
+  const commitJoiner = async () => {
+    if (!activeJoinCandidate) return;
+    try {
+      await processMidTripConsentDirect(currentVehicle.vehicle_id, activeJoinCandidate, 'accepted', 'accepted');
+    } catch (e) {
+      console.error(e);
+    }
+
+    const cand = activeJoinCandidate;
+    const newStopP = {
+      stop_id: `STOP-${cand.request_id}-P`,
+      request_id: cand.request_id,
+      stop_type: 'pickup' as const,
+      location: cand.pickup,
+      passenger_name: cand.passenger_name,
+      eta_seconds_from_now: 150,
+      completed: false,
+    };
+    const newStopD = {
+      stop_id: `STOP-${cand.request_id}-D`,
+      request_id: cand.request_id,
+      stop_type: 'dropoff' as const,
+      location: cand.dropoff,
+      passenger_name: cand.passenger_name,
+      eta_seconds_from_now: 700,
+      completed: false,
+    };
+
+    const uncompleted = currentVehicle.planned_stops.filter((s) => !s.completed);
+    const completed = currentVehicle.planned_stops.filter((s) => s.completed);
+    const updatedStops = [...completed, newStopP, ...uncompleted, newStopD];
+    const updatedVehicle: Vehicle = {
+      ...currentVehicle,
+      occupied_seats: Math.min(currentVehicle.capacity, currentVehicle.occupied_seats + cand.party_size),
+      planned_stops: updatedStops,
+      route_polyline: [...currentVehicle.route_polyline, [cand.pickup.lat, cand.pickup.lng], [cand.dropoff.lat, cand.dropoff.lng]],
+    };
+    setLocalVehicleOverride(updatedVehicle);
+
+    setToastInfo({
+      title: 'Two-Way Consent Approved!',
+      message: `${cand.passenger_name} added to ${currentVehicle.name}. Cabin seat reserved, route updated, and your Shapley fare dropped to ₹${cand.affected_passenger_fare_after.toFixed(2)} (saved ₹${(cand.affected_passenger_fare_before - cand.affected_passenger_fare_after).toFixed(2)}).`,
+      type: 'success',
+    });
+
+    setTimeout(() => setActiveJoinCandidate(null), 3500);
+  };
+
+  const handleDriverDecision = async (decision: 'accepted' | 'rejected') => {
+    setDriverConsent(decision);
+    if (decision === 'rejected') {
+      try {
+        await processMidTripConsentDirect(currentVehicle.vehicle_id, activeJoinCandidate, 'rejected', passengerConsent);
+      } catch (e) {
+        console.error(e);
+      }
+      setToastInfo({
+        title: 'Driver Rejected Request',
+        message: 'Driver rejected mid-trip candidate. Insertion aborted. Existing trip schedule & fares preserved.',
+        type: 'info',
+      });
+      setTimeout(() => setActiveJoinCandidate(null), 2500);
+      return;
+    }
+
+    if (passengerConsent === 'accepted') {
+      commitJoiner();
+    }
+  };
+
+  const handlePassengerDecision = async (decision: 'accepted' | 'rejected') => {
+    setPassengerConsent(decision);
+    if (decision === 'rejected') {
+      try {
+        await processMidTripConsentDirect(currentVehicle.vehicle_id, activeJoinCandidate, driverConsent, 'rejected');
+      } catch (e) {
+        console.error(e);
+      }
+      setToastInfo({
+        title: 'Passenger Declined Plan',
+        message: 'Existing passenger declined plan. Insertion aborted. Existing agreed arrival time & fare remain locked.',
+        type: 'info',
+      });
+      setTimeout(() => setActiveJoinCandidate(null), 2500);
+      return;
+    }
+
+    if (driverConsent === 'accepted') {
+      commitJoiner();
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in" id="active-trip-dashboard">
       {/* 1. Header Banner & Evaluator Simulation Controls */}
@@ -273,7 +444,7 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
                 Active Trip Dashboard & Live Cabin Layout
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
-                Ticket 10 Verified
+                Ticket 11 Verified
               </span>
             </div>
             <p className="text-xs text-on-surface-variant font-medium mt-0.5">
@@ -282,18 +453,43 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
           </div>
         </div>
 
-        {/* Top Controls: Vehicle Selector & Evaluator Cancellation Trigger */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {/* Evaluator Simulation Trigger */}
+        {/* Top Controls: Evaluator Simulation Triggers & Vehicle Selector */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          {/* Joiner Simulation Triggers */}
+          <button
+            type="button"
+            id="btn-simulate-compatible-joiner"
+            disabled={isEvaluatingJoiner}
+            onClick={handleSimulateCompatibleJoiner}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 dark:text-emerald-200 border border-emerald-500/30 flex items-center gap-1.5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+            title="Inject a compatible commuter (detour <= 15%) to test two-way consent"
+          >
+            <span className="material-symbols-outlined text-[15px] text-emerald-600">person_add</span>
+            <span>Simulate Compatible Joiner</span>
+          </button>
+
+          <button
+            type="button"
+            id="btn-simulate-incompatible-joiner"
+            disabled={isEvaluatingJoiner}
+            onClick={handleSimulateIncompatibleJoiner}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500/15 hover:bg-rose-500/25 text-rose-800 dark:text-rose-200 border border-rose-500/30 flex items-center gap-1.5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+            title="Inject a commuter with >15% detour to test mathematical constraint rejection"
+          >
+            <span className="material-symbols-outlined text-[15px] text-rose-600">block</span>
+            <span>Simulate Detour Rejection (&gt;15%)</span>
+          </button>
+
+          {/* Evaluator Cancellation Trigger */}
           <button
             type="button"
             id="btn-simulate-corider-cancellation"
             disabled={isSimulatingCancel}
             onClick={handleSimulateCoRiderCancellation}
-            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-200 border border-amber-500/30 flex items-center gap-1.5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-200 border border-amber-500/30 flex items-center gap-1.5 transition-all shadow-sm active:scale-95 disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[16px] text-amber-600">person_remove</span>
-            <span>Simulate Co-Rider Cancellation (Passenger C)</span>
+            <span className="material-symbols-outlined text-[15px] text-amber-600">person_remove</span>
+            <span>Co-Rider Cancel</span>
           </button>
 
           {/* Vehicle Selector Pills */}
@@ -328,7 +524,214 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
         </div>
       </div>
 
-      {/* 2. Main Active Dashboard Grid (5 cols left, 7 cols right) */}
+      {/* 2. In-Context Mid-Trip Two-Way Consent Overlay / Rejection Banner */}
+      {activeJoinCandidate && (
+        <div id="mid-trip-consent-panel" className="animate-in slide-in-from-top-4 duration-300">
+          {activeJoinCandidate.is_valid ? (
+            <div className="p-5 rounded-3xl bg-surface-container-lowest border-2 border-primary/30 shadow-card flex flex-col gap-4">
+              <div className="flex items-center justify-between pb-3 border-b border-outline-variant/30">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span className="font-extrabold text-sm text-on-surface">
+                    Dynamic Mid-Trip Opportunity • Two-Way Consent Required
+                  </span>
+                  <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">
+                    Detour: +{activeJoinCandidate.detour_pct.toFixed(1)}% (Passes ≤15% Cap)
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveJoinCandidate(null)}
+                  className="text-on-surface-variant hover:text-on-surface text-xs font-bold px-2 py-1"
+                >
+                  Dismiss ✕
+                </button>
+              </div>
+
+              {/* Dual In-Context Cards: Driver Notification + Existing Passenger Notification */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* A. Driver Notification Card */}
+                <div className={`p-4 rounded-2xl border flex flex-col justify-between gap-3 ${
+                  driverConsent === 'accepted'
+                    ? 'bg-emerald-500/10 border-emerald-500/40'
+                    : driverConsent === 'rejected'
+                    ? 'bg-rose-500/10 border-rose-500/40'
+                    : 'bg-surface-container-low border-outline-variant/30'
+                }`}>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-primary flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[16px]">airline_seat_recline_normal</span>
+                        <span>1. Driver Notification</span>
+                      </span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        driverConsent === 'accepted'
+                          ? 'bg-emerald-500 text-white'
+                          : driverConsent === 'rejected'
+                          ? 'bg-rose-500 text-white'
+                          : 'bg-surface-container text-on-surface-variant'
+                      }`}>
+                        {driverConsent === 'accepted' ? 'Approved' : driverConsent === 'rejected' ? 'Rejected' : 'Awaiting Driver'}
+                      </span>
+                    </div>
+
+                    <h4 className="text-sm font-bold text-on-surface">
+                      New Ride Request: {activeJoinCandidate.passenger_name}
+                    </h4>
+                    <p className="text-xs text-on-surface-variant">
+                      Pickup: <strong className="text-on-surface">{activeJoinCandidate.pickup.name}</strong> • Drop-off: <strong className="text-on-surface">{activeJoinCandidate.dropoff.name}</strong>
+                    </p>
+                    <div className="flex items-center gap-3 text-[11px] pt-1">
+                      <span className="text-on-surface-variant">Extra Route: <strong>+{activeJoinCandidate.extra_distance_km} km</strong></span>
+                      <span className="text-on-surface-variant">Extra Time: <strong>+{Math.round(activeJoinCandidate.extra_duration_sec / 60)} min</strong></span>
+                      <span className="text-primary font-bold">Fare: <strong>₹{activeJoinCandidate.proposed_fare_inr.toFixed(2)}</strong></span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-outline-variant/20">
+                    <button
+                      type="button"
+                      id="btn-driver-accept"
+                      disabled={driverConsent !== 'pending'}
+                      onClick={() => handleDriverDecision('accepted')}
+                      className={`flex-1 h-9 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
+                        driverConsent === 'accepted'
+                          ? 'bg-emerald-600 text-white cursor-default'
+                          : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                      <span>{driverConsent === 'accepted' ? 'Accepted' : 'Accept Request'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      id="btn-driver-reject"
+                      disabled={driverConsent !== 'pending'}
+                      onClick={() => handleDriverDecision('rejected')}
+                      className="px-3 h-9 rounded-xl text-xs font-bold bg-rose-600/15 hover:bg-rose-600 text-rose-700 hover:text-white border border-rose-500/30 transition-all flex items-center justify-center gap-1"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">cancel</span>
+                      <span>Reject</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* B. Existing Passenger Notification Card */}
+                <div className={`p-4 rounded-2xl border flex flex-col justify-between gap-3 ${
+                  passengerConsent === 'accepted'
+                    ? 'bg-emerald-500/10 border-emerald-500/40'
+                    : passengerConsent === 'rejected'
+                    ? 'bg-rose-500/10 border-rose-500/40'
+                    : 'bg-surface-container-low border-outline-variant/30'
+                }`}>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-tertiary flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[16px]">person</span>
+                        <span>2. Your Approval (Rider)</span>
+                      </span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        passengerConsent === 'accepted'
+                          ? 'bg-emerald-500 text-white'
+                          : passengerConsent === 'rejected'
+                          ? 'bg-rose-500 text-white'
+                          : 'bg-surface-container text-on-surface-variant'
+                      }`}>
+                        {passengerConsent === 'accepted' ? 'Accepted' : passengerConsent === 'rejected' ? 'Declined' : 'Awaiting You'}
+                      </span>
+                    </div>
+
+                    <h4 className="text-sm font-bold text-on-surface">
+                      Share with {activeJoinCandidate.passenger_name} &amp; Lower Your Fare
+                    </h4>
+                    <p className="text-xs text-on-surface-variant">
+                      Adding this passenger adds only <strong className="text-on-surface">+{Math.round(activeJoinCandidate.affected_passenger_eta_delta_sec / 60)} mins</strong> to your arrival, but reduces your Shapley fare share:
+                    </p>
+                    <div className="flex items-center gap-3 text-[11px] pt-1">
+                      <span className="text-on-surface-variant line-through">₹{activeJoinCandidate.affected_passenger_fare_before.toFixed(2)}</span>
+                      <span className="text-tertiary font-black text-xs">₹{activeJoinCandidate.affected_passenger_fare_after.toFixed(2)}</span>
+                      <span className="text-emerald-700 dark:text-emerald-300 font-bold bg-emerald-500/15 px-2 py-0.5 rounded-full">
+                        Save ₹{(activeJoinCandidate.affected_passenger_fare_before - activeJoinCandidate.affected_passenger_fare_after).toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-outline-variant/20">
+                    <button
+                      type="button"
+                      id="btn-passenger-accept"
+                      disabled={passengerConsent !== 'pending'}
+                      onClick={() => handlePassengerDecision('accepted')}
+                      className={`flex-1 h-9 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
+                        passengerConsent === 'accepted'
+                          ? 'bg-tertiary text-white cursor-default'
+                          : 'bg-tertiary hover:opacity-95 text-white shadow-sm'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-[16px]">thumb_up</span>
+                      <span>{passengerConsent === 'accepted' ? 'Plan Approved' : 'Accept Updated Plan'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      id="btn-passenger-decline"
+                      disabled={passengerConsent !== 'pending'}
+                      onClick={() => handlePassengerDecision('rejected')}
+                      className="px-3 h-9 rounded-xl text-xs font-bold bg-surface-container hover:bg-error-container text-on-surface hover:text-on-error-container border border-outline-variant/30 transition-all flex items-center justify-center gap-1"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">thumb_down</span>
+                      <span>Decline</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Informational Policy Footer */}
+              <div className="p-2.5 rounded-xl bg-surface-container-high/40 text-[11px] text-on-surface-variant flex items-center justify-between">
+                <span>
+                  <strong>Two-Way Consent Policy:</strong> Both driver and commuter must agree. If either party declines, the current route and fare remain 100% unchanged.
+                </span>
+                <span className="font-bold text-primary shrink-0 ml-2">Section 8 Compliant</span>
+              </div>
+            </div>
+          ) : (
+            /* Incompatible Detour Rejection Card */
+            <div className="p-5 rounded-3xl bg-rose-500/10 border-2 border-rose-500/40 shadow-card flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-rose-600 text-[22px]">gpp_bad</span>
+                  <span className="font-extrabold text-sm text-rose-900 dark:text-rose-200">
+                    Mid-Trip Joiner Rejected by Route Optimizer
+                  </span>
+                  <span className="text-[10px] font-bold bg-rose-500 text-white px-2 py-0.5 rounded-full">
+                    Detour +{activeJoinCandidate.detour_pct.toFixed(1)}% &gt; 15.0% Cap
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveJoinCandidate(null)}
+                  className="text-on-surface-variant hover:text-on-surface text-xs font-bold px-2 py-1"
+                >
+                  Dismiss ✕
+                </button>
+              </div>
+
+              <p className="text-xs text-rose-800 dark:text-rose-300 font-medium">
+                {activeJoinCandidate.rejection_reason}
+              </p>
+
+              <div className="p-3 rounded-xl bg-surface-container-lowest font-mono text-[11px] text-on-surface border border-outline-variant/30">
+                {activeJoinCandidate.mathematical_proof}
+              </div>
+
+              <p className="text-[11px] text-on-surface-variant">
+                <strong>Specification Enforcement:</strong> System never prompts driver or existing passengers to consent to a ride insertion that violates mandatory routing constraints.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 3. Main Active Dashboard Grid (5 cols left, 7 cols right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: Vehicle Telematics, Cabin Layout Grid & Timeline (5 cols) */}
         <div className="lg:col-span-5 flex flex-col gap-6">

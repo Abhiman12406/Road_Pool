@@ -1,7 +1,7 @@
 """
 Simulation Control and State API
 """
-from typing import Optional, Literal, List
+from typing import Optional, Literal, List, Dict, Any
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.simulation_engine import sim_engine
@@ -84,6 +84,51 @@ async def reset_session_endpoint():
         sim_engine.state.activePassengerSession.actualDetourPct = None
     await sim_engine.broadcast_state()
     return {"status": "success", "session": sim_engine.state.activePassengerSession}
+
+class EvaluateMidTripCommand(BaseModel):
+    vehicle_id: str
+    simulate_violating: Optional[bool] = False
+    candidate_name: Optional[str] = "Vikram Sen"
+    party_size: Optional[int] = 1
+
+@router.post("/mid-trip/evaluate")
+async def evaluate_mid_trip_endpoint(cmd: EvaluateMidTripCommand):
+    async with sim_engine.lock:
+        candidate = sim_engine.evaluate_mid_trip_join(
+            vehicle_id=cmd.vehicle_id,
+            simulate_violating=cmd.simulate_violating or False,
+            candidate_name=cmd.candidate_name or "Vikram Sen",
+            party_size=cmd.party_size or 1,
+        )
+    await sim_engine.broadcast_state()
+    return {"status": "success", "candidate": candidate}
+
+class MidTripConsentCommand(BaseModel):
+    vehicle_id: str
+    candidate_data: Dict[str, Any]
+    driver_consent: Literal['accepted', 'rejected']
+    passenger_consent: Literal['accepted', 'rejected']
+
+@router.post("/mid-trip/consent")
+async def process_mid_trip_consent_endpoint(cmd: MidTripConsentCommand):
+    async with sim_engine.lock:
+        res = sim_engine.process_mid_trip_consent(
+            vehicle_id=cmd.vehicle_id,
+            candidate_data=cmd.candidate_data,
+            driver_consent=cmd.driver_consent,
+            passenger_consent=cmd.passenger_consent,
+        )
+    await sim_engine.broadcast_state()
+    return {"status": "success", "consent_result": res}
+
+@router.post("/scenario/{scenario_id}")
+async def load_scenario_endpoint(scenario_id: int):
+    if scenario_id < 1 or scenario_id > 12:
+        raise HTTPException(status_code=400, detail=f"Scenario ID must be between 1 and 12 (Received: {scenario_id})")
+    async with sim_engine.lock:
+        res = sim_engine.load_acceptance_scenario(scenario_id)
+    await sim_engine.broadcast_state()
+    return {"status": "success", "scenario": res, "state": sim_engine.state}
 
 
 @router.post("/select")

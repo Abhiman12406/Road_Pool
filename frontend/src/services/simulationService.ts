@@ -204,6 +204,56 @@ export function useSimulationSocket() {
     }
   }, []);
 
+  const evaluateMidTripJoin = useCallback(async (vehicleId: string, simulateViolating: boolean = false, candidateName: string = "Vikram Sen", partySize: number = 1) => {
+    try {
+      const resp = await fetch(`${API_BASE}/simulation/mid-trip/evaluate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vehicle_id: vehicleId,
+          simulate_violating: simulateViolating,
+          candidate_name: candidateName,
+          party_size: partySize,
+        }),
+      });
+      return await resp.json();
+    } catch (e) {
+      console.error('Evaluate mid-trip error:', e);
+      return null;
+    }
+  }, []);
+
+  const processMidTripConsent = useCallback(async (vehicleId: string, candidateData: any, driverConsent: 'accepted' | 'rejected' | 'pending', passengerConsent: 'accepted' | 'rejected' | 'pending') => {
+    try {
+      const resp = await fetch(`${API_BASE}/simulation/mid-trip/consent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vehicle_id: vehicleId,
+          candidate_data: candidateData,
+          driver_consent: driverConsent,
+          passenger_consent: passengerConsent,
+        }),
+      });
+      return await resp.json();
+    } catch (e) {
+      console.error('Process mid-trip consent error:', e);
+      return null;
+    }
+  }, []);
+
+  const loadScenario = useCallback(async (scenarioId: number) => {
+    try {
+      const resp = await fetch(`${API_BASE}/simulation/scenario/${scenarioId}`, {
+        method: 'POST',
+      });
+      return await resp.json();
+    } catch (e) {
+      console.error('Load scenario error:', e);
+      return null;
+    }
+  }, []);
+
   return {
     snapshot,
     isConnected,
@@ -220,6 +270,9 @@ export function useSimulationSocket() {
     cancelRideRequest,
     simulateCoRiderCancellation,
     resetPassengerSession,
+    evaluateMidTripJoin,
+    processMidTripConsent,
+    loadScenario,
   };
 }
 
@@ -281,6 +334,56 @@ export async function fetchShapleyPoolDirect(vehicleId: string) {
     return await resp.json();
   } catch (e) {
     console.error('Fetch shapley pool error:', e);
+    return null;
+  }
+}
+
+export async function evaluateMidTripJoinDirect(vehicleId: string, simulateViolating: boolean = false, candidateName: string = "Vikram Sen", partySize: number = 1) {
+  try {
+    const resp = await fetch(`${API_BASE}/simulation/mid-trip/evaluate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        vehicle_id: vehicleId,
+        simulate_violating: simulateViolating,
+        candidate_name: candidateName,
+        party_size: partySize,
+      }),
+    });
+    return await resp.json();
+  } catch (e) {
+    console.error('Evaluate mid-trip direct error:', e);
+    return null;
+  }
+}
+
+export async function processMidTripConsentDirect(vehicleId: string, candidateData: any, driverConsent: 'accepted' | 'rejected' | 'pending', passengerConsent: 'accepted' | 'rejected' | 'pending') {
+  try {
+    const resp = await fetch(`${API_BASE}/simulation/mid-trip/consent`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        vehicle_id: vehicleId,
+        candidate_data: candidateData,
+        driver_consent: driverConsent,
+        passenger_consent: passengerConsent,
+      }),
+    });
+    return await resp.json();
+  } catch (e) {
+    console.error('Process mid-trip consent direct error:', e);
+    return null;
+  }
+}
+
+export async function loadScenarioDirect(scenarioId: number) {
+  try {
+    const resp = await fetch(`${API_BASE}/simulation/scenario/${scenarioId}`, {
+      method: 'POST',
+    });
+    return await resp.json();
+  } catch (e) {
+    console.error('Load scenario direct error:', e);
     return null;
   }
 }

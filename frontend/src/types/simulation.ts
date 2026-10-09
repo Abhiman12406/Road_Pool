@@ -152,3 +152,59 @@ export interface GlobalSimulationSnapshot {
   detourAudits?: DetourAuditEntry[];
   shapleyPools?: Record<string, ShapleyPoolResult>;
 }
+
+export interface MidTripJoinCandidate {
+  request_id: string;
+  passenger_name: string;
+  pickup: Location;
+  dropoff: Location;
+  party_size: number;
+  solo_fare_inr: number;
+  proposed_fare_inr: number;
+  extra_duration_sec: number;
+  extra_distance_km: number;
+  affected_passenger_fare_before: number;
+  affected_passenger_fare_after: number;
+  affected_passenger_eta_delta_sec: number;
+  detour_pct: number;
+  is_valid: boolean;
+  rejection_reason?: string | null;
+  mathematical_proof?: string | null;
+}
+
+export interface MidTripConsentStatus {
+  candidate: MidTripJoinCandidate;
+  driver_consent?: 'pending' | 'accepted' | 'rejected';
+  passenger_consent?: 'pending' | 'accepted' | 'rejected';
+  status: 'pending' | 'accepted_both' | 'rejected_driver' | 'rejected_passenger' | 'violation_rejected';
+  message: string;
+}
+
+export interface AcceptanceScenarioDefinition {
+  id: number;
+  title: string;
+  shortTitle: string;
+  category: 'booking' | 'matching' | 'routing' | 'shapley' | 'mid-trip' | 'cancellation';
+  specSection: string;
+  description: string;
+  criteria: string[];
+  expectedBadge: string;
+  targetView:
+    | 'passenger-home'
+    | 'passenger-waiting'
+    | 'passenger-active'
+    | 'ops-overview'
+    | 'ops-batches'
+    | 'ops-optimization'
+    | 'ops-detour-guarantees'
+    | 'ops-fair-fares';
+}
+
+export interface ScenarioRunResult {
+  scenarioId: number;
+  verified: boolean;
+  timestamp: string;
+  title: string;
+  badge: string;
+  details: Record<string, any>;
+}

@@ -16,6 +16,10 @@ interface ShellHeaderProps {
   onSwitchView: (view: ActiveViewKey) => void;
   snapshot: GlobalSimulationSnapshot | null;
   isConnected: boolean;
+  isStoryModeOpen?: boolean;
+  onToggleStoryMode?: () => void;
+  isScenariosBarOpen?: boolean;
+  onToggleScenariosBar?: () => void;
 }
 
 export const ShellHeader: React.FC<ShellHeaderProps> = ({
@@ -23,6 +27,10 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
   onSwitchView,
   snapshot,
   isConnected,
+  isStoryModeOpen = false,
+  onToggleStoryMode,
+  isScenariosBarOpen = true,
+  onToggleScenariosBar,
 }) => {
   const kpis = snapshot?.kpis;
   const engine = snapshot?.engine;
@@ -216,8 +224,42 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
         </div>
       </div>
 
-      {/* Right status & live pulse */}
-      <div className="flex items-center gap-3">
+      {/* Right status, Story Mode & 12 Scenarios buttons */}
+      <div className="flex items-center gap-2.5">
+        {onToggleStoryMode && (
+          <button
+            type="button"
+            id="nav-guided-story-mode-btn"
+            onClick={onToggleStoryMode}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 border shadow-sm ${
+              isStoryModeOpen
+                ? 'bg-primary text-on-primary border-primary shadow-glow'
+                : 'bg-primary/10 text-primary border-primary/30 hover:bg-primary/20'
+            }`}
+            title="Open Interactive Guided Story Mode Wizard"
+          >
+            <span className="material-symbols-outlined text-[16px]">auto_stories</span>
+            <span>Guided Story Mode</span>
+          </button>
+        )}
+
+        {onToggleScenariosBar && (
+          <button
+            type="button"
+            id="nav-scenarios-bar-btn"
+            onClick={onToggleScenariosBar}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 border ${
+              isScenariosBarOpen
+                ? 'bg-surface-container-high text-on-surface border-primary/40'
+                : 'bg-surface-container-lowest text-on-surface-variant border-outline-variant/30 hover:text-on-surface'
+            }`}
+            title="Toggle Quick Runner for 12 Acceptance Scenarios"
+          >
+            <span className="material-symbols-outlined text-[16px]">fact_check</span>
+            <span>12 Scenarios</span>
+          </button>
+        )}
+
         <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container text-xs">
           <span className={`w-2 h-2 rounded-full ${isConnected ? 'bg-tertiary animate-ping' : 'bg-error'}`}></span>
           <span className="text-on-surface-variant font-medium">
