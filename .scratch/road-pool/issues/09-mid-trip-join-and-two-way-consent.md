@@ -4,12 +4,12 @@
 
 **Blocked by:** 08: Active Trip Dashboard with Live 4-Seat Cabin Layout & Vehicle Telematics
 
-**Status:** ready-for-agent
+**Status:** completed
 
-- [ ] On-screen demo triggers: "Simulate Compatible Joiner" and "Simulate Incompatible Joiner (>15% Detour)".
-- [ ] Routing engine verifies capacity, time windows, and hard 15% detour cap before initiating consent; rejecting violating requests with explicit explanation.
-- [ ] Dual in-context consent overlay displays:
+- [x] On-screen demo triggers: "Simulate Compatible Joiner" and "Simulate Incompatible Joiner (>15% Detour)".
+- [x] Routing engine verifies capacity, time windows, and hard 15% detour cap before initiating consent; rejecting violating requests with explicit explanation.
+- [x] Dual in-context consent overlay displays:
   - Driver Notification: pickup/drop-off, extra duration, proposed fare, and `[Accept Request]` / `[Reject Request]` buttons.
   - Existing Passenger Notification: revised route, arrival ETA delta, fare impact, and `[Accept Updated Plan]` / `[Decline Updated Plan]` buttons.
-- [ ] If either party declines, the existing route and fares remain unchanged and the candidate is rejected.
-- [ ] If both accept, route polyline updates, reserved seat is booked in the 4-seat cabin grid, and remaining Shapley fares are recomputed.
+- [x] If either party declines, the existing route and fares remain unchanged and the candidate is rejected.
+- [x] If both accept, route polyline updates, reserved seat is booked in the 4-seat cabin grid, and remaining Shapley fares are recomputed.

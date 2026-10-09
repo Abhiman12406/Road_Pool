@@ -5,6 +5,8 @@ import { CabinLayoutGrid } from '../../components/CabinLayoutGrid';
 import { StopsTimeline } from '../../components/StopsTimeline';
 import { TripCompletionReceipt } from '../../components/TripCompletionReceipt';
 import { ShapleySlideOverSheet } from '../../components/ShapleySlideOverSheet';
+import { TwoWayConsentModal } from '../../components/TwoWayConsentModal';
+import { IncompatibleDetourModal } from '../../components/IncompatibleDetourModal';
 import {
   deriveCabinOccupancy,
   deriveRouteTimeline,
@@ -21,6 +23,14 @@ import {
   buildCompatibleJoinCandidate,
   buildIncompatibleJoinCandidate,
 } from '../../services/scenarioService';
+import {
+  evaluateMidTripJoin,
+  resolveMidTripConsent,
+  DEMO_COMPATIBLE_JOINER,
+  DEMO_INCOMPATIBLE_JOINER,
+  type CandidateJoinRequest,
+  type MidTripJoinEvaluation,
+} from '../../services/midTripJoinService';
 
 interface PassengerActiveViewProps {
   snapshot: GlobalSimulationSnapshot | null;
@@ -61,6 +71,17 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
   const [activeVehicleId, setActiveVehicleId] = useState<string>(defaultVehicleId);
   const [isAdvancing, setIsAdvancing] = useState<boolean>(false);
   const [localVehicleOverride, setLocalVehicleOverride] = useState<Vehicle | null>(null);
+  const [localRequestsOverride, setLocalRequestsOverride] = useState<Record<string, RideRequest> | null>(null);
+
+  // Mid-trip join simulation states (Ticket 09)
+  const [activeEvaluation, setActiveEvaluation] = useState<MidTripJoinEvaluation | null>(null);
+  const [showConsentModal, setShowConsentModal] = useState<boolean>(false);
+  const [showIncompatibleModal, setShowIncompatibleModal] = useState<boolean>(false);
+  const [midTripToast, setMidTripToast] = useState<{ message: string; type: 'success' | 'info' | 'warning' } | null>(null);
+
+  const effectiveRequests = useMemo(() => {
+    return localRequestsOverride || requests;
+  }, [localRequestsOverride, requests]);
 
   // Cancellation & Receipt modals and toasts
   const [showCancelConfirmModal, setShowCancelConfirmModal] = useState<boolean>(false);
@@ -159,9 +180,9 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
   // Active rider request
   const activeReqId = session?.activeTripRequestId;
   const activeRequest: RideRequest | undefined = activeReqId
-    ? requests[activeReqId]
-    : Object.values(requests).find((r) => r.assigned_vehicle_id === currentVehicle.vehicle_id) ||
-      Object.values(requests)[0];
+    ? effectiveRequests[activeReqId]
+    : Object.values(effectiveRequests).find((r) => r.assigned_vehicle_id === currentVehicle.vehicle_id) ||
+      Object.values(effectiveRequests)[0];
 
   // Auto-open completion receipt when passenger reaches dropoff
   const isTripCompleted =
@@ -185,16 +206,56 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
 
   // Derive cabin layout & stops timeline
   const cabinState = useMemo(() => {
-    return deriveCabinOccupancy(currentVehicle, requests, currentVehicle.planned_stops);
-  }, [currentVehicle, requests]);
+    return deriveCabinOccupancy(currentVehicle, effectiveRequests, currentVehicle.planned_stops);
+  }, [currentVehicle, effectiveRequests]);
 
   const timelineState = useMemo(() => {
-    return deriveRouteTimeline(currentVehicle, requests);
-  }, [currentVehicle, requests]);
+    return deriveRouteTimeline(currentVehicle, effectiveRequests);
+  }, [currentVehicle, effectiveRequests]);
 
   const handleSelectSeat = (seat: CabinSeat) => {
     if (seat.requestId) {
       onSelectRequest(seat.requestId);
+    }
+  };
+
+  const handleSimulateJoiner = (candidate: CandidateJoinRequest) => {
+    const evalResult = evaluateMidTripJoin(currentVehicle, effectiveRequests, candidate);
+    setActiveEvaluation(evalResult);
+    if (!evalResult.isCompatible) {
+      setShowIncompatibleModal(true);
+    } else {
+      setShowConsentModal(true);
+    }
+  };
+
+  const handleResolveConsent = (
+    driverConsent: 'accepted' | 'rejected',
+    passengerConsent: 'accepted' | 'declined'
+  ) => {
+    if (!activeEvaluation) return;
+    const resolution = resolveMidTripConsent(
+      currentVehicle,
+      effectiveRequests,
+      activeEvaluation,
+      driverConsent,
+      passengerConsent
+    );
+
+    setShowConsentModal(false);
+
+    if (resolution.outcome === 'approved' && resolution.updatedVehicle && resolution.updatedRequests) {
+      setLocalVehicleOverride(resolution.updatedVehicle);
+      setLocalRequestsOverride(resolution.updatedRequests);
+      setMidTripToast({
+        message: resolution.reason,
+        type: 'success',
+      });
+    } else {
+      setMidTripToast({
+        message: resolution.reason,
+        type: 'info',
+      });
     }
   };
 
@@ -446,6 +507,9 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
                 Ticket 11 Verified
               </span>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-secondary/10 text-secondary border border-secondary/20">
+                Ticket 09 Verified
+              </span>
             </div>
             <p className="text-xs text-on-surface-variant font-medium mt-0.5">
               Pune EV Fleet • Live Cabin Occupancy Grid, Dynamic Cancellation Re-Routing & Trip Completion Receipt
@@ -503,6 +567,7 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
                     setActiveVehicleId(v.vehicle_id);
                     onSelectVehicle(v.vehicle_id);
                     setLocalVehicleOverride(null);
+                    setLocalRequestsOverride(null);
                   }}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 border ${
                     activeVehicleId === v.vehicle_id
@@ -523,6 +588,77 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* 1.5 Mid-Trip Join Simulation Action Bar (Ticket 09) */}
+      <div className="p-4 sm:p-5 rounded-3xl bg-surface-container-lowest border border-outline-variant/30 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold shrink-0">
+            <span className="material-symbols-outlined text-[22px]">dynamic_feed</span>
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-sm text-on-surface">
+                Dynamic Mid-Trip Join Injection & Two-Way Consent
+              </span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-secondary/15 text-secondary border border-secondary/20">
+                Interactive Simulation
+              </span>
+            </div>
+            <p className="text-xs text-on-surface-variant font-medium mt-0.5">
+              Simulate candidate insertion into en-route EV • Verifies &le;15.0% detour guarantee with driver & passenger consent
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <button
+            type="button"
+            id="simulate-compatible-joiner-btn"
+            onClick={() => handleSimulateJoiner(DEMO_COMPATIBLE_JOINER)}
+            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+          >
+            <span className="material-symbols-outlined text-[16px]">person_add</span>
+            <span>Simulate Compatible Joiner</span>
+          </button>
+          <button
+            type="button"
+            id="simulate-incompatible-joiner-btn"
+            onClick={() => handleSimulateJoiner(DEMO_INCOMPATIBLE_JOINER)}
+            className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+          >
+            <span className="material-symbols-outlined text-[16px]">warning</span>
+            <span>Simulate Incompatible Joiner (&gt;15% Detour)</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Mid-Trip Toast / Status Alert Banner */}
+      {midTripToast && (
+        <div
+          className={`p-4 rounded-2xl border text-xs flex items-center justify-between gap-3 animate-fade-in ${
+            midTripToast.type === 'success'
+              ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-950 dark:text-emerald-100'
+              : 'bg-primary/10 border-primary/30 text-on-surface'
+          }`}
+        >
+          <div className="flex items-center gap-2.5">
+            <span className={`material-symbols-outlined text-[20px] ${
+              midTripToast.type === 'success' ? 'text-emerald-600' : 'text-primary'
+            }`}>
+              {midTripToast.type === 'success' ? 'check_circle' : 'info'}
+            </span>
+            <span className="font-semibold">{midTripToast.message}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setMidTripToast(null)}
+            className="text-on-surface-variant hover:text-on-surface text-xs font-bold px-2 py-1"
+            aria-label="Dismiss message"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* 2. In-Context Mid-Trip Two-Way Consent Overlay / Rejection Banner */}
       {activeJoinCandidate && (
@@ -730,8 +866,6 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
           )}
         </div>
       )}
-
-      {/* 3. Main Active Dashboard Grid (5 cols left, 7 cols right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN: Vehicle Telematics, Cabin Layout Grid & Timeline (5 cols) */}
         <div className="lg:col-span-5 flex flex-col gap-6">
@@ -922,8 +1056,8 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
           {/* Interactive Map Box */}
           <div className="h-[750px] w-full rounded-3xl overflow-hidden shadow-card border border-outline-variant/30">
             <LiveMap
-              vehicles={vehicles}
-              requests={requests}
+              vehicles={localVehicleOverride ? { ...vehicles, [localVehicleOverride.vehicle_id]: localVehicleOverride } : vehicles}
+              requests={effectiveRequests}
               selectedVehicleId={currentVehicle.vehicle_id}
               onSelectVehicle={onSelectVehicle}
               onSelectRequest={onSelectRequest}
@@ -1022,6 +1156,23 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
         onClose={() => setIsShapleySheetOpen(false)}
         requestId={activeRequest?.request_id}
       />
+
+      {/* 7. Two-Way Consent Modal (Ticket 09) */}
+      {showConsentModal && activeEvaluation && (
+        <TwoWayConsentModal
+          evaluation={activeEvaluation}
+          onResolve={handleResolveConsent}
+          onClose={() => setShowConsentModal(false)}
+        />
+      )}
+
+      {/* 8. Detour Incompatible Constraint Violation Modal (Ticket 09) */}
+      {showIncompatibleModal && activeEvaluation && (
+        <IncompatibleDetourModal
+          evaluation={activeEvaluation}
+          onClose={() => setShowIncompatibleModal(false)}
+        />
+      )}
     </div>
   );
 };
