@@ -4,10 +4,10 @@
 
 **Blocked by:** 02: Pune Hybrid Router & Passenger Solo Ride Estimator
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Backend sliding-window buffer aggregates incoming requests with configurable window duration (default 15s–30s) and request-count threshold.
-- [ ] Requests arriving mid-window remain queued without being dropped or double-processed.
-- [ ] Window expiration or threshold trigger locks the current batch and dispatches it to the optimization pipeline.
-- [ ] Operations Request & Batch Manager screen (`/ops/batches`) lists pending and admitted requests with live countdown clock and vehicle load indicators.
-- [ ] Passenger Matching Waiting screen (`/passenger/waiting`) displays an animated countdown and batch window status.
+- [x] Backend sliding-window buffer aggregates incoming requests with configurable window duration (default 15s–30s) and request-count threshold.
+- [x] Requests arriving mid-window remain queued without being dropped or double-processed.
+- [x] Window expiration or threshold trigger locks the current batch and dispatches it to the optimization pipeline.
+- [x] Operations Request & Batch Manager screen (`/ops/batches`) lists pending and admitted requests with live countdown clock and vehicle load indicators.
+- [x] Passenger Matching Waiting screen (`/passenger/waiting`) displays an animated countdown and batch window status.

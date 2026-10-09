@@ -85,3 +85,64 @@ async def create_ride_request(cmd: CreateRideRequestCommand):
         )
     await sim_engine.broadcast_state()
     return {"status": "success", "request": req}
+
+class ConfigureBatchCommand(BaseModel):
+    window_interval_sec: Optional[int] = None
+    batch_threshold: Optional[int] = None
+
+@router.post("/batch/configure")
+async def configure_batch(cmd: ConfigureBatchCommand):
+    async with sim_engine.lock:
+        sim_engine.configure_batching(
+            window_interval_sec=cmd.window_interval_sec,
+            batch_threshold=cmd.batch_threshold
+        )
+    await sim_engine.broadcast_state()
+    return {
+        "status": "success",
+        "windowIntervalSec": sim_engine.state.engine.windowIntervalSec,
+        "batchThreshold": sim_engine.state.engine.batchThreshold
+    }
+
+@router.post("/batch/dispatch-now")
+async def dispatch_batch_now():
+    async with sim_engine.lock:
+        sim_engine.lock_and_dispatch_batch(trigger_reason="manual_dispatch")
+    await sim_engine.broadcast_state()
+    return {
+        "status": "success",
+        "currentWindowId": sim_engine.state.engine.currentWindowId,
+        "lastDispatchedWindowId": sim_engine.state.engine.lastDispatchedWindowId,
+        "lastDispatchReason": sim_engine.state.engine.lastDispatchReason
+    }
+
+class GenerateDemandCommand(BaseModel):
+    count: int = 1
+
+@router.post("/batch/generate-demand")
+async def generate_demand(cmd: GenerateDemandCommand):
+    async with sim_engine.lock:
+        created = sim_engine.generate_synthetic_demand(count=max(1, min(10, cmd.count)))
+    await sim_engine.broadcast_state()
+    return {
+        "status": "success",
+        "count": len(created),
+        "generated_requests": created
+    }
+
+@router.get("/batches")
+async def get_batches():
+    engine = sim_engine.state.engine
+    current_id = engine.currentWindowId
+    pending = [r for r in sim_engine.state.requests.values() if r.status == "waiting_batch" and r.batch_id == current_id]
+    admitted = [r for r in sim_engine.state.requests.values() if r.status != "waiting_batch"]
+    return {
+        "currentWindowId": current_id,
+        "windowIntervalSec": engine.windowIntervalSec,
+        "timeRemainingInWindowSec": engine.timeRemainingInWindowSec,
+        "batchThreshold": engine.batchThreshold,
+        "batchStatus": engine.batchStatus,
+        "queuedRequestCount": len(pending),
+        "pendingRequests": pending,
+        "admittedCount": len(admitted)
+    }

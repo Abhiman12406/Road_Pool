@@ -40,6 +40,7 @@ export interface RideRequest {
   solo_fare_inr: number;
   status: 'waiting_batch' | 'matched' | 'en_route_pickup' | 'in_transit' | 'dropped_off' | 'rejected';
   assigned_vehicle_id: string | null;
+  batch_id?: number | null;
   pooled_eta_sec: number | null;
   detour_pct: number | null;
   shapley_fare_inr: number | null;
@@ -62,6 +63,11 @@ export interface SimulationEngineState {
   currentWindowId: number;
   windowIntervalSec: number;
   timeRemainingInWindowSec: number;
+  batchThreshold: number;
+  batchStatus: 'intake_open' | 'locked_optimizing' | 'dispatched';
+  queuedRequestCount: number;
+  lastDispatchReason?: string | null;
+  lastDispatchedWindowId?: number | null;
   tickSpeed: '0.5x' | '1x' | '2x' | '5x';
   isDemoMode: boolean;
   activeScenario: string;

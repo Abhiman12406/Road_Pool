@@ -22,6 +22,7 @@ class RideRequest(BaseModel):
     solo_fare_inr: float = 120.0
     status: Literal['waiting_batch', 'matched', 'en_route_pickup', 'in_transit', 'dropped_off', 'rejected'] = 'waiting_batch'
     assigned_vehicle_id: Optional[str] = None
+    batch_id: Optional[int] = None
     pooled_eta_sec: Optional[int] = None
     detour_pct: Optional[float] = None
     shapley_fare_inr: Optional[float] = None
@@ -63,6 +64,11 @@ class SimulationEngineState(BaseModel):
     currentWindowId: int = 101
     windowIntervalSec: int = 30
     timeRemainingInWindowSec: int = 30
+    batchThreshold: int = 6
+    batchStatus: Literal['intake_open', 'locked_optimizing', 'dispatched'] = 'intake_open'
+    queuedRequestCount: int = 0
+    lastDispatchReason: Optional[str] = None
+    lastDispatchedWindowId: Optional[int] = None
     tickSpeed: Literal['0.5x', '1x', '2x', '5x'] = '1x'
     isDemoMode: bool = True
     activeScenario: str = "default_pune"

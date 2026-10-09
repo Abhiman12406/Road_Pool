@@ -1,12 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSimulationSocket } from './services/simulationService';
-import { ShellHeader } from './components/ShellHeader';
+import { ShellHeader, type ActiveViewKey } from './components/ShellHeader';
 import { OpsOverviewView } from './views/ops/OpsOverviewView';
+import { BatchManagerView } from './views/ops/BatchManagerView';
 import { PassengerHomeView } from './views/passenger/PassengerHomeView';
+import { PassengerWaitingView } from './views/passenger/PassengerWaitingView';
 
 export function App() {
-  const [currentView, setCurrentView] = useState<'ops' | 'passenger'>('ops');
-  const { snapshot, isConnected, error, sendControl, sendSelection } = useSimulationSocket();
+  const [currentView, setCurrentView] = useState<ActiveViewKey>(() => {
+    const path = window.location.pathname;
+    if (path.includes('batches') || path.includes('/ops/batches')) return 'ops-batches';
+    if (path.includes('waiting') || path.includes('/passenger/waiting')) return 'passenger-waiting';
+    if (path.includes('passenger')) return 'passenger-home';
+    return 'ops-batches'; // Default to operations batch manager per Ticket 03
+  });
+
+  const {
+    snapshot,
+    isConnected,
+    error,
+    sendControl,
+    sendSelection,
+    dispatchBatchNow,
+    configureBatch,
+    generateDemand,
+  } = useSimulationSocket();
+
+  // Sync browser history state if user clicks back/forward
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      if (path.includes('batches')) setCurrentView('ops-batches');
+      else if (path.includes('waiting')) setCurrentView('passenger-waiting');
+      else if (path.includes('passenger')) setCurrentView('passenger-home');
+      else setCurrentView('ops-overview');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleSwitchView = (view: ActiveViewKey) => {
+    setCurrentView(view);
+    const pathMap: Record<ActiveViewKey, string> = {
+      'ops-overview': '/ops',
+      'ops-batches': '/ops/batches',
+      'passenger-home': '/passenger/home',
+      'passenger-waiting': '/passenger/waiting',
+    };
+    window.history.pushState(null, '', pathMap[view]);
+  };
 
   const handleSelectVehicle = (vehicleId: string) => {
     sendSelection(vehicleId, null);
@@ -21,7 +63,7 @@ export function App() {
       {/* 1. Global Shell Navigation Bar */}
       <ShellHeader
         currentView={currentView}
-        onSwitchView={setCurrentView}
+        onSwitchView={handleSwitchView}
         snapshot={snapshot}
         isConnected={isConnected}
       />
@@ -41,16 +83,40 @@ export function App() {
 
       {/* 2. Main Content View Area */}
       <main className={`flex-1 p-6 max-w-[1600px] w-full mx-auto ${isConnected ? 'mt-16' : 'mt-2'}`}>
-        {currentView === 'ops' ? (
+        {currentView === 'ops-overview' && (
           <OpsOverviewView
             snapshot={snapshot}
             onControl={sendControl}
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}
           />
-        ) : (
+        )}
+
+        {currentView === 'ops-batches' && (
+          <BatchManagerView
+            snapshot={snapshot}
+            onDispatchNow={dispatchBatchNow}
+            onConfigureBatch={configureBatch}
+            onGenerateDemand={generateDemand}
+            onSelectRequest={handleSelectRequest}
+            onSelectVehicle={handleSelectVehicle}
+          />
+        )}
+
+        {currentView === 'passenger-home' && (
           <PassengerHomeView
             snapshot={snapshot}
+            onSelectVehicle={handleSelectVehicle}
+            onSelectRequest={handleSelectRequest}
+            onNavigateToWaiting={() => handleSwitchView('passenger-waiting')}
+          />
+        )}
+
+        {currentView === 'passenger-waiting' && (
+          <PassengerWaitingView
+            snapshot={snapshot}
+            onDispatchNow={dispatchBatchNow}
+            onBackToBooking={() => handleSwitchView('passenger-home')}
             onSelectVehicle={handleSelectVehicle}
             onSelectRequest={handleSelectRequest}
           />

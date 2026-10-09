@@ -79,5 +79,51 @@ export function useSimulationSocket() {
     }
   }, []);
 
-  return { snapshot, isConnected, error, sendControl, sendSelection };
+  const dispatchBatchNow = useCallback(async () => {
+    try {
+      await fetch(`${API_BASE}/simulation/batch/dispatch-now`, {
+        method: 'POST',
+      });
+    } catch (e) {
+      console.error('Dispatch error:', e);
+    }
+  }, []);
+
+  const configureBatch = useCallback(async (windowIntervalSec?: number, batchThreshold?: number) => {
+    try {
+      await fetch(`${API_BASE}/simulation/batch/configure`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          window_interval_sec: windowIntervalSec,
+          batch_threshold: batchThreshold,
+        }),
+      });
+    } catch (e) {
+      console.error('Configure batch error:', e);
+    }
+  }, []);
+
+  const generateDemand = useCallback(async (count: number = 1) => {
+    try {
+      await fetch(`${API_BASE}/simulation/batch/generate-demand`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ count }),
+      });
+    } catch (e) {
+      console.error('Generate demand error:', e);
+    }
+  }, []);
+
+  return {
+    snapshot,
+    isConnected,
+    error,
+    sendControl,
+    sendSelection,
+    dispatchBatchNow,
+    configureBatch,
+    generateDemand,
+  };
 }

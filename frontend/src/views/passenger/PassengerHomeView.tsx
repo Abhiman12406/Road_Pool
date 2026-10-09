@@ -13,6 +13,7 @@ interface PassengerHomeViewProps {
   snapshot: GlobalSimulationSnapshot | null;
   onSelectVehicle: (id: string) => void;
   onSelectRequest: (id: string) => void;
+  onNavigateToWaiting?: () => void;
 }
 
 interface QuickPreset {
@@ -53,6 +54,7 @@ export const PassengerHomeView: React.FC<PassengerHomeViewProps> = ({
   snapshot,
   onSelectVehicle,
   onSelectRequest,
+  onNavigateToWaiting,
 }) => {
   const [landmarks, setLandmarks] = useState<PuneLandmark[]>(FALLBACK_PUNE_LANDMARKS);
   const [pickupId, setPickupId] = useState<string>('shivajinagar');
@@ -158,6 +160,11 @@ export const PassengerHomeView: React.FC<PassengerHomeViewProps> = ({
         passenger_name: 'Elena Vance (Rider)',
       });
       setBookingStatus(`Ride request admitted to Rolling Batch #${snapshot?.engine.currentWindowId || 101}`);
+      if (onNavigateToWaiting) {
+        setTimeout(() => {
+          onNavigateToWaiting();
+        }, 1200);
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Booking failed';
       setBookingStatus(`Failed to queue ride: ${msg}`);

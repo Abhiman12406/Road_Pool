@@ -4,7 +4,7 @@ RidePool AI - Global Simulation Service & State Manager
 import asyncio
 import math
 import time
-from typing import Dict, List, Set, Any
+from typing import Dict, List, Set, Any, Optional
 from fastapi import WebSocket
 from app.models.simulation import (
     GlobalSimulationSnapshot, SimulationEngineState, SimulationKPIs,
@@ -123,6 +123,7 @@ class SimulationEngine:
                 passenger_name="Aarav Sharma",
                 pickup=PUNE_LANDMARKS["Shivajinagar"],
                 dropoff=PUNE_LANDMARKS["Baner"],
+                batch_id=100,
                 request_time="17:40:00",
                 solo_eta_sec=720,
                 solo_distance_km=7.8,
@@ -139,6 +140,7 @@ class SimulationEngine:
                 passenger_name="Pooja Patil",
                 pickup=PUNE_LANDMARKS["Swargate"],
                 dropoff=PUNE_LANDMARKS["Pune Station"],
+                batch_id=100,
                 request_time="17:42:15",
                 solo_eta_sec=540,
                 solo_distance_km=4.6,
@@ -155,6 +157,7 @@ class SimulationEngine:
                 passenger_name="Rohan Joshi",
                 pickup=PUNE_LANDMARKS["Kothrud"],
                 dropoff=PUNE_LANDMARKS["Hinjewadi"],
+                batch_id=101,
                 request_time="17:45:10",
                 solo_eta_sec=1200,
                 solo_distance_km=16.4,
@@ -172,7 +175,10 @@ class SimulationEngine:
                 status='running',
                 currentWindowId=101,
                 windowIntervalSec=settings.DEFAULT_WINDOW_INTERVAL_SEC,
-                timeRemainingInWindowSec=22,
+                timeRemainingInWindowSec=settings.DEFAULT_WINDOW_INTERVAL_SEC,
+                batchThreshold=settings.DEFAULT_BATCH_SIZE_THRESHOLD,
+                batchStatus='intake_open',
+                queuedRequestCount=1,
                 tickSpeed='1x',
                 isDemoMode=True,
                 activeScenario="Pune Metro Corridor"
@@ -243,22 +249,107 @@ class SimulationEngine:
         # Step simulation window forward
         self._tick_step(seconds)
 
-    def run_next_batch(self):
-        # Advance window and trigger solver
+    def configure_batching(self, window_interval_sec: Optional[int] = None, batch_threshold: Optional[int] = None):
+        """Configures rolling window duration and request count threshold."""
+        if window_interval_sec is not None and window_interval_sec > 0:
+            self.state.engine.windowIntervalSec = window_interval_sec
+            if self.state.engine.timeRemainingInWindowSec > window_interval_sec:
+                self.state.engine.timeRemainingInWindowSec = window_interval_sec
+        if batch_threshold is not None and batch_threshold > 0:
+            self.state.engine.batchThreshold = batch_threshold
+
+    def lock_and_dispatch_batch(self, trigger_reason: str = "timer_expired"):
+        """
+        Locks the current rolling window batch, prevents duplicate admissions,
+        and dispatches all buffered requests into the optimization matching pipeline.
+        """
+        window_id = self.state.engine.currentWindowId
+        self.state.engine.batchStatus = "locked_optimizing"
+        self.state.engine.lastDispatchReason = trigger_reason
+        self.state.engine.lastDispatchedWindowId = window_id
+
+        # Aggregate requests waiting in this batch or earlier
+        admitted_requests = [
+            r for r in self.state.requests.values()
+            if r.status == "waiting_batch" and (r.batch_id is None or r.batch_id <= window_id)
+        ]
+
+        # Dispatch and admit each request
+        for req in admitted_requests:
+            req.status = "matched"
+            # Assign candidate vehicle with available seats
+            assigned_vehicle = None
+            for v in self.state.vehicles.values():
+                if v.occupied_seats + req.party_size <= v.capacity:
+                    assigned_vehicle = v
+                    break
+
+            if assigned_vehicle:
+                req.assigned_vehicle_id = assigned_vehicle.vehicle_id
+                req.pooled_eta_sec = int(round(req.solo_eta_sec * 1.09)) # 9% added time within 15% cap
+                req.detour_pct = 9.0
+                req.shapley_fare_inr = round(req.solo_fare_inr * 0.74, 2) # ~26% savings
+                assigned_vehicle.occupied_seats += req.party_size
+                assigned_vehicle.status = "en_route"
+                
+                # Append planned stops
+                assigned_vehicle.planned_stops.append(RouteStop(
+                    stop_id=f"S-PK-{req.request_id}",
+                    request_id=req.request_id,
+                    stop_type="pickup",
+                    location=req.pickup,
+                    passenger_name=req.passenger_name,
+                    eta_seconds_from_now=200,
+                    completed=False
+                ))
+                assigned_vehicle.planned_stops.append(RouteStop(
+                    stop_id=f"S-DP-{req.request_id}",
+                    request_id=req.request_id,
+                    stop_type="dropoff",
+                    location=req.dropoff,
+                    passenger_name=req.passenger_name,
+                    eta_seconds_from_now=req.pooled_eta_sec or 720,
+                    completed=False
+                ))
+
+                if not assigned_vehicle.route_polyline or len(assigned_vehicle.route_polyline) < 2:
+                    assigned_vehicle.route_polyline = [
+                        [assigned_vehicle.current_location.lat, assigned_vehicle.current_location.lng],
+                        [req.pickup.lat, req.pickup.lng],
+                        [req.dropoff.lat, req.dropoff.lng]
+                    ]
+                self.state.kpis.servedPassengersCount += 1
+            else:
+                # Vehicle fleet at capacity; queued for overflow
+                req.pooled_eta_sec = req.solo_eta_sec
+                req.shapley_fare_inr = round(req.solo_fare_inr * 0.75, 2)
+
+        # Update KPIs
+        self.state.kpis.activePoolsCount = len([v for v in self.state.vehicles.values() if v.status == 'en_route'])
+        self.state.kpis.totalTripsInFlight = len([
+            r for r in self.state.requests.values()
+            if r.status in ['waiting_batch', 'matched', 'en_route_pickup', 'in_transit']
+        ])
+
+        # If active session was in this batch, transition its lifecycle
+        active_session = self.state.activePassengerSession
+        if active_session.activeTripRequestId in [r.request_id for r in admitted_requests]:
+            active_session.lifecycleStatus = "matched"
+            active_session.actualDetourPct = 9.0
+            matched_req = self.state.requests[active_session.activeTripRequestId]
+            active_session.assignedVehicleId = matched_req.assigned_vehicle_id
+
+        # Advance rolling window cycle
         self.state.engine.currentWindowId += 1
         self.state.engine.timeRemainingInWindowSec = self.state.engine.windowIntervalSec
-        # Simulate batch admission of waiting request
-        if "REQ-P103" in self.state.requests:
-            req = self.state.requests["REQ-P103"]
-            req.status = "matched"
-            req.assigned_vehicle_id = "V-103"
-            req.pooled_eta_sec = 1320
-            req.detour_pct = 10.0
-            req.shapley_fare_inr = 245.0
-            self.state.vehicles["V-103"].status = "en_route"
-            self.state.vehicles["V-103"].occupied_seats = 1
-            self.state.kpis.servedPassengersCount += 1
-            self.state.kpis.activePoolsCount = 3
+        self.state.engine.batchStatus = "intake_open"
+        self.state.engine.queuedRequestCount = len([
+            r for r in self.state.requests.values()
+            if r.status == 'waiting_batch' and r.batch_id == self.state.engine.currentWindowId
+        ])
+
+    def run_next_batch(self):
+        self.lock_and_dispatch_batch(trigger_reason="manual_dispatch")
 
     def create_passenger_request(
         self,
@@ -285,6 +376,7 @@ class SimulationEngine:
             pickup=Location(lat=pickup_lat, lng=pickup_lng, name=pickup_name),
             dropoff=Location(lat=dropoff_lat, lng=dropoff_lng, name=dropoff_name),
             party_size=party_size,
+            batch_id=self.state.engine.currentWindowId,
             request_time=now_str,
             solo_eta_sec=solo_eta_sec,
             solo_distance_km=solo_distance_km,
@@ -296,6 +388,13 @@ class SimulationEngine:
             shapley_fare_inr=None,
         )
         self.state.requests[req_id] = req
+        
+        # Update queued request count for current active batch
+        self.state.engine.queuedRequestCount = len([
+            r for r in self.state.requests.values() 
+            if r.status == 'waiting_batch' and r.batch_id == self.state.engine.currentWindowId
+        ])
+        
         self.state.kpis.totalTripsInFlight = len([
             r for r in self.state.requests.values() 
             if r.status in ['waiting_batch', 'matched', 'en_route_pickup', 'in_transit']
@@ -306,14 +405,47 @@ class SimulationEngine:
         self.state.activePassengerSession.fareSoloDirectInr = solo_fare_inr
         self.state.activePassengerSession.fareShapleyPooledInr = round(solo_fare_inr * 0.75, 2)
         
+        # Check if batch size threshold has been reached
+        if self.state.engine.queuedRequestCount >= self.state.engine.batchThreshold:
+            self.lock_and_dispatch_batch(trigger_reason="threshold_reached")
+        
         return req
+
+    def generate_synthetic_demand(self, count: int = 1) -> List[RideRequest]:
+        """Generates realistic synthetic passenger requests along Pune corridors."""
+        pune_sample_routes = [
+            ("Swargate Junction", 18.5018, 73.8636, "Pune Railway Station", 18.5289, 73.8744, 4.6, 540, 122.0, "Pooja Patil"),
+            ("Kothrud Stand", 18.5074, 73.8077, "Viman Nagar Town Centre", 18.5679, 73.9143, 14.5, 1500, 310.0, "Aditya Kulkarni"),
+            ("Baner Road", 18.5590, 73.7868, "Hinjewadi IT Park Phase 1", 18.5913, 73.7389, 8.2, 840, 185.0, "Neha Deshmukh"),
+            ("Aundh Parihar Chowk", 18.5580, 73.8075, "Magarpatta Cybercity", 18.5135, 73.9318, 16.8, 1800, 360.0, "Rahul Shinde"),
+            ("Shivajinagar Hub", 18.5314, 73.8446, "Pune International Airport", 18.5822, 73.9197, 11.4, 1200, 260.0, "Vikram Sen"),
+            ("Deccan Gymkhana", 18.5167, 73.8415, "Hadapsar Gadital", 18.4967, 73.9284, 10.2, 1100, 235.0, "Ananya Rao"),
+        ]
+        
+        created = []
+        for i in range(count):
+            sample = pune_sample_routes[(len(self.state.requests) + i) % len(pune_sample_routes)]
+            req = self.create_passenger_request(
+                pickup_name=sample[0],
+                pickup_lat=sample[1],
+                pickup_lng=sample[2],
+                dropoff_name=sample[3],
+                dropoff_lat=sample[4],
+                dropoff_lng=sample[5],
+                party_size=1 if i % 3 != 2 else 2,
+                solo_distance_km=sample[6],
+                solo_eta_sec=sample[7],
+                solo_fare_inr=sample[8],
+                passenger_name=sample[9]
+            )
+            created.append(req)
+        return created
 
     def _tick_step(self, elapsed: float):
         # Update timer
         remaining = self.state.engine.timeRemainingInWindowSec - elapsed
         if remaining <= 0:
-            self.state.engine.currentWindowId += 1
-            self.state.engine.timeRemainingInWindowSec = self.state.engine.windowIntervalSec
+            self.lock_and_dispatch_batch(trigger_reason="timer_expired")
         else:
             self.state.engine.timeRemainingInWindowSec = max(0, int(remaining))
 

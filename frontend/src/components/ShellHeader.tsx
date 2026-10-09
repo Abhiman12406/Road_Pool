@@ -1,9 +1,11 @@
 import React from 'react';
 import type { GlobalSimulationSnapshot } from '../types/simulation';
 
+export type ActiveViewKey = 'ops-overview' | 'ops-batches' | 'passenger-home' | 'passenger-waiting';
+
 interface ShellHeaderProps {
-  currentView: 'ops' | 'passenger';
-  onSwitchView: (view: 'ops' | 'passenger') => void;
+  currentView: ActiveViewKey;
+  onSwitchView: (view: ActiveViewKey) => void;
   snapshot: GlobalSimulationSnapshot | null;
   isConnected: boolean;
 }
@@ -17,10 +19,13 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
   const kpis = snapshot?.kpis;
   const engine = snapshot?.engine;
 
+  const isOps = currentView.startsWith('ops');
+  const isPassenger = currentView.startsWith('passenger');
+
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-surface/90 backdrop-blur-xl z-50 border-b border-outline-variant/30 px-6 flex items-center justify-between">
       {/* Brand & Archetype Switcher */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-5">
         <div className="flex items-center gap-2.5">
           <div className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shadow-glow">
             <span className="material-symbols-outlined text-on-primary-container text-[22px]">hub</span>
@@ -38,9 +43,10 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
         {/* Global Archetype Switcher */}
         <div className="bg-surface-container-high p-1 rounded-full flex items-center shadow-inner">
           <button
-            onClick={() => onSwitchView('ops')}
-            className={`px-4 py-1 rounded-full text-xs font-semibold transition-all ${
-              currentView === 'ops'
+            type="button"
+            onClick={() => onSwitchView('ops-overview')}
+            className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all ${
+              isOps
                 ? 'bg-surface-container-lowest text-on-surface shadow-sm'
                 : 'text-on-surface-variant hover:text-on-surface'
             }`}
@@ -48,15 +54,73 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
             Operations Console
           </button>
           <button
-            onClick={() => onSwitchView('passenger')}
-            className={`px-4 py-1 rounded-full text-xs font-semibold transition-all ${
-              currentView === 'passenger'
+            type="button"
+            onClick={() => onSwitchView('passenger-home')}
+            className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all ${
+              isPassenger
                 ? 'bg-surface-container-lowest text-on-surface shadow-sm'
                 : 'text-on-surface-variant hover:text-on-surface'
             }`}
           >
             Passenger App
           </button>
+        </div>
+
+        {/* Sub-view Navigation Pills */}
+        <div className="hidden md:flex items-center gap-1 bg-surface-container-low p-1 rounded-full border border-outline-variant/30 text-xs">
+          {isOps ? (
+            <>
+              <button
+                type="button"
+                onClick={() => onSwitchView('ops-overview')}
+                className={`px-3 py-1 rounded-full transition-all ${
+                  currentView === 'ops-overview'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                Overview Console
+              </button>
+              <button
+                type="button"
+                onClick={() => onSwitchView('ops-batches')}
+                className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
+                  currentView === 'ops-batches'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[14px]">view_timeline</span>
+                <span>Batch Manager (/ops/batches)</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => onSwitchView('passenger-home')}
+                className={`px-3 py-1 rounded-full transition-all ${
+                  currentView === 'passenger-home'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                Book Ride (/passenger/home)
+              </button>
+              <button
+                type="button"
+                onClick={() => onSwitchView('passenger-waiting')}
+                className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all ${
+                  currentView === 'passenger-waiting'
+                    ? 'bg-primary text-on-primary font-bold shadow-sm'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                <span>Matching Queue (/passenger/waiting)</span>
+              </button>
+            </>
+          )}
         </div>
 
         {/* Batch Window Indicator */}
