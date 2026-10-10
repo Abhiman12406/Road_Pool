@@ -35,25 +35,15 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
 
   useGSAP(
     () => {
-      if (isOpen && sheetRef.current) {
-        gsap.from(sheetRef.current, {
-          scale: 0.95,
-          opacity: 0,
-          y: 16,
-          duration: 0.28,
-          ease: 'power3.out',
-        });
-        gsap.from('.shapley-card', {
-          opacity: 0,
-          y: 16,
-          duration: 0.35,
-          stagger: 0.05,
-          delay: 0.05,
-          ease: 'power2.out',
-        });
+      if (isOpen && explanation) {
+        gsap.fromTo(
+          '.shapley-card',
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.25, stagger: 0.04, ease: 'power2.out' }
+        );
       }
     },
-    { dependencies: [isOpen, activeTab, explanation], scope: sheetRef }
+    { dependencies: [isOpen, activeTab, Boolean(explanation)], scope: sheetRef }
   );
 
   // Handle ESC key press
@@ -122,22 +112,22 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
         ref={sheetRef}
         className={`relative w-full ${
           isExpanded ? 'max-w-5xl' : 'max-w-3xl'
-        } bg-surface-container-lowest text-on-surface shadow-2xl rounded-2xl sm:rounded-3xl border border-outline-variant/40 flex flex-col max-h-[90vh] z-10 overflow-hidden transition-all duration-300`}
+        } bg-white text-black shadow-2xl rounded-2xl sm:rounded-3xl border border-[#e2e2e2] flex flex-col max-h-[90vh] z-10 overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200 transition-all`}
       >
         {/* Header */}
-        <div className="p-5 sm:p-6 border-b border-outline-variant/30 bg-surface-container-low/50 flex items-start justify-between gap-4">
+        <div className="p-5 sm:p-6 border-b border-[#efefef] bg-[#fafafa] flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-tertiary-container text-on-tertiary-container flex items-center justify-center shadow-glow">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center shadow-sm">
               <span className="material-symbols-outlined text-[24px]">balance</span>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold text-on-surface">Why am I paying this fare?</h2>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
+                <h2 className="text-lg font-bold text-black font-display">Why am I paying this fare?</h2>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
                   Game Theory Verified
                 </span>
               </div>
-              <p className="text-xs text-on-surface-variant mt-0.5">
+              <p className="text-xs text-[#5e5e5e] mt-0.5">
                 Explainable Shapley Value Fair-Fare Allocation • Cooperative Cost Sharing
               </p>
             </div>
@@ -169,14 +159,14 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
         </div>
 
         {/* Tab Navigation */}
-        <div className="px-6 pt-3 bg-surface-container-lowest border-b border-outline-variant/30 flex items-center gap-2 text-xs">
+        <div className="px-6 pt-3 bg-white border-b border-[#efefef] flex items-center gap-2 text-xs">
           <button
             type="button"
             onClick={() => setActiveTab('explanation')}
             className={`pb-2.5 px-3 font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
               activeTab === 'explanation'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-on-surface-variant hover:text-on-surface'
+                ? 'border-black text-black'
+                : 'border-transparent text-[#5e5e5e] hover:text-black'
             }`}
           >
             <span className="material-symbols-outlined text-[16px]">receipt_long</span>
@@ -187,8 +177,8 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
             onClick={() => setActiveTab('matrix')}
             className={`pb-2.5 px-3 font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
               activeTab === 'matrix'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-on-surface-variant hover:text-on-surface'
+                ? 'border-black text-black'
+                : 'border-transparent text-[#5e5e5e] hover:text-black'
             }`}
           >
             <span className="material-symbols-outlined text-[16px]">grid_view</span>
@@ -199,8 +189,8 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
             onClick={() => setActiveTab('axioms')}
             className={`pb-2.5 px-3 font-semibold border-b-2 transition-all flex items-center gap-1.5 ${
               activeTab === 'axioms'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-on-surface-variant hover:text-on-surface'
+                ? 'border-black text-black'
+                : 'border-transparent text-[#5e5e5e] hover:text-black'
             }`}
           >
             <span className="material-symbols-outlined text-[16px]">verified</span>
@@ -209,7 +199,7 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
         </div>
 
         {/* Body Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white">
           {isLoading ? (
             <div className="py-20 flex flex-col items-center justify-center gap-3 text-on-surface-variant">
               <span className="material-symbols-outlined text-[36px] animate-spin text-primary">
@@ -600,14 +590,14 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-outline-variant/30 bg-surface-container-low/50 flex items-center justify-between text-xs">
-          <span className="text-on-surface-variant text-[11px]">
+        <div className="p-4 border-t border-[#efefef] bg-[#fafafa] flex items-center justify-between text-xs">
+          <span className="text-[#5e5e5e] text-[11px]">
             Pune Metro Hybrid Router • Subadditive Route Cost Model
           </span>
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-primary text-on-primary font-bold hover:bg-primary/90 transition-all"
+            className="px-5 py-2 rounded-full bg-black text-white font-bold hover:bg-[#282828] transition-all"
           >
             Got It
           </button>
