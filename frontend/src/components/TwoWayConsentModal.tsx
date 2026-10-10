@@ -27,7 +27,7 @@ export const TwoWayConsentModal: React.FC<TwoWayConsentModalProps> = ({
   const isRejected = driverDecision === 'rejected' || passengerDecision === 'declined';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div
         className="w-full max-w-2xl bg-white rounded-2xl border border-[#efefef] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         role="dialog"

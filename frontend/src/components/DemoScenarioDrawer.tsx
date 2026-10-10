@@ -53,6 +53,7 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
     timestamp: string;
   } | null>(null);
   const [simActionPending, setSimActionPending] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   // Close on Escape key
   useEffect(() => {
@@ -108,15 +109,15 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true" aria-label="Demo and Scenarios Drawer">
+    <div className="fixed inset-0 z-[9999] overflow-hidden" role="dialog" aria-modal="true" aria-label="Demo and Scenarios Drawer">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-xl bg-white border-l border-[#efefef] flex flex-col shadow-2xl">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10 z-[10000]">
+        <div className={`w-screen ${isExpanded ? 'max-w-5xl' : 'max-w-xl'} transition-all duration-300 bg-white border-l border-[#efefef] flex flex-col shadow-2xl`}>
           {/* Header */}
           <div className="p-5 border-b border-[#efefef] flex items-center justify-between bg-white">
             <div className="flex items-center gap-3">
@@ -136,9 +137,34 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
+              {activeScenarioId !== null && (
+                <button
+                  type="button"
+                  id="btn-scenarios-watch-map"
+                  onClick={onClose}
+                  className="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 flex items-center gap-1 transition-colors mr-1"
+                  title="View scenario simulation on the map"
+                >
+                  <span className="material-symbols-outlined text-[14px]">map</span>
+                  <span>Watch on Map</span>
+                </button>
+              )}
               <button
                 type="button"
+                id="btn-scenarios-expand"
+                onClick={() => setIsExpanded((prev) => !prev)}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[#5e5e5e] hover:text-black hover:bg-[#efefef] transition-colors"
+                title={isExpanded ? "Collapse to side drawer" : "Expand to wide scenarios console"}
+                aria-label={isExpanded ? "Collapse to side drawer" : "Expand to wide scenarios console"}
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  {isExpanded ? 'close_fullscreen' : 'open_in_full'}
+                </span>
+              </button>
+              <button
+                type="button"
+                id="btn-scenarios-close"
                 onClick={onClose}
                 className="w-8 h-8 rounded-full flex items-center justify-center text-[#5e5e5e] hover:text-black hover:bg-[#efefef] transition-colors"
                 aria-label="Close drawer"

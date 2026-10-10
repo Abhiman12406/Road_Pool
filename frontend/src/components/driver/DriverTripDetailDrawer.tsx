@@ -76,7 +76,7 @@ export const DriverTripDetailDrawer: React.FC<DriverTripDetailDrawerProps> = ({
   return (
     <div
       id="driver-trip-detail-drawer"
-      className="fixed inset-0 z-50 overflow-hidden bg-black/50 backdrop-blur-sm animate-fade-in flex justify-end"
+      className="fixed inset-0 z-[9990] overflow-hidden bg-black/50 backdrop-blur-sm animate-fade-in flex justify-end"
     >
       <div
         className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-200"

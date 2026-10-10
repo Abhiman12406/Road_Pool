@@ -101,7 +101,7 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end" id="shapley-slideover-sheet">
+    <div className="fixed inset-0 z-[9990] flex justify-end" id="shapley-slideover-sheet">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-on-surface/40 backdrop-blur-sm transition-opacity"

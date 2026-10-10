@@ -369,7 +369,7 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
 
       {/* Cancel Confirmation Modal */}
       {showCancelModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+        <div className="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
           <div className="bg-white rounded-2xl border border-[#efefef] p-6 max-w-sm w-full space-y-4 shadow-2xl">
             <h3 className="font-bold text-lg text-black font-display">Cancel ride request?</h3>
             <p className="text-xs text-[#5e5e5e] leading-relaxed">

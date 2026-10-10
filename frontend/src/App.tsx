@@ -174,6 +174,8 @@ export function App() {
   const effectiveSnapshot = scenarioSnapshotOverride || snapshot;
   const isDriver = currentView.startsWith('driver');
   const isStandalonePage = currentView === 'landing' || currentView === 'login' || currentView === 'signup';
+  const hasSubHeaderBanner = !isStandalonePage && (scenarioSnapshotOverride !== null || !isConnected);
+  const contentTopSpacing = isStandalonePage ? 'mt-16' : hasSubHeaderBanner ? 'mt-[104px]' : 'mt-16';
 
   return (
     <AuthProvider>
@@ -189,9 +191,43 @@ export function App() {
           onOpenDemoDrawer={handleOpenDemoDrawer}
         />
 
+        {/* Active Acceptance Scenario Banner */}
+        {scenarioSnapshotOverride && !isStandalonePage && (
+          <div className="fixed top-16 left-0 right-0 z-30 bg-emerald-950 text-white px-4 sm:px-6 py-2.5 text-xs font-medium flex items-center justify-between shadow-md border-b border-emerald-800">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-bold text-emerald-300">
+                Acceptance Scenario Active
+              </span>
+              <span className="text-zinc-500 hidden sm:inline">|</span>
+              <span className="text-zinc-200 hidden md:inline">
+                Deterministic Pune benchmark corridor active. Routes, fleet markers and fares reflect this snapshot.
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleOpenDemoDrawer}
+                className="px-2.5 py-1 rounded-full bg-emerald-800 hover:bg-emerald-700 text-white text-[11px] font-semibold transition-colors flex items-center gap-1"
+              >
+                <span className="material-symbols-outlined text-[14px]">tune</span>
+                <span>Scenarios Console</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleResetToLive}
+                className="px-2.5 py-1 rounded-full bg-white text-zinc-950 hover:bg-zinc-100 text-[11px] font-bold transition-colors flex items-center gap-1 shadow-sm"
+              >
+                <span className="material-symbols-outlined text-[14px]">replay</span>
+                <span>Reset to Live</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Connection Notice banner if offline and not in scenario demo override, only on dashboard views */}
-        {!isConnected && !isStandalonePage && (
-          <div className="mt-16 bg-[#efefef] border-b border-[#e2e2e2] text-black px-6 py-2 text-xs font-medium flex items-center justify-between">
+        {!isConnected && !scenarioSnapshotOverride && !isStandalonePage && (
+          <div className="fixed top-16 left-0 right-0 z-30 bg-[#efefef] border-b border-[#e2e2e2] text-black px-6 py-2 text-xs font-medium flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[16px] text-black">sensors_off</span>
               <span>{error ? `Live stream notice: ${error}` : 'Simulation running with built-in Pune benchmark scenarios & fallback estimates.'}</span>
@@ -207,142 +243,147 @@ export function App() {
         )}
 
         {/* 2. Main Content View Area */}
-        <div className={`flex-1 flex flex-col ${isStandalonePage ? 'mt-16' : ''}`}>
+        <div className="flex-1 flex flex-col">
           {currentView === 'landing' && (
-            <LandingPageView onNavigate={handleSwitchView} />
+            <div className="mt-16">
+              <LandingPageView onNavigate={handleSwitchView} />
+            </div>
           )}
 
           {currentView === 'login' && (
-            <LoginView onNavigate={handleSwitchView} />
+            <div className="mt-16">
+              <LoginView onNavigate={handleSwitchView} />
+            </div>
           )}
 
           {currentView === 'signup' && (
-            <SignUpView onNavigate={handleSwitchView} />
+            <div className="mt-16">
+              <SignUpView onNavigate={handleSwitchView} />
+            </div>
           )}
 
           {!isStandalonePage && (
-            <main className={`flex-1 p-4 sm:p-6 max-w-[1600px] w-full mx-auto ${isConnected ? 'mt-16' : ''}`}>
-              {currentView === 'ops-overview' && (
-                <OpsOverviewView
-                  snapshot={effectiveSnapshot}
-                  onControl={sendControl}
-                  onSelectVehicle={handleSelectVehicle}
-                  onSelectRequest={handleSelectRequest}
-                />
-              )}
-
-              {currentView === 'ops-batches' && (
-                <BatchManagerView
-                  snapshot={effectiveSnapshot}
-                  onDispatchNow={dispatchBatchNow}
-                  onConfigureBatch={configureBatch}
-                  onGenerateDemand={generateDemand}
-                  onSelectRequest={handleSelectRequest}
-                  onSelectVehicle={handleSelectVehicle}
-                />
-              )}
-
-              {currentView === 'ops-optimization' && (
-                <RouteOptimizationView
-                  snapshot={effectiveSnapshot}
-                  onSelectVehicle={handleSelectVehicle}
-                  onSelectRequest={handleSelectRequest}
-                  onSolveOptimization={solveOptimization}
-                />
-              )}
-
-              {currentView === 'ops-detour-guarantees' && (
-                <DetourGuaranteesView
-                  snapshot={effectiveSnapshot}
-                  onSelectVehicle={handleSelectVehicle}
-                  onSelectRequest={handleSelectRequest}
-                />
-              )}
-
-              {currentView === 'ops-fair-fares' && (
-                <FairFaresView
-                  snapshot={effectiveSnapshot}
-                  onSelectVehicle={handleSelectVehicle}
-                  onSelectRequest={handleSelectRequest}
-                />
-              )}
-
-              {currentView === 'passenger-home' && (
-                <PassengerHomeView
-                  snapshot={effectiveSnapshot}
-                  onSelectVehicle={handleSelectVehicle}
-                  onSelectRequest={handleSelectRequest}
-                  onNavigateToWaiting={() => handleSwitchView('passenger-waiting')}
-                />
-              )}
-
-              {currentView === 'passenger-waiting' && (
-                <PassengerWaitingView
-                  snapshot={effectiveSnapshot}
-                  onDispatchNow={dispatchBatchNow}
-                  onBackToBooking={() => handleSwitchView('passenger-home')}
-                  onSelectVehicle={handleSelectVehicle}
-                  onSelectRequest={handleSelectRequest}
-                  onNavigateToActive={() => handleSwitchView('passenger-active')}
-                  onCancelRide={cancelRideRequest}
-                />
-              )}
-
-              {/* Driver Cockpit Workspace */}
-              {isDriver && (
-                <div className="flex flex-col md:flex-row min-h-[calc(100vh-5rem)] -m-4 sm:-m-6 bg-[#f8f8f8]">
-                  <div className="hidden md:block">
-                    <DriverSidebar
-                      currentView={currentView}
-                      onSwitchView={handleSwitchView}
-                      isOnline={isDriverOnline}
-                      onToggleOnline={() => setIsDriverOnline((prev) => !prev)}
-                    />
-                  </div>
-                  <div className="flex-1 flex flex-col min-w-0 bg-[#f8f8f8]">
-                    <DriverTopHeader
-                      isOnline={isDriverOnline}
-                      onToggleOnline={() => setIsDriverOnline((prev) => !prev)}
-                      selectedVehicleId={selectedDriverVehicleId}
-                      onSelectVehicleId={setSelectedDriverVehicleId}
-                      vehicles={effectiveSnapshot?.vehicles || {}}
-                      onNavigateToView={handleSwitchView}
-                    />
-                    <div className="p-4 sm:p-6 max-w-[1600px] w-full mx-auto">
-                      {currentView === 'driver-home' && (
-                        <DriverHomeView
-                          snapshot={effectiveSnapshot}
-                          isOnline={isDriverOnline}
-                          onToggleOnline={() => setIsDriverOnline((prev) => !prev)}
-                          selectedVehicleId={selectedDriverVehicleId}
-                          onSelectVehicleId={setSelectedDriverVehicleId}
-                          onAdvanceStop={advanceVehicleStop}
-                          onNavigateToView={handleSwitchView}
-                        />
-                      )}
-                      {currentView === 'driver-trips' && <DriverTripsView />}
-                      {currentView === 'driver-activity' && <DriverActivityView />}
-                      {currentView === 'driver-profile' && <DriverProfileView />}
-                    </div>
-                  </div>
+            isDriver ? (
+              <div className={`flex-1 flex flex-col md:flex-row bg-[#f8f8f8] min-h-[calc(100vh-4rem)] ${contentTopSpacing}`}>
+                <div className="hidden md:block">
+                  <DriverSidebar
+                    currentView={currentView}
+                    onSwitchView={handleSwitchView}
+                    isOnline={isDriverOnline}
+                    onToggleOnline={() => setIsDriverOnline((prev) => !prev)}
+                  />
                 </div>
-              )}
+                <div className="flex-1 flex flex-col min-w-0 bg-[#f8f8f8]">
+                  <DriverTopHeader
+                    isOnline={isDriverOnline}
+                    onToggleOnline={() => setIsDriverOnline((prev) => !prev)}
+                    selectedVehicleId={selectedDriverVehicleId}
+                    onSelectVehicleId={setSelectedDriverVehicleId}
+                    vehicles={effectiveSnapshot?.vehicles || {}}
+                    onNavigateToView={handleSwitchView}
+                  />
+                  <main className="flex-1 p-4 sm:p-6 max-w-[1600px] w-full mx-auto">
+                    {currentView === 'driver-home' && (
+                      <DriverHomeView
+                        snapshot={effectiveSnapshot}
+                        isOnline={isDriverOnline}
+                        onToggleOnline={() => setIsDriverOnline((prev) => !prev)}
+                        selectedVehicleId={selectedDriverVehicleId}
+                        onSelectVehicleId={setSelectedDriverVehicleId}
+                        onAdvanceStop={advanceVehicleStop}
+                        onNavigateToView={handleSwitchView}
+                      />
+                    )}
+                    {currentView === 'driver-trips' && <DriverTripsView />}
+                    {currentView === 'driver-activity' && <DriverActivityView />}
+                    {currentView === 'driver-profile' && <DriverProfileView />}
+                  </main>
+                </div>
+              </div>
+            ) : (
+              <main className={`flex-1 p-4 sm:p-6 max-w-[1600px] w-full mx-auto ${contentTopSpacing}`}>
+                {currentView === 'ops-overview' && (
+                  <OpsOverviewView
+                    snapshot={effectiveSnapshot}
+                    onControl={sendControl}
+                    onSelectVehicle={handleSelectVehicle}
+                    onSelectRequest={handleSelectRequest}
+                  />
+                )}
 
-              {currentView === 'passenger-active' && (
-                <PassengerActiveView
-                  snapshot={effectiveSnapshot}
-                  onSelectVehicle={handleSelectVehicle}
-                  onSelectRequest={handleSelectRequest}
-                  onNavigateToBooking={() => handleSwitchView('passenger-home')}
-                  onAdvanceStop={advanceVehicleStop}
-                  onCancelRide={cancelRideRequest}
-                  onSimulateCoRiderCancellation={simulateCoRiderCancellation}
-                  onResetSession={resetPassengerSession}
-                  initialCandidate={activeCandidateOverride}
-                  autoOpenShapleySheet={autoOpenShapleySheet}
-                />
-              )}
-            </main>
+                {currentView === 'ops-batches' && (
+                  <BatchManagerView
+                    snapshot={effectiveSnapshot}
+                    onDispatchNow={dispatchBatchNow}
+                    onConfigureBatch={configureBatch}
+                    onGenerateDemand={generateDemand}
+                    onSelectRequest={handleSelectRequest}
+                    onSelectVehicle={handleSelectVehicle}
+                  />
+                )}
+
+                {currentView === 'ops-optimization' && (
+                  <RouteOptimizationView
+                    snapshot={effectiveSnapshot}
+                    onSelectVehicle={handleSelectVehicle}
+                    onSelectRequest={handleSelectRequest}
+                    onSolveOptimization={solveOptimization}
+                  />
+                )}
+
+                {currentView === 'ops-detour-guarantees' && (
+                  <DetourGuaranteesView
+                    snapshot={effectiveSnapshot}
+                    onSelectVehicle={handleSelectVehicle}
+                    onSelectRequest={handleSelectRequest}
+                  />
+                )}
+
+                {currentView === 'ops-fair-fares' && (
+                  <FairFaresView
+                    snapshot={effectiveSnapshot}
+                    onSelectVehicle={handleSelectVehicle}
+                    onSelectRequest={handleSelectRequest}
+                  />
+                )}
+
+                {currentView === 'passenger-home' && (
+                  <PassengerHomeView
+                    snapshot={effectiveSnapshot}
+                    onSelectVehicle={handleSelectVehicle}
+                    onSelectRequest={handleSelectRequest}
+                    onNavigateToWaiting={() => handleSwitchView('passenger-waiting')}
+                  />
+                )}
+
+                {currentView === 'passenger-waiting' && (
+                  <PassengerWaitingView
+                    snapshot={effectiveSnapshot}
+                    onDispatchNow={dispatchBatchNow}
+                    onBackToBooking={() => handleSwitchView('passenger-home')}
+                    onSelectVehicle={handleSelectVehicle}
+                    onSelectRequest={handleSelectRequest}
+                    onNavigateToActive={() => handleSwitchView('passenger-active')}
+                    onCancelRide={cancelRideRequest}
+                  />
+                )}
+
+                {currentView === 'passenger-active' && (
+                  <PassengerActiveView
+                    snapshot={effectiveSnapshot}
+                    onSelectVehicle={handleSelectVehicle}
+                    onSelectRequest={handleSelectRequest}
+                    onNavigateToBooking={() => handleSwitchView('passenger-home')}
+                    onAdvanceStop={advanceVehicleStop}
+                    onCancelRide={cancelRideRequest}
+                    onSimulateCoRiderCancellation={simulateCoRiderCancellation}
+                    onResetSession={resetPassengerSession}
+                    initialCandidate={activeCandidateOverride}
+                    autoOpenShapleySheet={autoOpenShapleySheet}
+                  />
+                )}
+              </main>
+            )
           )}
         </div>
 

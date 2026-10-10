@@ -234,14 +234,14 @@ export const LiveMap: React.FC<LiveMapProps> = ({
   const stateColors = getRouteStateColors();
 
   return (
-    <div className="relative w-full h-full min-h-[500px] rounded-2xl overflow-hidden shadow-card border border-[#efefef] bg-[#f8f8f8]">
+    <div className="isolate relative z-0 w-full h-full min-h-[500px] rounded-2xl overflow-hidden shadow-card border border-[#efefef] bg-[#f8f8f8]">
       {/* Floating Recenter & Invalidate Button */}
       <button
         type="button"
         id="btn-map-recenter"
         onClick={handleRecenter}
         title="Recenter and refresh map view"
-        className="absolute top-4 right-4 z-[1000] px-3.5 py-1.5 rounded-full bg-white/95 hover:bg-white text-black shadow-md border border-[#e2e2e2] flex items-center gap-1.5 text-xs font-medium transition-all active:scale-95 hover:shadow-lg backdrop-blur-sm"
+        className="absolute top-4 right-4 z-20 px-3.5 py-1.5 rounded-full bg-white/95 hover:bg-white text-black shadow-md border border-[#e2e2e2] flex items-center gap-1.5 text-xs font-medium transition-all active:scale-95 hover:shadow-lg backdrop-blur-sm"
       >
         <span className="material-symbols-outlined text-[16px]">my_location</span>
         <span>Recenter</span>
@@ -444,7 +444,7 @@ export const LiveMap: React.FC<LiveMapProps> = ({
       </MapContainer>
 
       {/* Floating Map Legend */}
-      <div className="absolute bottom-4 left-4 z-[1000] bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-card border border-[#efefef] flex flex-col gap-1.5 text-xs text-black">
+      <div className="absolute bottom-4 left-4 z-20 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-card border border-[#efefef] flex flex-col gap-1.5 text-xs text-black">
         <div className="font-bold text-[10px] text-[#5e5e5e] uppercase tracking-wider">Map Legend (Pune Core)</div>
         <div className="flex items-center gap-2">
           <span className="w-3.5 h-1 bg-[#00668a] rounded-full shadow-sm"></span>

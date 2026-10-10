@@ -13,7 +13,7 @@ export const IncompatibleDetourModal: React.FC<IncompatibleDetourModalProps> = (
   const { candidate, violationReason, mathematicalProof } = evaluation;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-scrim/60 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-scrim/60 backdrop-blur-sm animate-fade-in">
       <div
         className="w-full max-w-lg bg-surface-container-lowest rounded-3xl border border-rose-500/40 shadow-2xl overflow-hidden flex flex-col"
         role="dialog"

@@ -215,7 +215,7 @@ export const DriverSidebar: React.FC<DriverSidebarProps> = ({
 
       {/* Safety Centre Modal */}
       {isSafetyModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
           <div className="w-full max-w-md bg-white rounded-2xl p-6 text-black shadow-2xl relative">
             <button
               type="button"

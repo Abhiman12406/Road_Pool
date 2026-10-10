@@ -32,7 +32,7 @@ export const TripCompletionReceipt: React.FC<TripCompletionReceiptProps> = ({
   const detourPct = request.detour_pct ?? 8.4;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" id="trip-completion-receipt-modal">
+    <div className="fixed inset-0 z-[9990] flex items-center justify-center p-4" id="trip-completion-receipt-modal">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
