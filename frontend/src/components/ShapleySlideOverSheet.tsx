@@ -30,22 +30,25 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'explanation' | 'matrix' | 'axioms'>('explanation');
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const sheetRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       if (isOpen && sheetRef.current) {
         gsap.from(sheetRef.current, {
-          x: 400,
-          duration: 0.35,
+          scale: 0.95,
+          opacity: 0,
+          y: 16,
+          duration: 0.28,
           ease: 'power3.out',
         });
         gsap.from('.shapley-card', {
           opacity: 0,
           y: 16,
-          duration: 0.4,
-          stagger: 0.06,
-          delay: 0.08,
+          duration: 0.35,
+          stagger: 0.05,
+          delay: 0.05,
           ease: 'power2.out',
         });
       }
@@ -101,18 +104,28 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9990] flex justify-end" id="shapley-slideover-sheet">
+    <div
+      className="fixed inset-0 z-[9990] flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+      id="shapley-slideover-sheet"
+      role="dialog"
+      aria-modal="true"
+    >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-on-surface/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Slide-over Container */}
-      <div ref={sheetRef} className="relative w-full max-w-2xl bg-surface-container-lowest text-on-surface shadow-2xl border-l border-outline-variant/30 flex flex-col h-full z-10">
+      {/* Centered Modal Container */}
+      <div
+        ref={sheetRef}
+        className={`relative w-full ${
+          isExpanded ? 'max-w-5xl' : 'max-w-3xl'
+        } bg-surface-container-lowest text-on-surface shadow-2xl rounded-2xl sm:rounded-3xl border border-outline-variant/40 flex flex-col max-h-[90vh] z-10 overflow-hidden transition-all duration-300`}
+      >
         {/* Header */}
-        <div className="p-6 border-b border-outline-variant/30 bg-surface-container-low/50 flex items-start justify-between gap-4">
+        <div className="p-5 sm:p-6 border-b border-outline-variant/30 bg-surface-container-low/50 flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-tertiary-container text-on-tertiary-container flex items-center justify-center shadow-glow">
               <span className="material-symbols-outlined text-[24px]">balance</span>
@@ -130,14 +143,29 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors"
-            aria-label="Close slide-over"
-          >
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              id="btn-shapley-expand"
+              onClick={() => setIsExpanded((prev) => !prev)}
+              className="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors"
+              title={isExpanded ? "Collapse to standard modal" : "Expand to wide modal"}
+              aria-label={isExpanded ? "Collapse to standard modal" : "Expand to wide modal"}
+            >
+              <span className="material-symbols-outlined text-[18px]">
+                {isExpanded ? 'close_fullscreen' : 'open_in_full'}
+              </span>
+            </button>
+            <button
+              type="button"
+              id="btn-shapley-close"
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors"
+              aria-label="Close modal"
+            >
+              <span className="material-symbols-outlined text-[20px]">close</span>
+            </button>
+          </div>
         </div>
 
         {/* Tab Navigation */}
