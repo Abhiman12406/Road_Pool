@@ -261,21 +261,11 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
           </div>
 
           {/* Stops Timeline */}
-          <div className="bg-white p-6 rounded-2xl border border-[#efefef] shadow-card">
-            <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#efefef]">
-              <h3 className="font-bold text-xs text-black uppercase tracking-wider">
-                Corridor route stops
-              </h3>
-              <span className="text-xs text-[#5e5e5e] font-mono">
-                {currentVehicle.planned_stops?.length || 4} total stops
-              </span>
-            </div>
-            <StopsTimeline
-              timelineState={timelineState}
-              onAdvanceStop={onAdvanceStop ? () => handleAdvanceStop(currentVehicle.vehicle_id) : undefined}
-              isAdvancing={isAdvancing}
-            />
-          </div>
+          <StopsTimeline
+            timelineState={timelineState}
+            onAdvanceStop={onAdvanceStop ? () => handleAdvanceStop(currentVehicle.vehicle_id) : undefined}
+            isAdvancing={isAdvancing}
+          />
         </div>
 
         {/* Right Column: Transparent Fare, Cabin Occupancy & Consent (5 cols) */}
