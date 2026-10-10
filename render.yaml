@@ -29,24 +29,20 @@ services:
       # Connect your Supabase project (from Supabase Dashboard -> Project Settings -> API)
       - key: SUPABASE_URL
         sync: false
-        placeholder: "https://your-project-ref.supabase.co"
       - key: SUPABASE_KEY
         sync: false
-        placeholder: "your-supabase-service-role-or-anon-key"
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
-        placeholder: "your-supabase-service-role-key"
 
   # ----------------------------------------------------------------------------
   # 2. React + Vite + TypeScript Frontend Static Site
   # ----------------------------------------------------------------------------
-  - type: static
+  - type: web
     name: roadpool-frontend
+    runtime: static
     rootDir: frontend
-    plan: free
-    region: oregon
     buildCommand: "npm install && npm run build"
-    publishDir: dist
+    staticPublishPath: dist
     autoDeploy: true
     routes:
       - type: rewrite
@@ -61,7 +57,5 @@ services:
       # Set to your Supabase Project URL & Anon Key
       - key: VITE_SUPABASE_URL
         sync: false
-        placeholder: "https://your-project-ref.supabase.co"
       - key: VITE_SUPABASE_ANON_KEY
         sync: false
-        placeholder: "your-supabase-anon-key"
