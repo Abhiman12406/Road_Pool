@@ -45,12 +45,12 @@ if (isFirebaseConfigured) {
     app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
     auth = getAuth(app);
   } catch (err) {
-    console.warn('[ORoute Firebase] Initialization warning, falling back to simulated session:', err);
+    console.warn('[RouteMates Firebase] Initialization warning, falling back to simulated session:', err);
   }
 }
 
 // Local storage session key for demo/offline fallback persistence
-const DEMO_USER_STORAGE_KEY = 'oroute_auth_user_session';
+const DEMO_USER_STORAGE_KEY = 'routemates_auth_user_session';
 let inMemoryDemoUser: AuthUserProfile | null = null;
 
 function getStoredDemoUser(): AuthUserProfile | null {
@@ -183,7 +183,7 @@ export async function loginWithGoogle(): Promise<AuthUserProfile> {
   await new Promise((resolve) => setTimeout(resolve, 350));
   const profile: AuthUserProfile = {
     uid: 'google-demo-user-101',
-    email: 'aditi.sharma@oroute.ai',
+    email: 'aditi.sharma@routemates.ai',
     displayName: 'Aditi Sharma',
     photoURL: null,
     role: 'passenger',
@@ -218,7 +218,7 @@ export function subscribeToAuth(callback: AuthCallback): () => void {
         const profile: AuthUserProfile = {
           uid: user.uid,
           email: user.email,
-          displayName: user.displayName || user.email?.split('@')[0] || 'ORoute User',
+          displayName: user.displayName || user.email?.split('@')[0] || 'RouteMates User',
           photoURL: user.photoURL,
           role: stored?.role || 'passenger',
           provider: 'password',

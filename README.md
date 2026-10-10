@@ -1,4 +1,4 @@
-# Road_Pool (RidePool AI / ORoute)
+# RouteMates (Algorithmic Transit Ride-Pooling)
 
 **Algorithmic Transit Ride-Pooling, Dynamic Batching & Fair Fare Allocation Engine**  
 *Location Profile: Pune, Maharashtra, India*

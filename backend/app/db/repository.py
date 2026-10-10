@@ -117,7 +117,7 @@ class SupabaseRepository:
 
             payload = {
                 "vehicle_id": vehicle_data.get("vehicle_id"),
-                "name": vehicle_data.get("name", "ORoute Fleet Vehicle"),
+                "name": vehicle_data.get("name", "RouteMates Fleet Vehicle"),
                 "capacity": vehicle_data.get("capacity", 4),
                 "occupied_seats": vehicle_data.get("occupied_seats", 0),
                 "current_lat": lat,

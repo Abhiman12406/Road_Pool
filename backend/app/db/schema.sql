@@ -178,7 +178,7 @@ CREATE POLICY "Allow user manage profile" ON public.profiles FOR ALL USING (true
 -- Seed initial Pune vehicles so fresh projects start with a live fleet
 INSERT INTO public.vehicles (vehicle_id, name, capacity, occupied_seats, current_lat, current_lng, current_location_name, status, heading_deg, battery_pct)
 VALUES 
-    ('VEH-PUNE-01', 'ORoute Fleet EV-1', 4, 0, 18.5204, 73.8567, 'Shivajinagar Hub', 'idle', 45.0, 92),
-    ('VEH-PUNE-02', 'ORoute Fleet EV-2', 4, 0, 18.5018, 73.8636, 'Swargate Junction', 'idle', 180.0, 88),
-    ('VEH-PUNE-03', 'ORoute Fleet EV-3', 4, 0, 18.5913, 73.7389, 'Hinjewadi Tech Park Phase 1', 'idle', 90.0, 95)
+    ('VEH-PUNE-01', 'RouteMates Fleet EV-1', 4, 0, 18.5204, 73.8567, 'Shivajinagar Hub', 'idle', 45.0, 92),
+    ('VEH-PUNE-02', 'RouteMates Fleet EV-2', 4, 0, 18.5018, 73.8636, 'Swargate Junction', 'idle', 180.0, 88),
+    ('VEH-PUNE-03', 'RouteMates Fleet EV-3', 4, 0, 18.5913, 73.7389, 'Hinjewadi Tech Park Phase 1', 'idle', 90.0, 95)
 ON CONFLICT (vehicle_id) DO NOTHING;

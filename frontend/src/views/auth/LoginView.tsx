@@ -75,13 +75,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onNavigate }) => {
 
   const handleQuickDemoLogin = (role: 'passenger' | 'driver' | 'ops') => {
     if (role === 'passenger') {
-      setEmail('passenger@oroute.ai');
+      setEmail('passenger@routemates.ai');
       setPassword('passenger123');
     } else if (role === 'driver') {
-      setEmail('driver@oroute.ai');
+      setEmail('driver@routemates.ai');
       setPassword('driver123');
     } else {
-      setEmail('ops@oroute.ai');
+      setEmail('ops@routemates.ai');
       setPassword('opsadmin123');
     }
   };
@@ -94,7 +94,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onNavigate }) => {
           <div className="absolute inset-0">
             <img
               src="/images/oroute_auth_visual.jpg"
-              alt="ORoute intelligent cockpit"
+              alt="RouteMates intelligent cockpit"
               className="w-full h-full object-cover opacity-45"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-zinc-950/40" />
@@ -116,7 +116,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onNavigate }) => {
                 <span>Single Sign-On</span>
               </div>
               <h2 className="text-2xl font-bold text-white tracking-tight">
-                Welcome to ORoute.
+                Welcome to RouteMates.
               </h2>
               <p className="text-zinc-400 text-xs mt-2 leading-relaxed">
                 Log in to access your pooled rides, Shapley fare receipts, driver route controls, and fleet optimization metrics.
@@ -257,7 +257,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onNavigate }) => {
                   <span>Signing in...</span>
                 ) : (
                   <>
-                    <span>Sign In to ORoute</span>
+                    <span>Sign In to RouteMates</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

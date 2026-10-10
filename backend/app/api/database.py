@@ -2,6 +2,7 @@
 Supabase Database API Endpoints
 Provides status monitoring, table inspection, and manual sync triggers.
 """
+import logging
 from typing import Dict, Any, List
 from fastapi import APIRouter, HTTPException
 from app.config import settings
@@ -9,6 +10,7 @@ from app.db.supabase_client import get_supabase_client, is_supabase_enabled
 from app.db.repository import db_repository
 from app.services.simulation_engine import sim_engine
 
+logger = logging.getLogger("routemates.db.api")
 router = APIRouter(prefix="/database", tags=["Database & Supabase"])
 
 @router.get("/status")
@@ -129,7 +131,13 @@ async def list_persisted_requests(limit: int = 25):
             "data": res.data
         }
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Failed to query Supabase: {exc}")
+        logger.warning(f"Failed to query Supabase ride_requests, falling back to in-memory: {exc}")
+        reqs = list(sim_engine.state.requests.values())[:limit]
+        return {
+            "source": "in_memory_fallback",
+            "count": len(reqs),
+            "data": [r.model_dump() for r in reqs]
+        }
 
 @router.get("/vehicles")
 async def list_persisted_vehicles():
@@ -154,4 +162,10 @@ async def list_persisted_vehicles():
             "data": res.data
         }
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Failed to query Supabase: {exc}")
+        logger.warning(f"Failed to query Supabase vehicles, falling back to in-memory: {exc}")
+        vehs = list(sim_engine.state.vehicles.values())
+        return {
+            "source": "in_memory_fallback",
+            "count": len(vehs),
+            "data": [v.model_dump() for v in vehs]
+        }

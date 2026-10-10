@@ -50,7 +50,7 @@ export const TripCompletionReceipt: React.FC<TripCompletionReceiptProps> = ({
           <span className="px-3 py-1 rounded-full text-[11px] font-mono font-medium bg-[#282828] text-white inline-block mb-1">
             Trip completed • Official receipt
           </span>
-          <h2 className="text-2xl font-bold font-display tracking-tight text-white">RidePool Pune</h2>
+          <h2 className="text-2xl font-bold font-display tracking-tight text-white">RouteMates Pune</h2>
           <p className="text-xs text-[#afafaf] mt-1">
             Thank you for riding shared and keeping Pune clean
           </p>

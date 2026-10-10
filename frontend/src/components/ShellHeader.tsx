@@ -56,7 +56,7 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-white/98 backdrop-blur-md z-40 border-b border-[#efefef] px-4 sm:px-6 flex items-center justify-between">
-      {/* 1. Brand Logo: ORoute */}
+      {/* 1. Brand Logo: RouteMates */}
       <div className="flex items-center gap-5">
         <button
           type="button"
@@ -68,7 +68,7 @@ export const ShellHeader: React.FC<ShellHeaderProps> = ({
           </div>
           <div className="flex flex-col">
             <span className="font-extrabold text-base tracking-tight text-zinc-950 font-display">
-              ORoute<span className="text-emerald-600 font-semibold text-xs ml-1">AI</span>
+              RouteMates<span className="text-emerald-600 font-semibold text-xs ml-1">AI</span>
             </span>
             <span className="text-[10px] text-zinc-500 font-medium">
               Fair Mobility Engine

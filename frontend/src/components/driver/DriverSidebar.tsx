@@ -43,7 +43,7 @@ export const DriverSidebar: React.FC<DriverSidebarProps> = ({
               </div>
               <div>
                 <h1 className="font-bold text-base tracking-tight text-white leading-tight font-display">
-                  RidePool
+                  RouteMates
                 </h1>
                 <span className="text-[12px] font-medium text-[#afafaf] flex items-center gap-1.5 mt-0.5">
                   <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-white' : 'bg-[#5e5e5e]'}`} />

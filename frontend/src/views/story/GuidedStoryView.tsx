@@ -58,7 +58,7 @@ export const GuidedStoryView: React.FC<GuidedStoryViewProps> = ({
             Interactive Product Walkthrough
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight">
-            How RidePool AI Solves Shared Rides
+            How RouteMates Solves Shared Rides
           </h1>
           <p className="text-neutral-500 text-sm mt-1.5 leading-relaxed">
             Follow the 4-step algorithmic pipeline from passenger booking to mathematical detour guarantees and game-theoretic fair fare allocation.
@@ -139,7 +139,7 @@ export const GuidedStoryView: React.FC<GuidedStoryViewProps> = ({
                 <span className="text-xs font-mono font-medium text-neutral-500 uppercase tracking-wider">Pipeline Stage 1</span>
                 <h2 className="text-xl font-bold text-neutral-900">Passenger Request & Solo Baseline</h2>
                 <p className="text-xs text-neutral-500 mt-0.5">
-                  Before any ride is pooled, RidePool AI computes the optimal direct solo route to establish the baseline distance, travel time, and fair solo fare.
+                  Before any ride is pooled, RouteMates computes the optimal direct solo route to establish the baseline distance, travel time, and fair solo fare.
                 </p>
               </div>
               <button
@@ -221,7 +221,7 @@ export const GuidedStoryView: React.FC<GuidedStoryViewProps> = ({
                 <span className="text-xs font-mono font-medium text-neutral-500 uppercase tracking-wider">Pipeline Stage 2</span>
                 <h2 className="text-xl font-bold text-neutral-900">Dynamic Batching Window (30s Rolling Buffer)</h2>
                 <p className="text-xs text-neutral-500 mt-0.5">
-                  Instead of dispatching immediately, RidePool AI holds requests in a brief 30-second window to find high-compatibility co-riders along identical corridors.
+                  Instead of dispatching immediately, RouteMates holds requests in a brief 30-second window to find high-compatibility co-riders along identical corridors.
                 </p>
               </div>
               <button

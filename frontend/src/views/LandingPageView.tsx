@@ -125,7 +125,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onNavigate }) 
       <div className="w-full border-b border-zinc-100 bg-zinc-50/70 backdrop-blur-sm py-2 px-4 sm:px-8 text-xs text-zinc-600 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="font-medium text-zinc-800">ORoute Transit Protocol</span>
+          <span className="font-medium text-zinc-800">RouteMates Transit Protocol</span>
           <span className="text-zinc-300">/</span>
           <span>Pune EV Metro Corridor Active</span>
         </div>
@@ -223,7 +223,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onNavigate }) 
             <div className="relative rounded-2xl overflow-hidden border border-zinc-200 shadow-xl bg-zinc-900 group">
               <img
                 src="/images/oroute_hero_mobility.jpg"
-                alt="ORoute algorithmic route optimization over metropolitan transit corridors"
+                alt="RouteMates algorithmic route optimization over metropolitan transit corridors"
                 className="w-full h-[380px] sm:h-[440px] object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 loading="eager"
               />
@@ -290,7 +290,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onNavigate }) 
             Three principles of algorithmic ride-pooling.
           </h2>
           <p className="text-zinc-600 mt-3 text-base">
-            Conventional apps pool blindly or penalize early riders. ORoute implements formal game theory and strict boundary conditions.
+            Conventional apps pool blindly or penalize early riders. RouteMates implements formal game theory and strict boundary conditions.
           </p>
         </div>
 
@@ -349,7 +349,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onNavigate }) 
                 <span className="font-mono text-amber-700 font-semibold">25.3 min max</span>
               </div>
               <div className="flex justify-between items-center pt-1.5 border-t border-zinc-100 text-emerald-700 font-semibold">
-                <span>ORoute Dispatched ETA:</span>
+                <span>RouteMates Dispatched ETA:</span>
                 <span className="font-mono">24.2 min (Accepted)</span>
               </div>
             </div>
@@ -584,7 +584,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onNavigate }) 
       <footer className="border-t border-zinc-200 py-8 px-4 sm:px-8 text-xs text-zinc-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-zinc-950 text-sm tracking-tight">ORoute</span>
+            <span className="font-extrabold text-zinc-950 text-sm tracking-tight">RouteMates</span>
             <span>Algorithmic Ride-Pooling Engine</span>
           </div>
           <div className="flex items-center gap-6">

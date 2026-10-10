@@ -91,7 +91,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({ onNavigate }) => {
           <div className="absolute inset-0">
             <img
               src="/images/oroute_hero_mobility.jpg"
-              alt="ORoute metropolitan network"
+              alt="RouteMates metropolitan network"
               className="w-full h-full object-cover opacity-40"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-zinc-950/40" />
@@ -113,7 +113,7 @@ export const SignUpView: React.FC<SignUpViewProps> = ({ onNavigate }) => {
                 <span>Instant Onboarding</span>
               </div>
               <h2 className="text-2xl font-bold text-white tracking-tight">
-                Join the ORoute network.
+                Join the RouteMates network.
               </h2>
               <p className="text-zinc-400 text-xs mt-2 leading-relaxed">
                 Connect to verified pooled rides with strict 15% detour caps, cooperative Shapley fare savings, and real-time EV telemetry.

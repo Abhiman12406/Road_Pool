@@ -297,7 +297,7 @@ export const ShapleySlideOverSheet: React.FC<ShapleySlideOverSheetProps> = ({
                       <span>How your fair fare is calculated:</span>
                     </div>
                     <p className="text-on-surface-variant leading-relaxed">
-                      Instead of a flat split or arbitrary discount, RidePool.AI uses the Nobel Prize-winning
+                      Instead of a flat split or arbitrary discount, RouteMates uses the Nobel Prize-winning
                       <strong> Shapley Value formula</strong>. We simulate every possible ordering of passengers
                       joining the shared cab. Whenever adding you to an existing group increases total vehicle travel cost,
                       that exact marginal increase is recorded. Your fare is the mathematically exact average
