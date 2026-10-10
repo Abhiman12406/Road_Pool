@@ -474,7 +474,7 @@ export const PassengerHomeView: React.FC<PassengerHomeViewProps> = ({
       <ShapleySlideOverSheet
         isOpen={isShapleySheetOpen}
         onClose={() => setIsShapleySheetOpen(false)}
-        requestId={activeRider?.activeTripRequestId || null}
+        requestId={activeRider?.activeTripRequestId || 'preview'}
       />
     </div>
   );

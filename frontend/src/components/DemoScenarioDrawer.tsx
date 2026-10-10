@@ -19,6 +19,7 @@ interface DemoScenarioDrawerProps {
   onOpenShapleySheet?: () => void;
   onResetToLive?: () => void;
   onLaunchStoryMode?: () => void;
+  onRunBackendScenario?: (scenarioId: number) => Promise<any>;
   // Simulation actions that evaluators can trigger directly
   onAdvanceStop?: (vehicleId: string) => Promise<any>;
   onSimulateCoRiderCancellation?: (vehicleId: string) => Promise<any>;
@@ -36,6 +37,7 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
   onOpenShapleySheet,
   onResetToLive,
   onLaunchStoryMode,
+  onRunBackendScenario,
   onAdvanceStop,
   onSimulateCoRiderCancellation,
   onSimulateCompatibleJoiner,
@@ -66,7 +68,7 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  const handleRunScenario = (scenario: AcceptanceScenarioDefinition) => {
+  const handleRunScenario = async (scenario: AcceptanceScenarioDefinition) => {
     setActiveScenarioId(scenario.id);
     const snapshot = buildDeterministicScenarioSnapshot(scenario.id);
 
@@ -81,6 +83,14 @@ export const DemoScenarioDrawer: React.FC<DemoScenarioDrawerProps> = ({
 
     if (scenario.id === 5 && onOpenShapleySheet) {
       setTimeout(() => onOpenShapleySheet(), 200);
+    }
+
+    if (onRunBackendScenario) {
+      try {
+        await onRunBackendScenario(scenario.id);
+      } catch (err) {
+        console.warn('Backend scenario run:', err);
+      }
     }
 
     setVerificationResult({

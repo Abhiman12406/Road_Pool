@@ -173,7 +173,7 @@ class SimulationEngine:
                 assigned_vehicle_id=None,
                 pooled_eta_sec=None,
                 detour_pct=None,
-                shapley_fare_inr=None
+                shapley_fare_inr=251.25
             )
         }
 
@@ -858,6 +858,9 @@ class SimulationEngine:
             pool = shapley_engine.compute_shapley_for_pool([req_a, req_b, req_c], v1)
             self.state.shapleyPools[v1.vehicle_id] = pool
             exp_a = pool.rider_explanations[req_a.request_id]
+            req_a.shapley_fare_inr = exp_a.reconciled_fare_inr
+            self.state.activePassengerSession.fareShapleyPooledInr = exp_a.reconciled_fare_inr
+            self.state.activePassengerSession.fareSoloDirectInr = exp_a.solo_fare_inr
             return {
                 "scenario_id": 4,
                 "title": "Compares solo cost, shared cost, and individual Shapley fares",
@@ -877,6 +880,9 @@ class SimulationEngine:
             pool = shapley_engine.compute_shapley_for_pool([req_a, req_b, req_c], v1)
             self.state.shapleyPools[v1.vehicle_id] = pool
             exp_a = pool.rider_explanations[req_a.request_id]
+            req_a.shapley_fare_inr = exp_a.reconciled_fare_inr
+            self.state.activePassengerSession.fareShapleyPooledInr = exp_a.reconciled_fare_inr
+            self.state.activePassengerSession.fareSoloDirectInr = exp_a.solo_fare_inr
             return {
                 "scenario_id": 5,
                 "title": "'Why am I paying this fare?' explanation open and validated",
@@ -1119,6 +1125,10 @@ class SimulationEngine:
                 active_session.lifecycleStatus = "matched"
                 active_session.actualDetourPct = matched_req.detour_pct or 8.0
                 active_session.assignedVehicleId = matched_req.assigned_vehicle_id
+                if matched_req.shapley_fare_inr is not None:
+                    active_session.fareShapleyPooledInr = matched_req.shapley_fare_inr
+                if matched_req.solo_fare_inr is not None:
+                    active_session.fareSoloDirectInr = matched_req.solo_fare_inr
             else:
                 active_session.lifecycleStatus = "no_match"
                 active_session.assignedVehicleId = None
@@ -1178,7 +1188,7 @@ class SimulationEngine:
             assigned_vehicle_id=None,
             pooled_eta_sec=None,
             detour_pct=None,
-            shapley_fare_inr=None,
+            shapley_fare_inr=round(solo_fare_inr * 0.75, 2) if solo_fare_inr is not None else None,
             preferred_pickup_time=preferred_pickup_time,
             arrival_deadline=arrival_deadline,
             special_requirements=special_requirements,
@@ -1202,7 +1212,7 @@ class SimulationEngine:
             self.state.activePassengerSession.activeTripRequestId = req_id
             self.state.activePassengerSession.lifecycleStatus = "waiting_batch"
             self.state.activePassengerSession.fareSoloDirectInr = solo_fare_inr
-            self.state.activePassengerSession.fareShapleyPooledInr = round(solo_fare_inr * 0.75, 2)
+            self.state.activePassengerSession.fareShapleyPooledInr = req.shapley_fare_inr or round(solo_fare_inr * 0.75, 2)
         
         # Check if batch size threshold has been reached
         if self.state.engine.queuedRequestCount >= self.state.engine.batchThreshold:

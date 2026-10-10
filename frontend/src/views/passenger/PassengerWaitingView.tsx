@@ -263,34 +263,46 @@ export const PassengerWaitingView: React.FC<PassengerWaitingViewProps> = ({
           </div>
 
           {/* Transparent Upfront Fare Guarantee */}
-          <div className="p-4 rounded-xl bg-[#efefef] flex items-center justify-between">
-            <div>
-              <span className="text-[11px] uppercase font-medium text-[#5e5e5e] tracking-wider block">
-                Upfront fair fare
-              </span>
-              <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="text-3xl font-bold font-display text-black tabular-nums">
-                  ₹{(activeReq?.shapley_fare_inr ?? 82.5).toFixed(2)}
-                </span>
-                <span className="text-sm font-mono text-[#5e5e5e] line-through tabular-nums">
-                  ₹{(activeReq?.solo_fare_inr ?? 145.0).toFixed(2)}
-                </span>
-              </div>
-            </div>
+          {(() => {
+            const soloFare = activeReq?.solo_fare_inr ?? session?.fareSoloDirectInr ?? 250.0;
+            const pooledFare =
+              activeReq?.shapley_fare_inr ??
+              session?.fareShapleyPooledInr ??
+              (Math.round(soloFare * 0.75 * 100) / 100);
+            const savingsPct =
+              soloFare > 0 ? Math.round(((soloFare - pooledFare) / soloFare) * 100) : 25;
 
-            <div className="flex flex-col items-end gap-1.5">
-              <span className="px-3 py-1 rounded-full text-xs font-medium bg-black text-white font-mono">
-                Saving ~41%
-              </span>
-              <button
-                type="button"
-                onClick={() => setIsShapleySheetOpen(true)}
-                className="text-xs text-[#5e5e5e] hover:text-black underline"
-              >
-                Explain fare
-              </button>
-            </div>
-          </div>
+            return (
+              <div className="p-4 rounded-xl bg-[#efefef] flex items-center justify-between">
+                <div>
+                  <span className="text-[11px] uppercase font-medium text-[#5e5e5e] tracking-wider block">
+                    Upfront fair fare
+                  </span>
+                  <div className="flex items-baseline gap-2 mt-0.5">
+                    <span className="text-3xl font-bold font-display text-black tabular-nums">
+                      ₹{pooledFare.toFixed(2)}
+                    </span>
+                    <span className="text-sm font-mono text-[#5e5e5e] line-through tabular-nums">
+                      ₹{soloFare.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end gap-1.5">
+                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-black text-white font-mono">
+                    Saving ~{savingsPct}% (Shapley)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsShapleySheetOpen(true)}
+                    className="text-xs text-[#5e5e5e] hover:text-black underline"
+                  >
+                    Explain fare
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Primary Action Buttons */}
           <div className="space-y-2 pt-2">

@@ -24,9 +24,12 @@ export const ActiveTripFarePanel: React.FC<ActiveTripFarePanelProps> = ({
   onAcceptCandidate,
   onDeclineCandidate,
 }) => {
-  const currentFare = activeRequest?.shapley_fare_inr ?? 82.5;
-  const soloFare = activeRequest?.solo_fare_inr ?? 145.0;
-  const savingsPct = soloFare > 0 ? Math.round(((soloFare - currentFare) / soloFare) * 100) : 41;
+  const soloFare = activeRequest?.solo_fare_inr ?? 250.0;
+  const currentFare =
+    activeRequest?.shapley_fare_inr ??
+    (Math.round(soloFare * 0.75 * 100) / 100);
+  const savingsPct =
+    soloFare > 0 ? Math.round(((soloFare - currentFare) / soloFare) * 100) : 25;
   const detourPct = activeRequest?.detour_pct ?? 8.3;
 
   return (

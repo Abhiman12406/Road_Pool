@@ -57,6 +57,7 @@ export function App() {
     cancelRideRequest,
     simulateCoRiderCancellation,
     resetPassengerSession,
+    loadScenario,
   } = useSimulationSocket();
 
   // Driver Cockpit state
@@ -352,7 +353,11 @@ export function App() {
                     snapshot={effectiveSnapshot}
                     onSelectVehicle={handleSelectVehicle}
                     onSelectRequest={handleSelectRequest}
-                    onNavigateToWaiting={() => handleSwitchView('passenger-waiting')}
+                    onNavigateToWaiting={() => {
+                      setScenarioSnapshotOverride(null);
+                      setActiveCandidateOverride(null);
+                      handleSwitchView('passenger-waiting');
+                    }}
                   />
                 )}
 
@@ -360,7 +365,11 @@ export function App() {
                   <PassengerWaitingView
                     snapshot={effectiveSnapshot}
                     onDispatchNow={dispatchBatchNow}
-                    onBackToBooking={() => handleSwitchView('passenger-home')}
+                    onBackToBooking={() => {
+                      setScenarioSnapshotOverride(null);
+                      setActiveCandidateOverride(null);
+                      handleSwitchView('passenger-home');
+                    }}
                     onSelectVehicle={handleSelectVehicle}
                     onSelectRequest={handleSelectRequest}
                     onNavigateToActive={() => handleSwitchView('passenger-active')}
@@ -373,7 +382,11 @@ export function App() {
                     snapshot={effectiveSnapshot}
                     onSelectVehicle={handleSelectVehicle}
                     onSelectRequest={handleSelectRequest}
-                    onNavigateToBooking={() => handleSwitchView('passenger-home')}
+                    onNavigateToBooking={() => {
+                      setScenarioSnapshotOverride(null);
+                      setActiveCandidateOverride(null);
+                      handleSwitchView('passenger-home');
+                    }}
                     onAdvanceStop={advanceVehicleStop}
                     onCancelRide={cancelRideRequest}
                     onSimulateCoRiderCancellation={simulateCoRiderCancellation}
@@ -394,6 +407,7 @@ export function App() {
           onApplyScenarioSnapshot={handleApplyScenarioSnapshot}
           onOpenShapleySheet={handleOpenShapleySheet}
           onResetToLive={handleResetToLive}
+          onRunBackendScenario={loadScenario}
           onAdvanceStop={advanceVehicleStop}
           onSimulateCoRiderCancellation={simulateCoRiderCancellation}
           onResetSession={resetPassengerSession}

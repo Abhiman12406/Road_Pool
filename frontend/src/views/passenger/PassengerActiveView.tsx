@@ -136,12 +136,23 @@ export const PassengerActiveView: React.FC<PassengerActiveViewProps> = ({
       ? localVehicleOverride
       : baseVehicle;
 
-  // Active rider request
+  // Active rider request with dynamic calculated fare fallback
   const activeReqId = session?.activeTripRequestId;
-  const activeRequest: RideRequest | undefined = activeReqId
+  const rawActiveRequest: RideRequest | undefined = activeReqId
     ? effectiveRequests[activeReqId]
     : Object.values(effectiveRequests).find((r) => r.assigned_vehicle_id === currentVehicle.vehicle_id) ||
       Object.values(effectiveRequests)[0];
+
+  const activeRequest: RideRequest | undefined = useMemo(() => {
+    if (!rawActiveRequest && !session) return undefined;
+    const solo = rawActiveRequest?.solo_fare_inr ?? session?.fareSoloDirectInr ?? 250.0;
+    const pooled = rawActiveRequest?.shapley_fare_inr ?? session?.fareShapleyPooledInr ?? (Math.round(solo * 0.75 * 100) / 100);
+    return {
+      ...(rawActiveRequest || {}),
+      solo_fare_inr: solo,
+      shapley_fare_inr: pooled,
+    } as RideRequest;
+  }, [rawActiveRequest, session]);
 
   // Auto-detect completed status
   const isTripCompleted =
