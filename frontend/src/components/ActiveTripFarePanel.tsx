@@ -120,29 +120,13 @@ export const ActiveTripFarePanel: React.FC<ActiveTripFarePanelProps> = ({
         </div>
       )}
 
-      {/* 3. Cabin Occupancy Grid (4 Seats) */}
-      <div className="bg-white p-6 rounded-2xl border border-[#efefef] shadow-card space-y-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-bold text-xs text-black uppercase tracking-wider">
-              Cabin occupancy
-            </h3>
-            <span className="text-xs text-[#5e5e5e]">
-              Tata Tigor EV • 4-seat layout
-            </span>
-          </div>
-          <span className="text-xs font-mono font-medium text-black px-2.5 py-0.5 rounded-full bg-[#efefef]">
-            {cabinState.occupiedCount}/{cabinState.totalCapacity} seats
-          </span>
-        </div>
-
-        <CabinLayoutGrid
-          cabinState={cabinState}
-          vehicleName={vehicle.name}
-          vehicleId={vehicle.vehicle_id}
-          onSelectSeat={onSelectSeat}
-        />
-      </div>
+      {/* 3. Real-Time Interactive Cabin Occupancy Grid */}
+      <CabinLayoutGrid
+        cabinState={cabinState}
+        vehicleName={vehicle.name}
+        vehicleId={vehicle.vehicle_id}
+        onSelectSeat={onSelectSeat}
+      />
     </div>
   );
 };
